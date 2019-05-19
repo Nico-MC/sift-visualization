@@ -13,6 +13,13 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/helloWorld.vue') }
     ]
+  },
+  {
+    path: '/sift',
+    component: () => import('layouts/MyLayout2.vue'),
+    children: [
+      { path: '', component: () => import('pages/sift.vue') }
+    ]
   }
 ]
 
