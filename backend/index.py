@@ -13,7 +13,7 @@ app.config.from_object(__name__)
 # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-# sanity check route
+# define sift_cli endpoint
 @app.route('/get', methods=['GET'])
 def get():
     process = subprocess.Popen("./demo_SIFT/bin/sift_cli", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
