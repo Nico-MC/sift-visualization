@@ -1,5 +1,9 @@
 import subprocess
+from flask import Flask
 
-# TODO: Paramteres
-proc = subprocess.Popen("./demo_SIFT/sift_cli", shell=True)
-proc.wait()
+app = Flask(__name__)
+
+@app.route('/')
+def hello():
+    proc = subprocess.Popen("./demo_SIFT/sift_cli", shell=True)
+    proc.wait()

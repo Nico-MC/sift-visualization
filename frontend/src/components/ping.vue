@@ -1,17 +1,16 @@
 <template>
   <div>
-    <p>test</p>
+    <p>{{ msg }}</p>
   </div>
 </template>
 
 <script>
 export default {
-  // name: 'ComponentName',
+  name: 'Ping',
   data () {
-    return {}
+    return {
+      msg: 'Hello!'
+    }
   }
 }
 </script>
-
-<style>
-</style>
