@@ -1,21 +1,14 @@
 <template>
-  <div>
-    <p>{{ msg }}</p>
-  </div>
+  <button class="siftCli-button-execute" type="button" name="button" @click="this.siftCli_execute">Start Sift Algorithm</button>
 </template>
 
 <script>
 import axios from 'axios'
 
 export default {
-  name: 'Ping',
-  data () {
-    return {
-      msg: ''
-    }
-  },
+  name: 'siftCli',
   methods: {
-    getMessage () {
+    siftCli_execute () {
       const path = 'http://localhost:5000/get'
       axios.get(path)
         .then((res) => {
@@ -26,9 +19,13 @@ export default {
           console.error(error);
         })
     }
-  },
-  created () {
-    this.getMessage()
   }
 }
 </script>
+
+<style>
+.siftCli-button-execute {
+  font-size: 20px;
+  margin: 5px 0px 0px 5px;
+}
+</style>

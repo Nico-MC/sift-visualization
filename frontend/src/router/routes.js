@@ -1,4 +1,3 @@
-
 const routes = [
   {
     path: '/',
@@ -7,11 +6,6 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/sift.vue') }
     ]
-  },
-  {
-    path: '/get',
-    name: 'get',
-    component: () => import('components/ping.vue')
   }
 ]
 
