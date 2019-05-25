@@ -2,10 +2,16 @@
 const routes = [
   {
     path: '/',
+    name: '',
     component: () => import('layouts/layout.vue'),
     children: [
       { path: '', component: () => import('pages/sift.vue') }
     ]
+  },
+  {
+    path: '/get',
+    name: 'get',
+    component: () => import('components/ping.vue')
   }
 ]
 

@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <!-- content -->
-    <button class="start-sift" type="button" name="button" @click="startSift">Start Sift Algorithm</button>
+    <button class="start-sift" type="button" name="button" @click="getMessage">Start Sift Algorithm</button>
   </q-page>
 </template>
 
