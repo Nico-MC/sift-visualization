@@ -52,7 +52,7 @@ The SIFT method is patented
 
 */
 /**
- * @file lib_sift.c 
+ * @file lib_sift.c
  * @brief A simplified interface to the anatomy with standard parameters.
  *
  *
@@ -346,7 +346,7 @@ struct sift_keypoint_std *sift_read_keyslocation_from_file(char *filename, int *
     // read keypoints locations from a file and
     // save them into a sift_keypoints structure
     struct sift_keypoints* keys = sift_malloc_keypoints();
-    int flag = 0; // read coordinates 
+    int flag = 0; // read coordinates
     sift_read_keypoints(keys, filename, n_hist, n_ori, n_bins, flag);
 
     // translate the sift_keypoints structure into a flat list

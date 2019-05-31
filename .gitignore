@@ -18,3 +18,5 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+
+backend/demo_SIFT/bin/output/
