@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-layout-header>
-    </q-layout-header>
+    <q-header>
+    </q-header>
 
     <q-page-container>
       <router-view />
@@ -10,10 +10,13 @@
 </template>
 
 <script>
-import { openURL } from 'quasar'
+import { openURL, QLayout } from 'quasar'
 
 export default {
   name: 'MyLayout',
+  components: {
+    QLayout
+  },
   data () {
     return {
       leftDrawerOpen: this.$q.platform.is.desktop

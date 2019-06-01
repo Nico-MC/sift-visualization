@@ -1,7 +1,5 @@
 <template>
-  <div class="siftCli-div">
-    <form @submit="siftCli_execute">
-      <input type="text" v-model="ss_noct" placeholder="Octaves">
+      <!--input type="text" v-model="ss_noct" placeholder="Octaves">
       <input type="text" v-model="ss_nspo" placeholder="Scales">
       <input type="text" v-model="ss_dmin" placeholder="Scales">
       <input type="text" v-model="ss_smin" placeholder="Scales">
@@ -13,18 +11,23 @@
       <input type="text" v-model="ori_lambda" placeholder="Scales">
       <input type="text" v-model="descr_nhist" placeholder="Scales">
       <input type="text" v-model="descr_nori" placeholder="Scales">
-      <input type="text" v-model="descr_lambda" placeholder="Scales">
+      <input type="text" v-model="descr_lambda" placeholder="Scales"-->
+      <div class="">
+        <button class="siftCli-button-execute" type="button" name="button" @click="this.siftCli_execute">Start Sift Algorithm</button>
+        <siftCliInput></siftCliInput>
 
-      <button class="siftCli-button-execute" type="button" name="button" @click="this.siftCli_execute">Start Sift Algorithm</button>
-    </form>
-  </div>
+      </div>
 </template>
 
 <script>
 import axios from 'axios'
+import siftCliInput from '../input.vue'
 
 export default {
   name: 'siftCli',
+  components: {
+    siftCliInput
+  },
   data () {
     return {
       ss_noct: '8', // number of octaves
@@ -77,13 +80,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.siftCli-div {
-  margin: 5px 0px 0px 5px;
-}
-
-.siftCli-button-execute {
-
-}
-</style>
