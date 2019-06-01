@@ -40,8 +40,8 @@ export default {
       descr_nhist: '4', // number of scales per octave
       descr_nori: '8', // number of scales per octave
       descr_lambda: '6', // number of scales per octave
-      verb_keys: '0', // number of scales per octave
-      verb_ss: '0' // number of scales per octave
+      verb_keys: '1', // number of scales per octave
+      verb_ss: '1' // number of scales per octave
     }
   },
   methods: {

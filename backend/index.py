@@ -35,23 +35,27 @@ def sift_cli():
 
     sift_cli_params = \
     [
-    "./demo_SIFT/bin/sift_cli", "./demo_SIFT/assets/adam1.png",     # algorithm executable and input picture
-    "-ss_noct", ss_noct,    # number of octaves
-    "-ss_nspo", ss_nspo,    # number of scales per octave
-    "-ss_dmin", ss_dmin,    # the sampling distance in the first octave
-    "-ss_smin", ss_smin,    # blur level on the seed image
-    "-ss_sin", ss_sin,    # assumed level of blur in the input image
-    "-thresh_dog", thresh_dog,    # threshold over the DoG response
-    "-thresh_edge", thresh_edge,    # threshold over the ratio of principal curvature
-    "-ori_nbins", ori_nbins,    # number of bins in the orientation histogram
-    "-ori_thresh", ori_thresh,    # threshold for considering local maxima in the orientation histogram
-    "-ori_lambda", ori_lambda,    # sets how local is the analysis of the gradient distribution
-    "-descr_nhist", descr_nhist,    # number of histograms per dimension
-    "-descr_nori", descr_nori,    # number of bins in each histogram
-    "-descr_lambda", descr_lambda,    # sets how local the descriptor is
-    "-verb_keys" if verb_keys == 1 else "-verb_keys", '-1' if verb_keys == 1 else "1",    # flag to output the intermediary sets of keypoints
-    #"-verb_ss" if verb_ss == 1 else "", verb_ss if verb_ss == 1 else ""    # flag to output the scalespaces (Gaussian and DoG)
+        "./demo_SIFT/bin/sift_cli", "./demo_SIFT/assets/adam1.png",     # algorithm executable and input picture
+        "-ss_noct", ss_noct,    # number of octaves
+        "-ss_nspo", ss_nspo,    # number of scales per octave
+        "-ss_dmin", ss_dmin,    # the sampling distance in the first octave
+        "-ss_smin", ss_smin,    # blur level on the seed image
+        "-ss_sin", ss_sin,    # assumed level of blur in the input image
+        "-thresh_dog", thresh_dog,    # threshold over the DoG response
+        "-thresh_edge", thresh_edge,    # threshold over the ratio of principal curvature
+        "-ori_nbins", ori_nbins,    # number of bins in the orientation histogram
+        "-ori_thresh", ori_thresh,    # threshold for considering local maxima in the orientation histogram
+        "-ori_lambda", ori_lambda,    # sets how local is the analysis of the gradient distribution
+        "-descr_nhist", descr_nhist,    # number of histograms per dimension
+        "-descr_nori", descr_nori,    # number of bins in each histogram
+        "-descr_lambda", descr_lambda,    # sets how local the descriptor is
     ]
+    # labels for output
+    if(verb_keys == "1"):
+        sift_cli_params.extend(["-verb_keys", "1"])   # flag to output the intermediary sets of keypoints
+    if(verb_ss == "1"):
+        sift_cli_params.extend(["-verb_ss", "1"])   # flag to output the scalespaces (Gaussian and DoG)
+
     print(sift_cli_params)
 
 

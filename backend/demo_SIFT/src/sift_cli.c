@@ -308,8 +308,8 @@ int main(int argc, char **argv)
         sprintf(name,"demo_SIFT/output/extra_FarFromBorder_%s.txt",label_keys);    sift_save_keypoints(kk[5], name, 0);
     }
     if (flagverb_ss == 1){
-        sprintf(name,"demo_SIFT/output/scalespace_%s",label_ss);     print_sift_scalespace_gray_nearestneighbor(ss[0],name);
-        sprintf(name,"demo_SIFT/output/DoG_%s",label_ss);            print_sift_scalespace_rgb(ss[1],name);
+        sprintf(name,"demo_SIFT/output/Scalespace/scalespace_%s",label_ss);     print_sift_scalespace_gray_nearestneighbor(ss[0],name);
+        sprintf(name,"demo_SIFT/output/DoG/DoG_%s",label_ss);            print_sift_scalespace_rgb(ss[1],name);
     }
 
     /* memory deallocation */
