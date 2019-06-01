@@ -35,7 +35,7 @@ def sift_cli():
 
     sift_cli_params = \
     [
-    "./demo_SIFT/bin/sift_cli", "assets/adam1.png",     # algorithm executable and input picture
+    "./demo_SIFT/bin/sift_cli", "./demo_SIFT/assets/adam1.png",     # algorithm executable and input picture
     "-ss_noct", ss_noct,    # number of octaves
     "-ss_nspo", ss_nspo,    # number of scales per octave
     "-ss_dmin", ss_dmin,    # the sampling distance in the first octave
@@ -49,7 +49,7 @@ def sift_cli():
     "-descr_nhist", descr_nhist,    # number of histograms per dimension
     "-descr_nori", descr_nori,    # number of bins in each histogram
     "-descr_lambda", descr_lambda,    # sets how local the descriptor is
-    "-verb_keys" if verb_keys == 1 else "-verb_keys", '-1' if verb_keys == 1 else "test/tests.txt",    # flag to output the intermediary sets of keypoints
+    "-verb_keys" if verb_keys == 1 else "-verb_keys", '-1' if verb_keys == 1 else "1",    # flag to output the intermediary sets of keypoints
     #"-verb_ss" if verb_ss == 1 else "", verb_ss if verb_ss == 1 else ""    # flag to output the scalespaces (Gaussian and DoG)
     ]
     print(sift_cli_params)

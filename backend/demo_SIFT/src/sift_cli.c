@@ -1,13 +1,13 @@
 /*
 IPOL SIFT
-Copyright (C) 2014, Ives Rey-Otero, CMLA ENS Cachan 
+Copyright (C) 2014, Ives Rey-Otero, CMLA ENS Cachan
 <ives.rey-otero@cmla.ens-cachan.fr>
 
 Version 20140911 (September 11th, 2014)
 
 This C ANSI source code is related to the IPOL publication
 
-    [1] "Anatomy of the SIFT Method." 
+    [1] "Anatomy of the SIFT Method."
         I. Rey Otero  and  M. Delbracio
         Image Processing Online, 2013.
         http://www.ipol.im/pub/algo/rd_anatomy_sift/
@@ -21,7 +21,7 @@ An IPOL demo is available at
 
 == Patent Warning and License =================================================
 
-The SIFT method is patented 
+The SIFT method is patented
 
     [3] "Method and apparatus for identifying scale invariant features
       in an image."
@@ -30,7 +30,7 @@ The SIFT method is patented
         Filing date: Mar 6, 2000
         Issue date: Mar 23, 2004
         Application number: 09/519,89
-  
+
  These source codes are made available for the exclusive aim of serving as
  scientific tool to verify the soundness and completeness of the algorithm
  description. Compilation, execution and redistribution of this file may
@@ -51,10 +51,10 @@ this program. If not, see
 */
 /**
  * @file sift.c
- * @brief [[MAIN]] The SIFT method 
+ * @brief [[MAIN]] The SIFT method
  *
  * @li basic SIFT transform applied to one image
- * @li verbose SIFT transform 
+ * @li verbose SIFT transform
  *
  * @author Ives Rey-Otero <ives.rey-otero@cmla.ens-cachan.fr>
  */
@@ -108,9 +108,9 @@ void print_usage()
 
 /**
  *
- * Output 
+ * Output
  *   -1 : malformed argument
- *    0 : option not found  
+ *    0 : option not found
  *    1 : option found
  */
 static int pick_option(int* c, char*** v, char* opt, char* val)
@@ -248,16 +248,16 @@ static int parse_options(int argc, char** argv,
 
 
 /** @brief Main SIFT routine
- * 
- * takes one image as input.        
+ *
+ * takes one image as input.
  * outputs the extracted keypoints in the standard output.
- * 
+ *
  * @param flag for the SIFT transform
- * 
- * 0 = one image -> one txt file 
+ *
+ * 0 = one image -> one txt file
  * 1 = one image -> all txt files
  * 2 = one image -> all txt files + scalespace and DoG
- * 
+ *
  */
 int main(int argc, char **argv)
 {
@@ -300,16 +300,16 @@ int main(int argc, char **argv)
 
     char name[FILENAME_MAX];
     if(flagverb_keys == 1){
-        sprintf(name,"extra_NES_%s.txt",label_keys);              sift_save_keypoints(kk[0], name, 0);
-        sprintf(name,"extra_DoGSoftThresh_%s.txt",label_keys);    sift_save_keypoints(kk[1], name, 0);
-        sprintf(name,"extra_ExtrInterp_%s.txt",label_keys);       sift_save_keypoints(kk[2], name, 0);
-        sprintf(name,"extra_DoGThresh_%s.txt",label_keys);        sift_save_keypoints(kk[3], name, 0);
-        sprintf(name,"extra_OnEdgeResp_%s.txt",label_keys);       sift_save_keypoints(kk[4], name, 0);
-        sprintf(name,"extra_FarFromBorder_%s.txt",label_keys);    sift_save_keypoints(kk[5], name, 0);
+        sprintf(name,"demo_SIFT/output/extra_NES_%s.txt",label_keys);              sift_save_keypoints(kk[0], name, 0);
+        sprintf(name,"demo_SIFT/output/extra_DoGSoftThresh_%s.txt",label_keys);    sift_save_keypoints(kk[1], name, 0);
+        sprintf(name,"demo_SIFT/output/extra_ExtrInterp_%s.txt",label_keys);       sift_save_keypoints(kk[2], name, 0);
+        sprintf(name,"demo_SIFT/output/extra_DoGThresh_%s.txt",label_keys);        sift_save_keypoints(kk[3], name, 0);
+        sprintf(name,"demo_SIFT/output/extra_OnEdgeResp_%s.txt",label_keys);       sift_save_keypoints(kk[4], name, 0);
+        sprintf(name,"demo_SIFT/output/extra_FarFromBorder_%s.txt",label_keys);    sift_save_keypoints(kk[5], name, 0);
     }
     if (flagverb_ss == 1){
-        sprintf(name,"scalespace_%s",label_ss);     print_sift_scalespace_gray_nearestneighbor(ss[0],name);
-        sprintf(name,"DoG_%s",label_ss);            print_sift_scalespace_rgb(ss[1],name);
+        sprintf(name,"demo_SIFT/output/scalespace_%s",label_ss);     print_sift_scalespace_gray_nearestneighbor(ss[0],name);
+        sprintf(name,"demo_SIFT/output/DoG_%s",label_ss);            print_sift_scalespace_rgb(ss[1],name);
     }
 
     /* memory deallocation */
@@ -326,4 +326,3 @@ int main(int argc, char **argv)
     xfree(ss);
     return EXIT_SUCCESS;
 }
-

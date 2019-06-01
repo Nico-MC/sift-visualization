@@ -63,41 +63,41 @@ $(BINDIR):
 #  LIB_SIFT
 #
 $(OBJDIR)/lib_sift.o : $(SRCDIR)/lib_sift.c $(OBJDIR)/lib_sift_anatomy.o $(OBJDIR)/lib_keypoint.o $(OBJDIR)/lib_util.o 
-	$(CC) $(CFLAGS) $(OFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $<
 
 $(OBJDIR)/lib_scalespace.o : $(SRCDIR)/lib_scalespace.c $(OBJDIR)/lib_discrete.o  $(OBJDIR)/lib_util.o 
-	$(CC) $(CFLAGS) $(OFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $<
 
 $(OBJDIR)/lib_discrete.o : $(SRCDIR)/lib_discrete.c $(OBJDIR)/lib_util.o 
-	$(CC) $(CFLAGS) $(OFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $<
 
 $(OBJDIR)/lib_description.o : $(SRCDIR)/lib_description.c $(OBJDIR)/lib_discrete.o $(OBJDIR)/lib_keypoint.o $(OBJDIR)/lib_util.o 
-	$(CC) $(CFLAGS) $(OFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $<
 
 $(OBJDIR)/lib_keypoint.o : $(SRCDIR)/lib_keypoint.c $(OBJDIR)/lib_util.o 
-	$(CC) $(CFLAGS) $(OFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $<
 
 $(OBJDIR)/lib_sift_anatomy.o : $(SRCDIR)/lib_sift_anatomy.c $(OBJDIR)/lib_keypoint.o $(OBJDIR)/lib_discrete.o $(OBJDIR)/lib_scalespace.o $(OBJDIR)/lib_util.o 
-	$(CC) $(CFLAGS) $(OFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $<
 
 $(OBJDIR)/lib_util.o : $(SRCDIR)/lib_util.c
-	$(CC) $(CFLAGS) $(OFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $<
 
 #--------------------------------------------------------------
 #   IN (image) and OUT (scalespace)
 #
 $(OBJDIR)/io_png.o : $(SRCDIR)/io_png.c
-	$(CC) $(CFLAGS) $(OFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $<
 
 $(OBJDIR)/lib_io_scalespace.o : $(SRCDIR)/lib_io_scalespace.c $(OBJDIR)/io_png.o  $(OBJDIR)/lib_scalespace.o $(OBJDIR)/lib_util.o 
-	$(CC) $(CFLAGS) $(OFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $<
 
 
 #-------------------------------------------------------------
 #   Matching algorithm
 #
 $(OBJDIR)/lib_matching.o : $(SRCDIR)/lib_matching.c $(OBJDIR)/lib_keypoint.o $(OBJDIR)/lib_util.o 
-	$(CC) $(CFLAGS) $(OFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $<
 
 $(BINMATCH) : $(SRCDIR)/match_cli.c $(OBJDIR)/lib_keypoint.o $(OBJDIR)/lib_matching.o   $(OBJDIR)/lib_util.o 
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS) -lm
