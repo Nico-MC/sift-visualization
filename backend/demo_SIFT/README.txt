@@ -1,4 +1,4 @@
-IPOL SIFT
+﻿IPOL SIFT
 Copyright (C) 2014, Ives Rey-Otero, CMLA ENS-Cachan
 <ives.rey-otero@cmla.ens-cachan.fr>
 
@@ -258,7 +258,16 @@ in a code.
 
 3) link
 
+gcc -std=c99  -c -fPIC -o lib_keypoint.o lib_keypoint.c
+gcc -std=c99  -c -fPIC -o lib_discrete.o lib_discrete.c
+gcc -std=c99  -c -fPIC -o lib_scalespace.o lib_scalespace.c
+gcc -std=c99  -c -fPIC -o lib_sift_anatomy.o lib_sift_anatomy.c
+gcc -std=c99  -c -fPIC -o lib_description.o lib_description.c
+gcc -std=c99  -c -fPIC -o lib_sift.o lib_sift.c
 
+gcc -std=c99 -o lib lib_sift.c lib_sift.o lib_sift_anatomy.o \
+             lib_keypoint.o  lib_scalespace.o lib_description.o \
+             lib_discrete.o -lm
 
 Here a two short examples of source code with their respective compilation
 commands.
