@@ -1,72 +1,81 @@
 <template>
-      <!--input type="text" v-model="ss_noct" placeholder="Octaves">
-      <input type="text" v-model="ss_nspo" placeholder="Scales">
-      <input type="text" v-model="ss_dmin" placeholder="Scales">
-      <input type="text" v-model="ss_smin" placeholder="Scales">
-      <input type="text" v-model="ss_sin" placeholder="Scales">
-      <input type="text" v-model="thresh_dog" placeholder="Scales">
-      <input type="text" v-model="thresh_edge" placeholder="Scales">
-      <input type="text" v-model="ori_nbins" placeholder="Scales">
-      <input type="text" v-model="ori_thresh" placeholder="Scales">
-      <input type="text" v-model="ori_lambda" placeholder="Scales">
-      <input type="text" v-model="descr_nhist" placeholder="Scales">
-      <input type="text" v-model="descr_nori" placeholder="Scales">
-      <input type="text" v-model="descr_lambda" placeholder="Scales"-->
-      <div class="">
-        <button class="siftCli-button-execute" type="button" name="button" @click="this.siftCli_execute">Start Sift Algorithm</button>
-        <siftCliInput></siftCliInput>
-
-      </div>
+  <div class="q-pa-md">
+    <div class="q-gutter-md row items-start">
+      <form @submit.prevent.stop="siftCli_execute" @reset.prevent="reset()" class="q-gutter-md">
+        <q-input v-model="siftCliParams.ss_noct" filled type="text" hint="Octaves" />
+        <q-input v-model="siftCliParams.ss_nspo" filled type="text" hint="Scales" />
+        <q-input v-model="siftCliParams.ss_dmin" filled type="text" hint="Scales" />
+        <q-input v-model="siftCliParams.ss_smin" filled type="text" hint="Scales" />
+        <q-input v-model="siftCliParams.ss_sin" filled type="text" hint="Scales" />
+        <q-input v-model="siftCliParams.thresh_dog" filled type="text" hint="Scales" />
+        <q-input v-model="siftCliParams.thresh_edge" filled type="text" hint="Scales" />
+        <q-input v-model="siftCliParams.ori_nbins" filled type="text" hint="Scales" />
+        <q-input v-model="siftCliParams.ori_thresh" filled type="text" hint="Scales" />
+        <q-input v-model="siftCliParams.ori_lambda" filled type="text" hint="Scales" />
+        <q-input v-model="siftCliParams.descr_nhist" filled type="text" hint="Scales" />
+        <q-input v-model="siftCliParams.descr_nori" filled type="text" hint="Scales" />
+        <q-input v-model="siftCliParams.descr_lambda" filled type="text" hint="Scales" />
+        <div>
+          <q-btn label="Start Sift Algorithm" type="submit" color="primary" />
+          <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+        </div>
+      </form>
+    </div>
+  </div>
 </template>
 
 <script>
+import { QInput } from 'quasar'
 import axios from 'axios'
-import siftCliInput from '../input.vue'
+
+var siftCliParamsDefault = {
+  ss_noct: '8', // number of octaves
+  ss_nspo: '3', // number of scales per octave
+  ss_dmin: '0.5', // number of scales per octave
+  ss_smin: '0.8', // number of scales per octave
+  ss_sin: '0.5', // number of scales per octave
+  thresh_dog: '0.0133', // number of scales per octave
+  thresh_edge: '10', // number of scales per octave
+  ori_nbins: '36', // number of scales per octave
+  ori_thresh: '0.8', // number of scales per octave
+  ori_lambda: '1.5', // number of scales per octave
+  descr_nhist: '4', // number of scales per octave
+  descr_nori: '8', // number of scales per octave
+  descr_lambda: '6', // number of scales per octave
+  verb_keys: '1', // number of scales per octave
+  verb_ss: '1' // number of scales per octave
+}
 
 export default {
-  name: 'siftCli',
   components: {
-    siftCliInput
+    QInput
   },
   data () {
     return {
-      ss_noct: '8', // number of octaves
-      ss_nspo: '3', // number of scales per octave
-      ss_dmin: '0.5', // number of scales per octave
-      ss_smin: '0.8', // number of scales per octave
-      ss_sin: '0.5', // number of scales per octave
-      thresh_dog: '0.0133', // number of scales per octave
-      thresh_edge: '10', // number of scales per octave
-      ori_nbins: '36', // number of scales per octave
-      ori_thresh: '0.8', // number of scales per octave
-      ori_lambda: '1.5', // number of scales per octave
-      descr_nhist: '4', // number of scales per octave
-      descr_nori: '8', // number of scales per octave
-      descr_lambda: '6', // number of scales per octave
-      verb_keys: '1', // number of scales per octave
-      verb_ss: '1' // number of scales per octave
+      siftCliParams: Object.assign({}, siftCliParamsDefault)
     }
   },
   methods: {
     siftCli_execute (e) {
       e.preventDefault()
+      var siftCliParams = this.siftCliParams
       axios.get('http://localhost:5000/sift_cli', {
         params: {
-          ss_noct: (this.ss_noct === '' ? this.ss_noct = '8' : this.ss_noct),
-          ss_nspo: (this.ss_nspo === '' ? this.ss_nspo = '3' : this.ss_nspo),
-          ss_dmin: (this.ss_dmin === '' ? this.ss_dmin = '0.5' : this.ss_dmin),
-          ss_smin: (this.ss_smin === '' ? this.ss_smin = '0.8' : this.ss_smin),
-          ss_sin: (this.ss_sin === '' ? this.ss_sin = '0.5' : this.ss_sin),
-          thresh_dog: (this.thresh_dog === '' ? this.thresh_dog = '0.0133' : this.thresh_dog),
-          thresh_edge: (this.thresh_edge === '' ? this.thresh_edge = '10' : this.thresh_edge),
-          ori_nbins: (this.ori_nbins === '' ? this.ori_nbins = '36' : this.ori_nbins),
-          ori_thresh: (this.ori_thresh === '' ? this.ori_thresh = '0.8' : this.ori_thresh),
-          ori_lambda: (this.ori_lambda === '' ? this.ori_lambda = '1.5' : this.ori_lambda),
-          descr_nhist: (this.descr_nhist === '' ? this.descr_nhist = '4' : this.descr_nhist),
-          descr_nori: (this.descr_nori === '' ? this.descr_nori = '8' : this.descr_nori),
-          descr_lambda: (this.descr_lambda === '' ? this.descr_lambda = '6' : this.descr_lambda),
-          verb_keys: (this.verb_keys === '' ? this.verb_keys = '0' : this.verb_keys),
-          verb_ss: (this.verb_ss === '' ? this.verb_ss = '0' : this.verb_ss)
+          ss_noct: (siftCliParams.ss_noct === '' ? siftCliParams.ss_noct = siftCliParamsDefault.ss_noct : siftCliParams.ss_noct),
+          ss_nspo: (siftCliParams.ss_nspo === '' ? siftCliParams.ss_nspo = siftCliParamsDefault.ss_nspo : siftCliParams.ss_nspo),
+          ss_dmin: (siftCliParams.ss_dmin === '' ? siftCliParams.ss_dmin = siftCliParamsDefault.ss_dmin : siftCliParams.ss_dmin),
+          ss_smin: (siftCliParams.ss_smin === '' ? siftCliParams.ss_smin = siftCliParamsDefault.ss_smin : siftCliParams.ss_smin),
+          ss_sin: (siftCliParams.ss_sin === '' ? siftCliParams.ss_sin = siftCliParamsDefault.ss_sin : siftCliParams.ss_sin),
+          thresh_dog: (siftCliParams.thresh_dog === '' ? siftCliParams.thresh_dog = siftCliParamsDefault.thresh_dog : siftCliParams.thresh_dog),
+          thresh_edge: (siftCliParams.thresh_edge === '' ? siftCliParams.thresh_edge = siftCliParamsDefault.thresh_edge : siftCliParams.thresh_edge),
+          ori_nbins: (siftCliParams.ori_nbins === '' ? siftCliParams.ori_nbins = siftCliParamsDefault.ori_nbins : siftCliParams.ori_nbins),
+          ori_thresh: (siftCliParams.ori_thresh === '' ? siftCliParams.ori_thresh = siftCliParamsDefault.ori_thresh : siftCliParams.ori_thresh),
+          ori_lambda: (siftCliParams.ori_lambda === '' ? siftCliParams.ori_lambda = siftCliParamsDefault.ori_lambda : siftCliParams.ori_lambda),
+          descr_nhist: (siftCliParams.descr_nhist === '' ? siftCliParams.descr_nhist = siftCliParamsDefault.descr_nhist : siftCliParams.descr_nhist),
+          descr_nori: (siftCliParams.descr_nori === '' ? siftCliParams.descr_nori = siftCliParamsDefault.descr_nori : siftCliParams.descr_nori),
+          descr_lambda: (siftCliParams.descr_lambda === '' ? siftCliParams.descr_lambda = siftCliParamsDefault.descr_lambda : siftCliParams.descr_lambda),
+          verb_keys: (siftCliParams.verb_keys === '' ? siftCliParams.verb_keys = siftCliParamsDefault.verb_keys : siftCliParams.verb_keys),
+          verb_ss: (siftCliParams.verb_ss === '' ? siftCliParams.verb_ss = siftCliParamsDefault.verb_ss : siftCliParams.verb_ss)
         }
       })
         .then((res) => {
@@ -76,6 +85,9 @@ export default {
           // eslint-disable-next-line
           console.error(error);
         })
+    },
+    reset (e) {
+      Object.assign(this.siftCliParams, siftCliParamsDefault)
     }
   }
 }
