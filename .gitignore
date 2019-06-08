@@ -19,4 +19,4 @@ yarn-error.log*
 *.njsproj
 *.sln
 
-backend/demo_SIFT/output/
+backend/static

@@ -1,12 +1,9 @@
 <template>
-  <q-page>
-    <!-- content -->
-    <siftCli></siftCli>
-  </q-page>
+  <siftCli></siftCli>
 </template>
 
 <script>
-import siftCli from '../components/sift_cli_input.vue'
+import siftCli from '../components/sift_cli.vue'
 
 export default {
   components: {

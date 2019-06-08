@@ -47,7 +47,7 @@
 </template>
 
 <style>
-  .items-start {
+  .input_container .items-start {
     display: -webkit-inline-flex !important;
     padding-bottom: 35px !important;
   }
@@ -89,7 +89,6 @@ export default {
   methods: {
     siftCli_execute (inputImage_name = 'adam1.png') {
       var siftCliParams = this.siftCliParams
-      console.log(inputImage_name)
       axios.get('http://localhost:5000/sift_cli', {
         params: {
           inputImage_name: inputImage_name,
@@ -111,24 +110,13 @@ export default {
         }
       })
         .then((res) => {
-          console.log(res.data)
+          console.log('SIFT finished.')
+          this.triggerEventForPollingOutput()
         })
         .catch((error) => {
           // eslint-disable-next-line
           console.error(error);
         })
-    },
-    reset (e) {
-      Object.assign(this.siftCliParams, siftCliParamsDefault)
-      this.image = ''
-      this.$refs.pictureInput.removeImage()
-    },
-    onChange () {
-      if (this.$refs.pictureInput.file) {
-        this.image = this.$refs.pictureInput.file
-      } else {
-        console.log('FileReader API not supported: use the <form>, Luke!')
-      }
     },
     submit () {
       if (this.image) {
@@ -156,6 +144,22 @@ export default {
       } else {
         console.log('Start SIFT with default image (adam1.png) ✨')
         this.siftCli_execute()
+      }
+    },
+    triggerEventForPollingOutput () {
+      this.$eventBus.$emit('pollScalespace')
+    },
+    reset () {
+      // Object.assign(this.siftCliParams, siftCliParamsDefault)
+      // this.image = ''
+      // this.$refs.pictureInput.removeImage()
+      this.triggerEventForPollingOutput()
+    },
+    onChange () {
+      if (this.$refs.pictureInput.file) {
+        this.image = this.$refs.pictureInput.file
+      } else {
+        console.log('FileReader API not supported: use the <form>, Luke!')
       }
     }
   }
