@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-import os, subprocess
-from flask import Flask, jsonify, request, abort
+import os, subprocess, cv2, glob, numpy, shutil
+from flask import Flask, jsonify, request, abort, send_from_directory
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
@@ -60,7 +60,7 @@ def sift_cli():
         sift_cli_params.extend(["-verb_keys", "1"])   # flag to output the intermediary sets of keypoints
     if(verb_ss == "1"):
         sift_cli_params.extend(["-verb_ss", "1"])   # flag to output the scalespaces (Gaussian and DoG)
-
+        res = clear_output_directory()
 
     # ---Act---
     process = subprocess.Popen(sift_cli_params, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -74,6 +74,27 @@ def sift_cli():
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def clear_output_directory():
+    try:
+        print(os.path.isdir('/static/scalespace') == False)
+        if(os.path.isdir('static/scalespace') == True):
+            shutil.rmtree('static/scalespace')
+        if(os.path.isdir('static/dog') == True):
+            shutil.rmtree('static/dog')
+        if(os.path.isdir('static/scalespace') == False):
+            os.mkdir('static/scalespace')
+        if(os.path.isdir('static/dog') == False):
+            os.mkdir('static/dog')
+        return("Output directory cleared.")
+    except Exception as e:
+        return(e)
+
+def list_output_files_of(directory):
+    if(directory == 'scalespace'):
+        return jsonify(os.listdir("static/scalespace"))
+    if(directory == 'dog'):
+        return jsonify(os.listdir("static/dog"))
 
 @app.route('/sift_cli_upload_image', methods=['POST'])
 def sift_cli_upload_image():
@@ -90,8 +111,12 @@ def sift_cli_upload_image():
         else:
             abort(400, 'Only .png images are allowed')
 
-
-
+@app.route('/sift_cli_get_filenames/<filename>', methods=['GET'])
+def sift_cli_get_scalespace(filename):
+    if(filename == 'scalespace'):
+        return list_output_files_of("scalespace")
+    if(filename == 'dog'):
+        return list_output_files_of("dog")
 
 
 # run backend
