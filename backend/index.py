@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, subprocess, cv2, glob, numpy, shutil
+import os, subprocess, cv2, glob, numpy, shutil, re
 from flask import Flask, jsonify, request, abort, send_from_directory
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
@@ -92,9 +92,24 @@ def clear_output_directory():
 
 def list_output_files_of(directory):
     if(directory == 'scalespace'):
-        return jsonify(os.listdir("static/scalespace"))
-    if(directory == 'dog'):
-        return jsonify(os.listdir("static/dog"))
+        filelist = os.listdir("static/scalespace")
+        octaveList = []
+        scalespace = {}
+        for file in filelist:
+            octave = re.search('(?<=o).*(?=_)', file)
+            if(scalespace.get(octave.group()) == None):
+                scalespace[octave.group()] = [file]
+            else:
+                scalespace[octave.group()].append(file)
+            octaveList.append(octave.group(0))
+        return(jsonify(scalespace))
+
+@app.route('/sift_cli_get_filenames/<filename>', methods=['GET'])
+def sift_cli_get_scalespace(filename):
+    if(filename == 'scalespace'):
+        return list_output_files_of("scalespace")
+        if(filename == 'dog'):
+            return list_output_files_of("dog")
 
 @app.route('/sift_cli_upload_image', methods=['POST'])
 def sift_cli_upload_image():
@@ -111,12 +126,6 @@ def sift_cli_upload_image():
         else:
             abort(400, 'Only .png images are allowed')
 
-@app.route('/sift_cli_get_filenames/<filename>', methods=['GET'])
-def sift_cli_get_scalespace(filename):
-    if(filename == 'scalespace'):
-        return list_output_files_of("scalespace")
-    if(filename == 'dog'):
-        return list_output_files_of("dog")
 
 
 # run backend

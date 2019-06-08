@@ -1,47 +1,45 @@
 <template>
   <div class="input_container">
     <div class="q-pa-md">
-      <div class="q-gutter-md row items-start">
-        <form @submit.prevent.stop="submit" @reset.prevent.stop="reset" class="q-gutter-md">
-          <div>
-            <picture-input
-              ref="pictureInput"
-              @change="onChange"
-              width="300"
-              height="300"
-              margin="16"
-              accept="image/jpeg,image/png"
-              size="10"
-              buttonClass="btn"
-              :customStrings="{
-                upload: '<h1>Bummer!</h1>',
-                drag: 'Drag a 😺 input image',
-                change: 'Change image'
-              }">
-            </picture-input>
-          </div>
+      <form @submit.prevent.stop="submit" @reset.prevent.stop="reset" class="q-gutter-md">
+        <div>
+          <picture-input
+            ref="pictureInput"
+            @change="onChange"
+            width="300"
+            height="300"
+            margin="16"
+            accept="image/jpeg,image/png"
+            size="10"
+            buttonClass="btn"
+            :customStrings="{
+              upload: '<h1>Bummer!</h1>',
+              drag: 'Drag a 😺 input image',
+              change: 'Change image'
+            }">
+          </picture-input>
+        </div>
 
-          <div class="q-gutter-md row items-start">
-            <q-input v-model="siftCliParams.ss_noct" filled type="text" hint="number of octaves" />
-            <q-input v-model="siftCliParams.ss_nspo" filled type="text" hint="number of scales per octave" />
-            <q-input v-model="siftCliParams.ss_dmin" filled type="text" hint="the sampling distance in the first octave" />
-            <q-input v-model="siftCliParams.ss_smin" filled type="text" hint="blur level on the seed image" />
-            <q-input v-model="siftCliParams.ss_sin" filled type="text" hint="assumed level of blur in the input image" />
-            <q-input v-model="siftCliParams.thresh_dog" filled type="text" hint="threshold over the DoG response" />
-            <q-input v-model="siftCliParams.thresh_edge" filled type="text" hint="threshold over the ratio of principal curvature" />
-            <q-input v-model="siftCliParams.ori_nbins" filled type="text" hint="number of bins in the orientation histogram" />
-            <q-input v-model="siftCliParams.ori_thresh" filled type="text" hint="threshold for considering local maxima in the orientation histogram" />
-            <q-input v-model="siftCliParams.ori_lambda" filled type="text" hint="sets how local is the analysis of the gradient distribution" />
-            <q-input v-model="siftCliParams.descr_nhist" filled type="text" hint="number of histograms per dimension" />
-            <q-input v-model="siftCliParams.descr_nori" filled type="text" hint="number of bins in each histogram" />
-            <q-input v-model="siftCliParams.descr_lambda" filled type="text" hint="sets how local the descriptor is" />
-          </div>
-          <div class="q-gutter-md row items-start">
-            <q-btn label="Start Sift Algorithm" type="submit" color="primary" />
-            <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
-          </div>
-        </form>
-      </div>
+        <div class="q-gutter-md row items-start">
+          <q-input v-model="siftCliParams.ss_noct" filled type="text" hint="number of octaves" />
+          <q-input v-model="siftCliParams.ss_nspo" filled type="text" hint="number of scales per octave" />
+          <q-input v-model="siftCliParams.ss_dmin" filled type="text" hint="the sampling distance in the first octave" />
+          <q-input v-model="siftCliParams.ss_smin" filled type="text" hint="blur level on the seed image" />
+          <q-input v-model="siftCliParams.ss_sin" filled type="text" hint="assumed level of blur in the input image" />
+          <q-input v-model="siftCliParams.thresh_dog" filled type="text" hint="threshold over the DoG response" />
+          <q-input v-model="siftCliParams.thresh_edge" filled type="text" hint="threshold over the ratio of principal curvature" />
+          <q-input v-model="siftCliParams.ori_nbins" filled type="text" hint="number of bins in the orientation histogram" />
+          <q-input v-model="siftCliParams.ori_thresh" filled type="text" hint="threshold for considering local maxima in the orientation histogram" />
+          <q-input v-model="siftCliParams.ori_lambda" filled type="text" hint="sets how local is the analysis of the gradient distribution" />
+          <q-input v-model="siftCliParams.descr_nhist" filled type="text" hint="number of histograms per dimension" />
+          <q-input v-model="siftCliParams.descr_nori" filled type="text" hint="number of bins in each histogram" />
+          <q-input v-model="siftCliParams.descr_lambda" filled type="text" hint="sets how local the descriptor is" />
+        </div>
+        <div class="q-gutter-md row items-start">
+          <q-btn label="Start Sift Algorithm" type="submit" color="primary" />
+          <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+        </div>
+      </form>
     </div>
   </div>
 </template>
@@ -111,7 +109,7 @@ export default {
       })
         .then((res) => {
           console.log('SIFT finished.')
-          this.triggerEventForPollingOutput()
+          this.getScalespace()
         })
         .catch((error) => {
           // eslint-disable-next-line
@@ -146,14 +144,17 @@ export default {
         this.siftCli_execute()
       }
     },
-    triggerEventForPollingOutput () {
-      this.$eventBus.$emit('pollScalespace')
+    getScalespace () {
+      this.$eventBus.$emit('getScalespace')
+    },
+    resetScalespace () {
+      this.$eventBus.$emit('resetScalespace')
     },
     reset () {
-      // Object.assign(this.siftCliParams, siftCliParamsDefault)
-      // this.image = ''
-      // this.$refs.pictureInput.removeImage()
-      this.triggerEventForPollingOutput()
+      Object.assign(this.siftCliParams, siftCliParamsDefault)
+      this.image = ''
+      this.$refs.pictureInput.removeImage()
+      this.resetScalespace()
     },
     onChange () {
       if (this.$refs.pictureInput.file) {
