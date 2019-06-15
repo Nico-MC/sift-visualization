@@ -87,7 +87,7 @@ export default {
   methods: {
     siftCli_execute (inputImage_name = 'adam1.png') {
       var siftCliParams = this.siftCliParams
-      axios.get('http://localhost:5000/sift_cli', {
+      axios.get('http://localhost:5000/sift_cli/execute', {
         params: {
           inputImage_name: inputImage_name,
           ss_noct: (siftCliParams.ss_noct === '' ? siftCliParams.ss_noct = siftCliParamsDefault.ss_noct : siftCliParams.ss_noct),
@@ -126,7 +126,7 @@ export default {
             'Content-type': 'multipart/form-data'
           }
         }
-        axios.post('http://localhost:5000/sift_cli_upload_image', formData, config)
+        axios.post('http://localhost:5000/sift_cli/upload_image', formData, config)
           .then((res) => {
             var filename = res.data
             if (filename) {

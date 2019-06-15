@@ -20,3 +20,4 @@ yarn-error.log*
 *.sln
 
 backend/static
+__pycache__
