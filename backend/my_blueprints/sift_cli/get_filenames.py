@@ -1,5 +1,5 @@
 import os, re, uuid
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, abort
 
 get_filenames = Blueprint('get_filenames', __name__)
 
@@ -9,6 +9,8 @@ def sift_cli_get_scalespace(filename):
         return list_output_files_of("scalespace")
     elif(filename == 'dog'):
         return list_output_files_of("dog")
+    else:
+        abort(400, 'No such filename')
 
 def list_output_files_of(directory):
     if(directory == 'scalespace'):
