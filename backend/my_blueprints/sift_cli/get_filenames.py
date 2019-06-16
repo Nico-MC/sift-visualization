@@ -26,5 +26,4 @@ def list_output_files_of(directory):
             'scalespace': scalespace,
             'randomUuid': uuid.uuid4()
         }
-        print(scalespaceWithIndex)
         return(jsonify(scalespaceWithIndex))

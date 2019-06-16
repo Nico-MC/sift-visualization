@@ -61,7 +61,6 @@ def sift_cli():
 
 def clear_output_directory():
     try:
-        print(os.path.isdir('/static/scalespace') == False)
         if(os.path.isdir('static/scalespace') == True):
             shutil.rmtree('static/scalespace')
         if(os.path.isdir('static/dog') == True):
