@@ -15,10 +15,9 @@
           <q-tab-panels
             v-model="tab"
             animated
-            dense
-            narrow-indicator
+            class="tab_content"
           >
-            <q-tab-panel class="tab_content" name="scalespace_tab">
+            <q-tab-panel name="scalespace_tab">
               <div v-for="(octave, index) in scalespace" :key="index">
                 <h6 class="octave_number q-title text-h6">
                   Octave: {{ parseInt(index) + 1 }}
@@ -28,6 +27,26 @@
                     v-for="(scale, index) in octave"
                     :key="index"
                     :src="'http://localhost:5000/static/scalespace/' + scale + '?' + randomUuid"
+                    style="width: 300px"
+                    spinner-color="white"
+                  >
+                    <div class="absolute-bottom-right text-subtitle2">
+                      {{ parseInt(index) + 1}}
+                    </div>
+                  </q-img>
+                </div>
+              </div>
+            </q-tab-panel>
+            <q-tab-panel class="tab_content" name="dog_tab">
+              <div v-for="(octave, index) in dogs" :key="index">
+                <h6 class="octave_number q-title text-h6">
+                  Octave: {{ parseInt(index) + 1 }}
+                </h6>
+                <div class="q-gutter-md row items-start">
+                  <q-img
+                    v-for="(dog, index) in octave"
+                    :key="index"
+                    :src="'http://localhost:5000/static/dog/' + dog + '?' + randomUuid"
                     style="width: 300px"
                     spinner-color="white"
                   >
@@ -60,25 +79,42 @@ export default {
   data () {
     return {
       scalespace: {},
+      dogs: {},
       tab: 'scalespace_tab'
     }
   },
   created () {
-    this.$eventBus.$on('getScalespace', () => {
+    this.$eventBus.$on('getScales', () => {
       this.getScalespace().then(function (response) {
         this.scalespace = response.scalespace
         this.randomUuid = response.randomUuid
       }.bind(this))
+      this.getDogs().then(function (response) {
+        this.dogs = response.dogs
+        this.randomUuid = response.randomUuid
+      }.bind(this))
     })
-    this.$eventBus.$on('resetScalespace', () => {
+    this.$eventBus.$on('resetScales', () => {
       this.scalespace = {}
+      this.dogs = {}
     })
   },
   methods: {
     getScalespace () {
       return axios.get('http://localhost:5000/sift_cli/get_filenames/scalespace')
         .then(function (response) {
-          // return response.data
+          var promise = new Promise(function (resolve, reject) {
+            resolve(response.data)
+          })
+          return promise
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
+    getDogs () {
+      return axios.get('http://localhost:5000/sift_cli/get_filenames/dog')
+        .then(function (response) {
           var promise = new Promise(function (resolve, reject) {
             resolve(response.data)
           })
@@ -95,6 +131,7 @@ export default {
 <style media="screen">
   .tab_content {
     padding: 0;
+    width: 100%
   }
 
   .octave_number {

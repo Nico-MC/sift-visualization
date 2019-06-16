@@ -109,11 +109,10 @@ export default {
       })
         .then((res) => {
           console.log('SIFT finished.')
-          this.getScalespace()
+          this.getScales()
         })
         .catch((error) => {
-          // eslint-disable-next-line
-          console.error(error);
+          console.error(error)
         })
     },
     submit () {
@@ -136,16 +135,15 @@ export default {
             }
           })
           .catch((error) => {
-            // eslint-disable-next-line
-            console.error(error);
+            console.error(error)
           })
       } else {
         console.log('Start SIFT with default image (adam1.png) ✨')
         this.siftCli_execute()
       }
     },
-    getScalespace () {
-      this.$eventBus.$emit('getScalespace')
+    getScales () {
+      this.$eventBus.$emit('getScales')
     },
     resetScalespace () {
       this.$eventBus.$emit('resetScalespace')

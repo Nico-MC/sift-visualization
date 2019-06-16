@@ -7,7 +7,7 @@ get_filenames = Blueprint('get_filenames', __name__)
 def sift_cli_get_scalespace(filename):
     if(filename == 'scalespace'):
         return list_output_files_of("scalespace")
-    if(filename == 'dog'):
+    elif(filename == 'dog'):
         return list_output_files_of("dog")
 
 def list_output_files_of(directory):
@@ -16,14 +16,30 @@ def list_output_files_of(directory):
         octaveList = []
         scalespace = {}
         for file in filelist:
-            octave = re.search('(?<=o).*(?=_)', file)
+            octave = re.search('(?<=_o).*(?=_)', file)
             if(scalespace.get(octave.group()) == None):
                 scalespace[octave.group()] = [file]
             else:
                 scalespace[octave.group()].append(file)
             octaveList.append(octave.group(0))
-        scalespaceWithIndex = {
+        scalespaceWithUniqueKey = {
             'scalespace': scalespace,
             'randomUuid': uuid.uuid4()
         }
-        return(jsonify(scalespaceWithIndex))
+        return(jsonify(scalespaceWithUniqueKey))
+    elif(directory == 'dog'):
+        filelist = os.listdir("static/dog")
+        octaveList = []
+        dogs = {}
+        for file in filelist:
+            octave = re.search('(?<=_o).*(?=_)', file)
+            if(dogs.get(octave.group()) == None):
+                dogs[octave.group()] = [file]
+            else:
+                dogs[octave.group()].append(file)
+            octaveList.append(octave.group(0))
+        dogsWithUniqueKey = {
+            'dogs': dogs,
+            'randomUuid': uuid.uuid4()
+        }
+        return(jsonify(dogsWithUniqueKey))
