@@ -47,7 +47,7 @@ def sift_cli():
         sift_cli_params.extend(["-verb_keys", "1"])   # flag to output the intermediary sets of keypoints
     if(verb_ss == "1"):
         sift_cli_params.extend(["-verb_ss", "1"])   # flag to output the scalespaces (Gaussian and DoG)
-        res = clear_output_directory()
+        res = check_output_directory()
 
     # ---Act---
     process = subprocess.Popen(sift_cli_params, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -59,16 +59,16 @@ def sift_cli():
         return stdout
 
 
-def clear_output_directory():
+def check_output_directory():
     try:
         if(os.path.isdir('static/scalespace') == True):
             shutil.rmtree('static/scalespace')
         if(os.path.isdir('static/dog') == True):
             shutil.rmtree('static/dog')
         if(os.path.isdir('static/scalespace') == False):
-            os.mkdir('static/scalespace')
+            os.makedirs('static/scalespace')
         if(os.path.isdir('static/dog') == False):
-            os.mkdir('static/dog')
+            os.makedirs('static/dog')
         return("Output directory cleared.")
     except Exception as e:
         return(e)
