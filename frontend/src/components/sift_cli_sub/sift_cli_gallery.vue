@@ -2,16 +2,16 @@
   <div id="scrollPoint" class="octave_container">
     <div class="q-pa-md">
       <div class="q-gutter-md">
+        <div v-show="Object.keys(scalespace).length > 0" class="q-gutter-md" style="max-width: 400px">
+          <q-tabs
+          v-model="currentTab"
+          class="text-teal"
+          >
+          <q-tab name="scalespace_tab" icon="blur_circular" label="Scalespace"/>
+          <q-tab name="dog_tab" icon="brightness_1" label="Difference of Gaussian" />
+        </q-tabs>
+      </div>
         <div class="q-gutter-md row items-start">
-          <div v-show="Object.keys(scalespace).length > 0" class="q-gutter-y-md" style="max-width: 400px">
-            <q-tabs
-              v-model="currentTab"
-              class="text-teal"
-            >
-              <q-tab name="scalespace_tab" icon="blur_circular" label="Scalespace"/>
-              <q-tab name="dog_tab" icon="brightness_1" label="Difference of Gaussian" />
-            </q-tabs>
-          </div>
           <div class="tab_content" v-show="currentTab === 'scalespace_tab'">
             <div v-for="(octave, index) in scalespace" :key="'scalespace_' + index">
               <h6 class="octave_number q-title text-h6">
@@ -86,9 +86,10 @@ export default {
         this.dogs = response.dogs
       }.bind(this))
     })
-    this.$eventBus.$on('resetScales', () => {
+    this.$eventBus.$on('resetScalespace', () => {
       this.scalespace = {}
       this.dogs = {}
+      console.log('asdas')
     })
   },
   methods: {
@@ -115,12 +116,6 @@ export default {
         .catch(function (error) {
           console.log(error)
         })
-    },
-    scroll () {
-      console.log(111)
-      window.scroll({
-        top: document.getElementById('scrollPoint').offsetTop
-      })
     }
   }
 }

@@ -14,7 +14,7 @@
             buttonClass="btn"
             :customStrings="{
               upload: '<h1>Bummer!</h1>',
-              drag: 'Drag a 😺 input image',
+              drag: 'Input image</br>(optional)',
               change: 'Change image'
             }">
           </picture-input>
@@ -86,6 +86,7 @@ export default {
   },
   methods: {
     siftCli_execute (inputImage_name = 'adam1.png') {
+      this.showLoader() // Beginn
       var siftCliParams = this.siftCliParams
       axios.get('http://localhost:5000/sift_cli/execute', {
         params: {
@@ -110,6 +111,7 @@ export default {
         .then((res) => {
           console.log('SIFT finished.')
           this.getScales()
+          this.hideLoader() // Finish
         })
         .catch((error) => {
           console.error(error)
@@ -141,6 +143,12 @@ export default {
         console.log('Start SIFT with default image (adam1.png) ✨')
         this.siftCli_execute()
       }
+    },
+    showLoader () {
+      this.$eventBus.$emit('showLoader')
+    },
+    hideLoader () {
+      this.$eventBus.$emit('hideLoader')
     },
     getScales () {
       this.$eventBus.$emit('getScales')
