@@ -4,7 +4,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 app.config.from_object(__name__)
-app.config['UPLOAD_FOLDER'] = 'demo_SIFT/assets'
+app.config['ASSETS_FOLDER'] = 'demo_SIFT/assets'
 app.config['ALLOWED_EXTENSIONS'] = set(['png'])
 
 # enable CORS

@@ -14,7 +14,7 @@ def sift_cli_upload_image():
             abort(400, 'No selected file')
         elif(file and allowed_file(request.files['file'].filename)):
             file = request.files['file']
-            file.save(os.path.join(app.config["UPLOAD_FOLDER"], secure_filename(file.filename)))
+            file.save(os.path.join(app.config["ASSETS_FOLDER"], secure_filename(file.filename)))
             return file.filename
         else:
             abort(400, 'Only .png images are allowed')

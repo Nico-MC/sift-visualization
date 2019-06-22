@@ -2,13 +2,14 @@
 import os, subprocess, shutil, re
 from flask import request, Blueprint, current_app as app
 from werkzeug.utils import secure_filename
+from ..draw_keypoints import draw_the_keypoints
 
 execute = Blueprint('execute', __name__)
 
 @execute.route('/execute', methods=['GET'])
 def sift_cli():
     # ---Arrange---
-    inputImage_name = app.config["UPLOAD_FOLDER"] + '/' + request.args.get('inputImage_name')
+    inputImage_name = app.config["ASSETS_FOLDER"] + '/' + request.args.get('inputImage_name')
     ss_noct = request.args.get('ss_noct')
     ss_nspo = request.args.get('ss_nspo')
     ss_dmin = request.args.get('ss_dmin')
@@ -51,6 +52,7 @@ def sift_cli():
 
     # ---Act---
     process = subprocess.Popen(sift_cli_params, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    draw_the_keypoints(inputImage_name)
     stdout, stderr = process.communicate()
 
     if(stderr.decode("utf-8") != ''):

@@ -1,22 +1,23 @@
 # Visualization App for SIFT
 
 > WIP
-  - Set up endpoints (for api)
+  - [x] Set up endpoints (for api)
 
 
 # Get started
 - **Use Ubuntu Bash on Windows** (linux subsystem)
 - Install python 3.6.7 (with pip)
-- Set the environment variables - if not already done - for:
-  - python (located at ../AppData/Local/Programs/Python/Python37-32)
-  - pip (located at ../AppData/Local/Programs/Python/Python37-32/Scripts)
-- Install flask (run 'pip install -U Flask')
+- Set the environment variables - if not already done - for python & pip (first time skip this)
+- Install flask with pip (run 'pip3 install -U Flask')
+- Install @quasar/cli globally (1.0.0-rc.2)
+  - Make sure its working (just type 'quasar')
 - Clone git repository from https://github.com/Nico-MC/sift-visualization
 
 # Starting backend (flask)
 - Go to backend directory
 - Install pip dependencies ('pip install -r requirements.txt')
 - Run 'FLASK_APP=index.py flask run' or 'python index.py'
+  - Using Flask produces .pyc files
 
 # Starting frontend (vuejs)
 - Go to frontend directory
