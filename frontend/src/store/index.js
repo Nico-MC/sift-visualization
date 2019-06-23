@@ -14,6 +14,9 @@ export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
       example
+    },
+    state: {
+      image: ''
     }
   })
 

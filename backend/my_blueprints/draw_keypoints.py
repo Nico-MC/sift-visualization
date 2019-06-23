@@ -10,6 +10,10 @@
 
 import cv2, numpy as np
 
-def draw_the_keypoints(inputImage_name):
-    img = cv2.imread('demo_SIFT/assets/Emote1.png')
-    print(img)
+def draw_keypoints(inputImage_name):
+    img = cv2.imread(inputImage_name)
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    sift = cv2.xfeatures2d.SIFT_create()
+    kp = sift.detect(gray,None)
+    for point in kp:
+        print(point.pt)

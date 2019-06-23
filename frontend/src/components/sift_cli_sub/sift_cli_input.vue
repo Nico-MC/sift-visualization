@@ -85,12 +85,12 @@ export default {
     }
   },
   methods: {
-    siftCli_execute (inputImage_name = 'adam1.png') {
+    siftCli_execute (inputImageName = 'adam1.png') {
       this.showLoader() // Beginn
       var siftCliParams = this.siftCliParams
       axios.get('http://localhost:5000/sift_cli/execute', {
         params: {
-          inputImage_name: inputImage_name,
+          inputImageName: inputImageName,
           ss_noct: (siftCliParams.ss_noct === '' ? siftCliParams.ss_noct = siftCliParamsDefault.ss_noct : siftCliParams.ss_noct),
           ss_nspo: (siftCliParams.ss_nspo === '' ? siftCliParams.ss_nspo = siftCliParamsDefault.ss_nspo : siftCliParams.ss_nspo),
           ss_dmin: (siftCliParams.ss_dmin === '' ? siftCliParams.ss_dmin = siftCliParamsDefault.ss_dmin : siftCliParams.ss_dmin),
@@ -110,8 +110,9 @@ export default {
       })
         .then((res) => {
           console.log('SIFT finished.')
+          this.$store.state.image = inputImageName
           this.getScales()
-          this.hideLoader() // Finish
+          this.hideLoader()
         })
         .catch((error) => {
           console.error(error)
@@ -153,14 +154,11 @@ export default {
     getScales () {
       this.$eventBus.$emit('getScales')
     },
-    resetScalespace () {
-      this.$eventBus.$emit('resetScalespace')
-    },
     reset () {
       Object.assign(this.siftCliParams, siftCliParamsDefault)
       this.image = ''
       this.$refs.pictureInput.removeImage()
-      this.resetScalespace()
+      this.$eventBus.$emit('resetData')
     },
     onChange () {
       if (this.$refs.pictureInput.file) {

@@ -2,14 +2,14 @@
 import os, subprocess, shutil, re
 from flask import request, Blueprint, current_app as app
 from werkzeug.utils import secure_filename
-from ..draw_keypoints import draw_the_keypoints
+from .handle_keypoints import handle_keypoints
 
 execute = Blueprint('execute', __name__)
 
 @execute.route('/execute', methods=['GET'])
 def sift_cli():
     # ---Arrange---
-    inputImage_name = app.config["ASSETS_FOLDER"] + '/' + request.args.get('inputImage_name')
+    inputImage_path = app.config["ASSETS_FOLDER"] + '/' + request.args.get('inputImageName')
     ss_noct = request.args.get('ss_noct')
     ss_nspo = request.args.get('ss_nspo')
     ss_dmin = request.args.get('ss_dmin')
@@ -28,7 +28,7 @@ def sift_cli():
 
     sift_cli_params = \
     [
-        "./demo_SIFT/bin/sift_cli", inputImage_name,     # algorithm executable and input picture
+        "./demo_SIFT/bin/sift_cli", inputImage_path,     # algorithm executable and input picture
         "-ss_noct", ss_noct,    # number of octaves
         "-ss_nspo", ss_nspo,    # number of scales per octave
         "-ss_dmin", ss_dmin,    # the sampling distance in the first octave
@@ -52,25 +52,22 @@ def sift_cli():
 
     # ---Act---
     process = subprocess.Popen(sift_cli_params, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    draw_the_keypoints(inputImage_name)
     stdout, stderr = process.communicate()
 
     if(stderr.decode("utf-8") != ''):
         return stderr
     elif(stdout.decode("utf-8") != ''):
-        return stdout
+        return handle_keypoints(stdout.decode("utf-8"), inputImage_path)
 
 
 def check_output_directory():
     try:
-        if(os.path.isdir('static/scalespace') == True):
-            shutil.rmtree('static/scalespace')
-        if(os.path.isdir('static/dog') == True):
-            shutil.rmtree('static/dog')
-        if(os.path.isdir('static/scalespace') == False):
-            os.makedirs('static/scalespace')
-        if(os.path.isdir('static/dog') == False):
-            os.makedirs('static/dog')
+        shutil.rmtree('static/scalespace', ignore_errors = True, onerror = None)
+        shutil.rmtree('static/dog', ignore_errors = True, onerror = None)
+        shutil.rmtree('static/keypoints', ignore_errors = True, onerror = None)
+        os.makedirs('static/scalespace')
+        os.makedirs('static/dog')
+        os.makedirs('static/keypoints')
         return("Output directory cleared.")
     except Exception as e:
         return(e)

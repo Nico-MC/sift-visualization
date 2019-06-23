@@ -2,13 +2,14 @@
   <div id="scrollPoint" class="octave_container">
     <div class="q-pa-md">
       <div class="q-gutter-md">
-        <div v-show="Object.keys(scalespace).length > 0" class="q-gutter-md" style="max-width: 400px">
+        <div v-show="Object.keys(scalespace).length > 0" class="q-gutter-md" style="max-width: 600px">
           <q-tabs
           v-model="currentTab"
           class="text-teal"
           >
           <q-tab name="scalespace_tab" icon="blur_circular" label="Scalespace"/>
           <q-tab name="dog_tab" icon="brightness_1" label="Difference of Gaussian" />
+          <q-tab name="keypoints_tab" icon="brightness_1" label="Keypoints" />
         </q-tabs>
       </div>
         <div class="q-gutter-md row items-start">
@@ -52,6 +53,21 @@
               </div>
             </div>
           </div>
+          <div class="tab_content" v-if="$store.state.image != ''" v-show="currentTab === 'keypoints_tab'">
+            <div>
+              <h6 class="q-title text-h6">
+                Keypoints
+              </h6>
+              <div class="q-gutter-md row items-start">
+                <q-img
+                  :src="'http://localhost:5000/static/keypoints/' + $store.state.image"
+                  style="width: 600px"
+                  spinner-color="white"
+                >
+                </q-img>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -86,10 +102,11 @@ export default {
         this.dogs = response.dogs
       }.bind(this))
     })
-    this.$eventBus.$on('resetScalespace', () => {
+    this.$eventBus.$on('resetData', () => {
       this.scalespace = {}
       this.dogs = {}
-      console.log('asdas')
+      this.$store.state.image = ''
+      this.currentTab = 'scalespace_tab'
     })
   },
   methods: {
