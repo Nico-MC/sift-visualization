@@ -85,12 +85,12 @@ export default {
     }
   },
   methods: {
-    siftCli_execute (inputImageName = 'adam1.png') {
-      this.showLoader() // Beginn
+    siftCli_execute (inputImage_name = 'adam1.png') {
+      this.$eventBus.$emit('showLoader') // Beginn
       var siftCliParams = this.siftCliParams
       axios.get('http://localhost:5000/sift_cli/execute', {
         params: {
-          inputImageName: inputImageName,
+          inputImage_name: inputImage_name,
           ss_noct: (siftCliParams.ss_noct === '' ? siftCliParams.ss_noct = siftCliParamsDefault.ss_noct : siftCliParams.ss_noct),
           ss_nspo: (siftCliParams.ss_nspo === '' ? siftCliParams.ss_nspo = siftCliParamsDefault.ss_nspo : siftCliParams.ss_nspo),
           ss_dmin: (siftCliParams.ss_dmin === '' ? siftCliParams.ss_dmin = siftCliParamsDefault.ss_dmin : siftCliParams.ss_dmin),
@@ -110,9 +110,8 @@ export default {
       })
         .then((res) => {
           console.log('SIFT finished.')
-          this.$store.state.image = inputImageName
-          this.getScales()
-          this.hideLoader()
+          this.$eventBus.$emit('buildGallery', inputImage_name)
+          this.$eventBus.$emit('hideLoader')
         })
         .catch((error) => {
           console.error(error)
@@ -144,15 +143,6 @@ export default {
         console.log('Start SIFT with default image (adam1.png) ✨')
         this.siftCli_execute()
       }
-    },
-    showLoader () {
-      this.$eventBus.$emit('showLoader')
-    },
-    hideLoader () {
-      this.$eventBus.$emit('hideLoader')
-    },
-    getScales () {
-      this.$eventBus.$emit('getScales')
     },
     reset () {
       Object.assign(this.siftCliParams, siftCliParamsDefault)

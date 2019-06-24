@@ -26,4 +26,4 @@ def draw_keypoints(keypoints, inputImage_path):
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
     img = cv.drawKeypoints(gray, keypoints, img)
-    cv.imwrite("./static/keypoints/" + inputImage_path.split("/")[-1].split(".png")[0] + ".png", img)
+    cv.imwrite("./static/keypoints/" + inputImage_path.split("/")[-1].split(".png")[0] + ".jpg", img)

@@ -9,7 +9,7 @@ execute = Blueprint('execute', __name__)
 @execute.route('/execute', methods=['GET'])
 def sift_cli():
     # ---Arrange---
-    inputImage_path = app.config["ASSETS_FOLDER"] + '/' + request.args.get('inputImageName')
+    inputImage_path = app.config["ASSETS_FOLDER"] + '/' + request.args.get('inputImage_name')
     ss_noct = request.args.get('ss_noct')
     ss_nspo = request.args.get('ss_nspo')
     ss_dmin = request.args.get('ss_dmin')

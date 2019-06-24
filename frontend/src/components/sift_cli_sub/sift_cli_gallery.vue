@@ -1,5 +1,5 @@
 <template>
-  <div id="scrollPoint" class="octave_container">
+  <div class="octave_container">
     <div class="q-pa-md">
       <div class="q-gutter-md">
         <div v-show="Object.keys(scalespace).length > 0" class="q-gutter-md" style="max-width: 600px">
@@ -53,14 +53,14 @@
               </div>
             </div>
           </div>
-          <div class="tab_content" v-if="$store.state.image != ''" v-show="currentTab === 'keypoints_tab'">
+          <div class="tab_content" v-show="currentTab === 'keypoints_tab'">
             <div>
               <h6 class="q-title text-h6">
                 Keypoints
               </h6>
               <div class="q-gutter-md row items-start">
                 <q-img
-                  :src="'http://localhost:5000/static/keypoints/' + $store.state.image"
+                  :src="keypoints"
                   style="width: 600px"
                   spinner-color="white"
                 >
@@ -88,11 +88,12 @@ export default {
     return {
       scalespace: {},
       dogs: {},
+      keypoints: '',
       currentTab: 'scalespace_tab'
     }
   },
   created () {
-    this.$eventBus.$on('getScales', () => {
+    this.$eventBus.$on('buildGallery', (inputImageName) => {
       this.getScalespace().then(function (response) {
         this.scalespace_randomUuid = response.randomUuid
         this.scalespace = response.scalespace
@@ -101,11 +102,16 @@ export default {
         this.dogs_randomUuid = response.randomUuid
         this.dogs = response.dogs
       }.bind(this))
+      this.getKeypoints(inputImageName).then(function (response) {
+        var keypointsRandomUuid = response.randomUuid
+        var keypoints = response.keypoints
+        this.keypoints = 'http://localhost:5000/static/keypoints/' + keypoints + '?' + keypointsRandomUuid
+      }.bind(this))
     })
     this.$eventBus.$on('resetData', () => {
       this.scalespace = {}
       this.dogs = {}
-      this.$store.state.image = ''
+      this.keypoints = ''
       this.currentTab = 'scalespace_tab'
     })
   },
@@ -124,6 +130,18 @@ export default {
     },
     getDogs () {
       return axios.get('http://localhost:5000/sift_cli/get_filenames/dog')
+        .then(function (response) {
+          var promise = new Promise(function (resolve, reject) {
+            resolve(response.data)
+          })
+          return promise
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
+    getKeypoints (inputImageName) {
+      return axios.get('http://localhost:5000/sift_cli/get_keypoints/' + inputImageName)
         .then(function (response) {
           var promise = new Promise(function (resolve, reject) {
             resolve(response.data)
