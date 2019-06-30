@@ -115,6 +115,7 @@ export default {
         })
         .catch((error) => {
           console.error(error)
+          this.$eventBus.$emit('hideLoader')
         })
     },
     submit () {
