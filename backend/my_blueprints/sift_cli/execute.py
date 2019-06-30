@@ -44,10 +44,10 @@ def sift_cli():
         "-descr_lambda", descr_lambda,    # sets how local the descriptor is
     ]
     # labels for output
-    if(verb_keys == "1"):
-        sift_cli_params.extend(["-verb_keys", "1"])   # flag to output the intermediary sets of keypoints
-    if(verb_ss == "1"):
-        sift_cli_params.extend(["-verb_ss", "1"])   # flag to output the scalespaces (Gaussian and DoG)
+    if(verb_keys == "2"):
+        sift_cli_params.extend(["-verb_keys", verb_keys])   # flag to output the intermediary sets of keypoints
+    if(verb_ss == "2"):
+        sift_cli_params.extend(["-verb_ss", verb_keys])   # flag to output the scalespaces (Gaussian and DoG)
         res = check_output_directory()
 
     # ---Act---

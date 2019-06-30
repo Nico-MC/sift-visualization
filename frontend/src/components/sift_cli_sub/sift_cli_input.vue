@@ -70,8 +70,8 @@ var siftCliParamsDefault = {
   descr_nhist: '4', // number of histograms per dimension
   descr_nori: '8', // number of bins in each histogram
   descr_lambda: '6', // sets how local the descriptor is
-  verb_keys: '1', // flag to output the intermediary sets of keypoints
-  verb_ss: '1' // flag to output the scalespaces (Gaussian and DoG)
+  verb_keys: '2', // flag to output the intermediary sets of keypoints
+  verb_ss: '2' // flag to output the scalespaces (Gaussian and DoG)
 }
 
 export default {
@@ -110,6 +110,7 @@ export default {
       })
         .then((res) => {
           console.log('SIFT finished.')
+          console.log(res.data)
           this.$eventBus.$emit('buildGallery', inputImage_name)
           this.$eventBus.$emit('hideLoader')
         })
