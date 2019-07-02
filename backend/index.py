@@ -14,4 +14,4 @@ from my_blueprints.blueprints_loader import *
 register_blueprints(app)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug = True)

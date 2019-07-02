@@ -1,13 +1,13 @@
 /*
 IPOL SIFT
-Copyright (C) 2014, Ives Rey-Otero, CMLA ENS Cachan 
+Copyright (C) 2014, Ives Rey-Otero, CMLA ENS Cachan
 <ives.rey-otero@cmla.ens-cachan.fr>
 
 Version 20140911 (September 11th, 2014)
 
 This C ANSI source code is related to the IPOL publication
 
-    [1] "Anatomy of the SIFT Method." 
+    [1] "Anatomy of the SIFT Method."
         I. Rey Otero  and  M. Delbracio
         Image Processing Online, 2013.
         http://www.ipol.im/pub/algo/rd_anatomy_sift/
@@ -21,7 +21,7 @@ An IPOL demo is available at
 
 == Patent Warning and License =================================================
 
-The SIFT method is patented 
+The SIFT method is patented
 
     [2] "Method and apparatus for identifying scale invariant features
       in an image."
@@ -30,7 +30,7 @@ The SIFT method is patented
         Filing date: Mar 6, 2000
         Issue date: Mar 23, 2004
         Application number: 09/519,89
-  
+
  These source codes are made available for the exclusive aim of serving as
  scientific tool to verify the soundness and completeness of the algorithm
  description. Compilation, execution and redistribution of this file may
@@ -184,10 +184,12 @@ void sift_free_keypoints(struct sift_keypoints* keys)
 void fprintf_one_keypoint(FILE* f, const struct keypoint* k, int n_descr, int n_bins, int flag)
 {
     // coordinates
-    fprintf(f,"%f %f %f %f ", k->x
-                            , k->y
-                            , k->sigma
-                            , k->theta);
+    fprintf(f,"%f %f %f %f %i %i", k->x
+                                 , k->y
+                                 , k->sigma
+                                 , k->theta
+                                 , k->o
+                                 , k->s);
 
     if (flag>0){
         // descriptor

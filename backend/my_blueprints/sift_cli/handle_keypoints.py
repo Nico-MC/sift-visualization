@@ -12,14 +12,15 @@ def handle_keypoints(features_string, inputImage_path):
         octa = feature.split(' ')[4]
         sca = feature.split(' ')[5]
         keypoints.append(cv.KeyPoint(x = float(x), y = float(y)
-            , _size = 2
-            , _angle = 0
+            , _size = float(sigma) * 2
+            , _angle = np.degrees(float(theta)) * -2
             , _response = 0
             , _octave = 0
             , _class_id = -1))
+        print(x, y, float(theta))
     draw_keypoints(keypoints, inputImage_path)
 
-    return jsonify(features[0])
+    return jsonify(features)
 
 def draw_keypoints(keypoints, inputImage_path):
     img = cv.imread(inputImage_path)

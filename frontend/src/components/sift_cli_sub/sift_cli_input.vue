@@ -35,21 +35,14 @@
           <q-input v-model="siftCliParams.descr_nori" filled type="text" hint="number of bins in each histogram" />
           <q-input v-model="siftCliParams.descr_lambda" filled type="text" hint="sets how local the descriptor is" />
         </div>
-        <div class="q-gutter-md row items-start">
-          <q-btn label="Start Sift Algorithm" type="submit" color="primary" />
+        <div class="sift_cli_buttons q-gutter-md row items-start">
           <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+          <q-btn label="Start Sift Algorithm" type="submit" color="primary" />
         </div>
       </form>
     </div>
   </div>
 </template>
-
-<style>
-  .input_container .items-start {
-    display: -webkit-inline-flex !important;
-    padding-bottom: 35px !important;
-  }
-</style>
 
 <script>
 import { QInput } from 'quasar'
@@ -162,3 +155,17 @@ export default {
   }
 }
 </script>
+
+<style>
+  .input_container .items-start {
+    display: -webkit-inline-flex !important;
+    padding-bottom: 35px !important;
+  }
+
+  .sift_cli_buttons {
+    position: fixed;
+    right: 0;
+    top: 0;
+    margin-right: 32px;
+  }
+</style>

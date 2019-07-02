@@ -28,5 +28,7 @@
 # Known bugs
 - Windows (with Ubuntu bash):
   - Disable firewall or/and antivirus
+- Segmentation fault
+  - Use 'sudo apt install python3-opencv'
 
 *For questions don't hesitate to contact me: niconoster@t-online.de*

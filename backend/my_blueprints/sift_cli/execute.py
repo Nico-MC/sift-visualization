@@ -46,7 +46,7 @@ def sift_cli():
     # labels for output
     if(verb_keys == "2"):
         sift_cli_params.extend(["-verb_keys", verb_keys])   # flag to output the intermediary sets of keypoints
-    if(verb_ss == "2"):
+    if(verb_ss == "1"):
         sift_cli_params.extend(["-verb_ss", verb_keys])   # flag to output the scalespaces (Gaussian and DoG)
         res = check_output_directory()
 
@@ -57,7 +57,27 @@ def sift_cli():
     if(stderr.decode("utf-8") != ''):
         return stderr
     elif(stdout.decode("utf-8") != ''):
-        return handle_keypoints(stdout.decode("utf-8"), inputImage_path)
+        features_string = stdout.decode("utf-8")
+        file = open("static/features.txt", "a")
+        file.write(features_string)
+        file.close()
+
+        process = subprocess.Popen(["./demo_SIFT/bin/anatomy2lowe", "static/features.txt"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+        if(stderr.decode("utf-8") != ''):
+            return stderr
+        elif(stdout.decode("utf-8") != ''):
+            features2lowe_string = stdout.decode("utf-8")
+            file = open("static/features2lowe.txt", "a")
+            file.write(stdout.decode("utf-8"))
+            file.close()
+        return handle_keypoints(features_string, inputImage_path)
+
+    # # ---Act---
+    # print(stdout)
+    # process = subprocess.Popen(["./demo_SIFT/bin/anatomy2lowe", "static/test.txt"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # stdout, stderr = process.communicate()
+    # return handle_keypoints(stdout.decode("utf-8"), inputImage_path)
 
 
 def check_output_directory():
