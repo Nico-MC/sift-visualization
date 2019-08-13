@@ -37,7 +37,7 @@
         </div>
         <div class="sift_cli_buttons q-gutter-md row items-start">
           <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
-          <q-btn label="Start Sift Algorithm" type="submit" color="primary" />
+          <q-btn id="sift_cli_button_execute" label="Start Sift Algorithm" type="submit" color="primary" />
         </div>
       </form>
     </div>
@@ -63,8 +63,8 @@ var siftCliParamsDefault = {
   descr_nhist: '4', // number of histograms per dimension
   descr_nori: '8', // number of bins in each histogram
   descr_lambda: '6', // sets how local the descriptor is
-  verb_keys: '2', // flag to output the intermediary sets of keypoints
-  verb_ss: '2' // flag to output the scalespaces (Gaussian and DoG)
+  verb_keys: '1', // flag to output the intermediary sets of keypoints
+  verb_ss: '1' // flag to output the scalespaces (Gaussian and DoG)
 }
 
 export default {
@@ -78,12 +78,14 @@ export default {
     }
   },
   methods: {
-    siftCli_execute (inputImage_name = 'adam1.png') {
+    siftCli_execute (inputImageName = 'adam1.png') {
       this.$eventBus.$emit('showLoader') // Beginn
+      this.$store.inputImageName = inputImageName.split('.').slice(0, -1).join('.')
+      document.getElementById('sift_cli_button_execute').disabled = true
       var siftCliParams = this.siftCliParams
       axios.get('http://localhost:5000/sift_cli/execute', {
         params: {
-          inputImage_name: inputImage_name,
+          inputImageName: inputImageName,
           ss_noct: (siftCliParams.ss_noct === '' ? siftCliParams.ss_noct = siftCliParamsDefault.ss_noct : siftCliParams.ss_noct),
           ss_nspo: (siftCliParams.ss_nspo === '' ? siftCliParams.ss_nspo = siftCliParamsDefault.ss_nspo : siftCliParams.ss_nspo),
           ss_dmin: (siftCliParams.ss_dmin === '' ? siftCliParams.ss_dmin = siftCliParamsDefault.ss_dmin : siftCliParams.ss_dmin),
@@ -101,15 +103,16 @@ export default {
           verb_ss: (siftCliParams.verb_ss === '' ? siftCliParams.verb_ss = siftCliParamsDefault.verb_ss : siftCliParams.verb_ss)
         }
       })
-        .then((res) => {
+        .then(() => {
           console.log('SIFT finished.')
-          console.log(res.data)
-          this.$eventBus.$emit('buildGallery', inputImage_name)
+          this.$eventBus.$emit('buildGallery', inputImageName)
           this.$eventBus.$emit('hideLoader')
+          document.getElementById('sift_cli_button_execute').disabled = false
         })
         .catch((error) => {
           console.error(error)
           this.$eventBus.$emit('hideLoader')
+          document.getElementById('sift_cli_button_execute').disabled = false
         })
     },
     submit () {
@@ -143,7 +146,8 @@ export default {
       Object.assign(this.siftCliParams, siftCliParamsDefault)
       this.image = ''
       this.$refs.pictureInput.removeImage()
-      this.$eventBus.$emit('resetData')
+      // Triggers an event in sift_cli_gallery to reset the drawings from DOM
+      this.$eventBus.$emit('resetGalleryData')
     },
     onChange () {
       if (this.$refs.pictureInput.file) {

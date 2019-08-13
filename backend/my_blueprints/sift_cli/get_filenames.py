@@ -32,7 +32,8 @@ def get_output_files_of(directory):
         for file in filelist:
             octave = re.search('(?<=_o).*(?=_)', file)
             if(scalespace.get(octave.group()) == None):
-                scalespace[octave.group()] = [file]
+                # scalespace[octave.group()] = [file] // We don't need the first (supporting) scale
+                scalespace[octave.group()] = []
             else:
                 scalespace[octave.group()].append(file)
             octaveList.append(octave.group(0))

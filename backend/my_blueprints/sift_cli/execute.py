@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import os, subprocess, shutil, re
-from flask import request, Blueprint, current_app as app
+from flask import request, Blueprint, current_app as app, abort
 from werkzeug.utils import secure_filename
 from .handle_keypoints import handle_keypoints
 
@@ -9,7 +9,7 @@ execute = Blueprint('execute', __name__)
 @execute.route('/execute', methods=['GET'])
 def sift_cli():
     # ---Arrange---
-    inputImage_path = app.config["ASSETS_FOLDER"] + '/' + request.args.get('inputImage_name')
+    inputImagePath = app.config["ASSETS_FOLDER"] + '/' + request.args.get('inputImageName')
     ss_noct = request.args.get('ss_noct')
     ss_nspo = request.args.get('ss_nspo')
     ss_dmin = request.args.get('ss_dmin')
@@ -28,7 +28,7 @@ def sift_cli():
 
     sift_cli_params = \
     [
-        "./demo_SIFT/bin/sift_cli", inputImage_path,     # algorithm executable and input picture
+        "./demo_SIFT/bin/sift_cli", inputImagePath,     # algorithm executable and input picture
         "-ss_noct", ss_noct,    # number of octaves
         "-ss_nspo", ss_nspo,    # number of scales per octave
         "-ss_dmin", ss_dmin,    # the sampling distance in the first octave
@@ -44,11 +44,11 @@ def sift_cli():
         "-descr_lambda", descr_lambda,    # sets how local the descriptor is
     ]
     # labels for output
-    if(verb_keys == "2"):
+    res = check_output_directory()
+    if(verb_keys == "1"):
         sift_cli_params.extend(["-verb_keys", verb_keys])   # flag to output the intermediary sets of keypoints
     if(verb_ss == "1"):
         sift_cli_params.extend(["-verb_ss", verb_keys])   # flag to output the scalespaces (Gaussian and DoG)
-        res = check_output_directory()
 
     # ---Act---
     process = subprocess.Popen(sift_cli_params, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -58,26 +58,21 @@ def sift_cli():
         return stderr
     elif(stdout.decode("utf-8") != ''):
         features_string = stdout.decode("utf-8")
-        file = open("static/features.txt", "a")
+        file = open("static/keypoints/features.txt", "a")
         file.write(features_string)
         file.close()
 
-        process = subprocess.Popen(["./demo_SIFT/bin/anatomy2lowe", "static/features.txt"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process = subprocess.Popen(["./demo_SIFT/bin/anatomy2lowe", "static/keypoints/features.txt"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
         if(stderr.decode("utf-8") != ''):
             return stderr
         elif(stdout.decode("utf-8") != ''):
             features2lowe_string = stdout.decode("utf-8")
-            file = open("static/features2lowe.txt", "a")
+            file = open("static/keypoints/features2lowe.txt", "a")
             file.write(stdout.decode("utf-8"))
             file.close()
-        return handle_keypoints(features_string, inputImage_path)
-
-    # # ---Act---
-    # print(stdout)
-    # process = subprocess.Popen(["./demo_SIFT/bin/anatomy2lowe", "static/test.txt"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    # stdout, stderr = process.communicate()
-    # return handle_keypoints(stdout.decode("utf-8"), inputImage_path)
+            return handle_keypoints(features2lowe_string, inputImagePath)
+        abort(400, "Can't convert keypoints by execute features2lowe")
 
 
 def check_output_directory():
@@ -88,6 +83,5 @@ def check_output_directory():
         os.makedirs('static/scalespace')
         os.makedirs('static/dog')
         os.makedirs('static/keypoints')
-        return("Output directory cleared.")
     except Exception as e:
         return(e)

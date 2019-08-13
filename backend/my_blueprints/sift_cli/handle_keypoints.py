@@ -13,11 +13,10 @@ def handle_keypoints(features_string, inputImage_path):
         sca = feature.split(' ')[5]
         keypoints.append(cv.KeyPoint(x = float(x), y = float(y)
             , _size = float(sigma) * 2
-            , _angle = np.degrees(float(theta)) * -2
+            , _angle = np.degrees(float(theta))
             , _response = 0
             , _octave = 0
             , _class_id = -1))
-        print(x, y, float(theta))
     draw_keypoints(keypoints, inputImage_path)
 
     return jsonify(features)
@@ -35,4 +34,4 @@ def draw_keypoints(keypoints, inputImage_path):
     cv.imwrite("./static/keypoints/" + inputImage_path.split("/")[-1].split(".png")[0] + ".jpg", img)
 
     img2 = cv.drawKeypoints(gray2, kp, img2, flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-    cv.imwrite("./static/keypoints/" + inputImage_path.split("/")[-1].split(".png")[0] + "2.jpg", img2)
+    cv.imwrite("./static/keypoints/" + inputImage_path.split("/")[-1].split(".png")[0] + "_cv.jpg", img2)

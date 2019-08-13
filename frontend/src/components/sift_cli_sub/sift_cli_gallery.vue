@@ -1,95 +1,64 @@
 <template>
-  <div class="octave_container">
-    <div class="q-pa-md">
-      <div class="q-gutter-md">
-        <div v-show="Object.keys(scalespace).length > 0" class="q-gutter-md" style="max-width: 600px">
-          <q-tabs
-          v-model="currentTab"
-          class="text-teal"
-          >
-          <q-tab name="scalespace_tab" icon="blur_circular" label="Scalespace"/>
-          <q-tab name="dog_tab" icon="brightness_1" label="Difference of Gaussian" />
-          <q-tab name="keypoints_tab" icon="brightness_1" label="Keypoints" />
-        </q-tabs>
-      </div>
-        <div class="q-gutter-md row items-start">
-          <div class="tab_content" v-show="currentTab === 'scalespace_tab'">
-            <div v-for="(octave, index) in scalespace" :key="'scalespace_' + index">
-              <h6 class="octave_number q-title text-h6">
-                Octave: {{ parseInt(index) + 1 }}
-              </h6>
-              <div class="q-gutter-md row items-start">
-                <q-img
-                  v-for="(scale, index) in octave"
-                  :key="index"
-                  :src="'http://localhost:5000/static/scalespace/' + scale + '?' + scalespace_randomUuid"
-                  style="width: 300px"
-                  spinner-color="white"
-                >
-                  <div class="absolute-bottom-right text-subtitle2">
-                    {{ parseInt(index) + 1}}
-                  </div>
-                </q-img>
-              </div>
-            </div>
-          </div>
-          <div class="tab_content" v-show="currentTab === 'dog_tab'">
-            <div v-for="(octave, index) in dogs" :key="'dog_' + index">
-              <h6 class="octave_number q-title text-h6">
-                Octave: {{ parseInt(index) + 1 }}
-              </h6>
-              <div class="q-gutter-md row items-start">
-                <q-img
-                  v-for="(dog, index) in octave"
-                  :key="index"
-                  :src="'http://localhost:5000/static/dog/' + dog + '?' + dogs_randomUuid"
-                  style="width: 300px"
-                  spinner-color="white"
-                >
-                  <div class="absolute-bottom-right text-subtitle2">
-                    {{ parseInt(index) + 1 }}
-                  </div>
-                </q-img>
-              </div>
-            </div>
-          </div>
-          <div class="tab_content" v-show="currentTab === 'keypoints_tab'">
-            <div>
-              <h6 class="q-title text-h6">
-                Keypoints
-              </h6>
-              <div class="q-gutter-md row items-start">
-                <q-img
-                  :src="keypoints"
-                  style="width: 600px"
-                  spinner-color="white"
-                >
-                </q-img>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+  <div class="octave_container" v-if="Object.keys(scalespace).length > 0">
+    <div class="output_tab_navigation q-gutter-md" style="max-width: 600px">
+      <q-tabs
+        v-model="currentTab"
+        class="text-teal"
+      >
+        <q-tab name="scalespace_tab" icon="blur_circular" label="Scalespace" @click="toggleLines(currentTab = 'scalespace_tab')"/>
+        <q-tab name="dog_tab" icon="brightness_1" label="Difference of Gaussian" @click="toggleLines(currentTab = 'dog_tab')"/>
+        <q-tab name="keypoints_tab" icon="brightness_1" label="Keypoints" @click="toggleLines(currentTab = 'keypoints_tab')"/>
+      </q-tabs>
+    </div>
+    <!-- ### SCALESPACE TAB ### -->
+    <div class="tab_content items-start" v-show="currentTab === 'scalespace_tab'" v-if="Object.keys(scalespace).length > 0">
+      <scalespaceImages
+        :scalespace=scalespace
+        :defaultWidth=defaultWidth
+        :scalespace_randomUuid=scalespace_randomUuid
+        ref="scalespaceImages"
+      ></scalespaceImages>
+    </div>
+    <!-- ### DIFFERENCE-OF-GAUSSIAN TAB ### -->
+    <div class="tab_content items-start" v-show="currentTab === 'dog_tab'" v-if="Object.keys(dogs).length > 0">
+      <dogImages
+        :dogs=dogs
+        :defaultWidth=defaultWidth
+        :dogs_randomUuid=dogs_randomUuid
+        ref="dogImages"
+      ></dogImages>
+    </div>
+    <!-- ### KEYPOINTS TAB ### -->
+    <div class="tab_content" v-show="currentTab === 'keypoints_tab'">
+      <keypointAnimation
+        ref="keypointAnimation"
+      ></keypointAnimation>
     </div>
   </div>
 </template>
 
 <script>
-import { QImg, QTabs, QTab } from 'quasar'
+import { QTabs, QTab } from 'quasar'
 import axios from 'axios'
+import keypointAnimation from 'components/sift_cli_sub/gallery/keypoint_animation.vue'
+import scalespaceImages from 'components/sift_cli_sub/gallery/scalespace_images.vue'
+import dogImages from 'components/sift_cli_sub/gallery/dog_images.vue'
 
 export default {
   components: {
-    QImg,
     QTabs,
-    QTab
+    QTab,
+    keypointAnimation,
+    scalespaceImages,
+    dogImages
   },
   data () {
     return {
       scalespace: {},
       dogs: {},
       keypoints: '',
-      currentTab: 'scalespace_tab'
+      currentTab: 'scalespace_tab',
+      defaultWidth: 340
     }
   },
   created () {
@@ -108,11 +77,9 @@ export default {
         this.keypoints = 'http://localhost:5000/static/keypoints/' + keypoints + '?' + keypointsRandomUuid
       }.bind(this))
     })
-    this.$eventBus.$on('resetData', () => {
-      this.scalespace = {}
-      this.dogs = {}
-      this.keypoints = ''
-      this.currentTab = 'scalespace_tab'
+    this.$store.lines = []
+    this.$eventBus.$on('resetGalleryData', () => {
+      this.resetGalleryData()
     })
   },
   methods: {
@@ -151,6 +118,23 @@ export default {
         .catch(function (error) {
           console.log(error)
         })
+    },
+    resetGalleryData () {
+      this.$refs.scalespaceImages.removeLines()
+      this.scalespace = {}
+      this.dogs = {}
+      this.keypoints = ''
+      this.currentTab = 'scalespace_tab'
+    },
+    toggleLines () {
+      setTimeout(function () {
+        window.dispatchEvent(new Event('resize'))
+      }, 200)
+      if (this.currentTab === 'dog_tab' || this.currentTab === 'keypoints_tab') {
+        this.$refs.scalespaceImages.enableLines(false)
+      } else if (this.currentTab === 'scalespace_tab') {
+        this.$refs.scalespaceImages.enableLines(true)
+      }
     }
   }
 }
@@ -158,16 +142,11 @@ export default {
 
 <style media="screen">
   .tab_content {
-    width: 100%;
     padding: 0;
+    margin-left: 32px;
   }
 
-  .octave_number {
-    margin-bottom: 5px;
-    margin-top: 45px;
-  }
-
-  .octave_container {
+  .output_tab_navigation {
     margin-bottom: 45px;
   }
 </style>
