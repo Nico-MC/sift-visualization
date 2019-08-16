@@ -1,13 +1,13 @@
 /*
 IPOL SIFT
-Copyright (C) 2014, Ives Rey-Otero, CMLA ENS Cachan 
+Copyright (C) 2014, Ives Rey-Otero, CMLA ENS Cachan
 <ives.rey-otero@cmla.ens-cachan.fr>
 
 Version 20140911 (September 11th, 2014)
 
 This C ANSI source code is related to the IPOL publication
 
-    [1] "Anatomy of the SIFT Method." 
+    [1] "Anatomy of the SIFT Method."
         I. Rey Otero  and  M. Delbracio
         Image Processing Online, 2013.
         http://www.ipol.im/pub/algo/rd_anatomy_sift/
@@ -21,7 +21,7 @@ An IPOL demo is available at
 
 == Patent Warning and License =================================================
 
-The SIFT method is patented 
+The SIFT method is patented
 
     [2] "Method and apparatus for identifying scale invariant features
       in an image."
@@ -30,7 +30,7 @@ The SIFT method is patented
         Filing date: Mar 6, 2000
         Issue date: Mar 23, 2004
         Application number: 09/519,89
-  
+
  These source codes are made available for the exclusive aim of serving as
  scientific tool to verify the soundness and completeness of the algorithm
  description. Compilation, execution and redistribution of this file may
@@ -316,10 +316,10 @@ void xyz2rgb(float x, float y, float z, float *r, float* g, float* b)
 
 /** @brief gray 2 Msh
  *
- *      @param in : array of w*h float  
+ *      @param in : array of w*h float
  *      @param out : array of w*h color points in Msh color space (polar Lab)
- *                     ... of 3*w*h float 
- * 
+ *                     ... of 3*w*h float
+ *
  *
  */
 void gray2Msh2rgb(const float* in, float* out, int w, int h)
@@ -334,7 +334,7 @@ void gray2Msh2rgb(const float* in, float* out, int w, int h)
             float a = (in[i] - min) / (mid - min);
             M = 80.0 + (88.0 - 80.0)*a;
             s = 1.08 - 1.08*a;
-            hue = 0.50 + (1.061 - 0.5)*a; 
+            hue = 0.50 + (1.061 - 0.5)*a;
         }else{
             float a = (in[i] - mid) / (max - mid);
             M = 88.0 + (80.0 - 88.0)*a;
@@ -362,7 +362,7 @@ void print_sift_scalespace_rgb(const struct sift_scalespace* scalespace, const c
         int nSca = octave->nSca;
         int w = octave->w;
         int h = octave->h;
-        for(int s = 1; s < nSca-1; s++){
+        for(int s = 1; s < nSca; s++){
             const float* image = &octave->imStack[s*w*h];
             nearestneighbor_interp(image,w,h,imtemp,wALL,hALL);
             gray2Msh2rgb(imtemp, imrgb, wALL, hALL);
