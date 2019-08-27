@@ -58,7 +58,7 @@ export default {
       dogs: {},
       keypoints: '',
       currentTab: 'scalespace_tab',
-      defaultWidth: 340
+      defaultWidth: 240
     }
   },
   created () {
@@ -146,7 +146,7 @@ export default {
     margin-left: 32px;
   }
 
-  .output_tab_navigation {
-    margin-bottom: 45px;
+  .octave_container {
+    margin-bottom: 50px;
   }
 </style>

@@ -4,6 +4,7 @@
       v-for="(octave, o_number) in scalespace"
       :key="'scalespace_' + o_number"
       v-for-callback="{key: o_number, array: scalespace, callback: callback}"
+      v-bind:class="'octave_' + parseInt(o_number)"
     >
       <p class="tab_content_header q-title text-h6">
         Octave: {{ parseInt(o_number) + 1 }}
@@ -45,11 +46,16 @@ export default {
       setTimeout(function () {
         var start = JQuery('.scalespace_container #scale_2')
         var end = JQuery('.scalespace_container #scale_0')
-        for (var j = 0; j < start.length - 1; j++) {
-          var startElement = start[j],
-            endElement = end[j + 1]
-          // eslint-disable-next-line
-          var line = new window.LeaderLine(startElement, endElement, { hide: true, size: 2 })
+        for (var i = 0; i < start.length - 1; i++) {
+          var startElement = start[i],
+            endElement = end[i + 1]
+          if (i === 0) {
+            // eslint-disable-next-line
+            var line = new window.LeaderLine(startElement, endElement, { hide: true, size: 2, startLabel: 'take this...', endLabel: '...and halve it.' })
+          } else {
+            // eslint-disable-next-line
+            var line = new window.LeaderLine(startElement, endElement, { hide: true, size: 2 })
+          }
           line.show('draw', { duration: 300, timing: [1, 1, 1, 1] })
           this.$store.lines.push(line)
         }
@@ -88,13 +94,23 @@ export default {
 }
 </script>
 
-<style lang="css" scoped>
+<style lang="css">
   .scalespace_octave_container {
-    flex: 1 1 auto;
+    flex: 1 0 auto;
   }
 
   .scalespace_container {
     display: flex;
     align-items: center;
+  }
+
+  .leader-line {
+    white-space: pre-line;
+  }
+
+  @media screen and (max-width: 720px) {
+    .tab_content_header  {
+      font-size: 16px
+    }
   }
 </style>
