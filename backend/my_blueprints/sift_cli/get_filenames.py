@@ -1,4 +1,4 @@
-import os, re, uuid
+import os, re, uuid, glob
 from flask import Blueprint, jsonify, abort
 
 get_filenames = Blueprint('get_filenames', __name__)
@@ -12,17 +12,28 @@ def sift_cli_get_scales(filename):
     else:
         abort(400, 'No such filename')
 
-@get_filenames.route('/get_keypoints/<inputImage_name>', methods=['GET'])
-def sift_cli_get_keypoints(inputImage_name):
-    if(inputImage_name != ''):
-        inputImage_name = re.search('.*(?=.png)', inputImage_name).group()
-        KeypointsWithUniqueKey = {
-            'keypoints': inputImage_name + '.jpg',
-            'randomUuid': uuid.uuid4()
-        }
-        return(jsonify(KeypointsWithUniqueKey))
-    else:
-        abort(400, 'No such filename')
+@get_filenames.route('/get_keypoints', methods=['GET'])
+def sift_cli_get_keypoints():
+    output_files = {}
+    listing = glob.glob('static/keypoints/step*')
+    for step_number, step in enumerate(listing):
+        output_files[step_number] = {}
+        listing = glob.glob(step + "/Octave*")
+        for octave_number, octave in enumerate(listing):
+            if(bool(output_files[step_number])):
+                output_files[step_number].update({ octave_number: {} })
+            else:
+                output_files[step_number] = { octave_number: {} }
+            listing = glob.glob(octave + "/scale*")
+            for scale_number, scale in enumerate(listing):
+                scaleImage = {
+                    'scale': scale,
+                    'randomUuid': uuid.uuid4()
+                }
+                output_files[step_number][octave_number][scale_number] = (scaleImage)
+
+    print(output_files)
+    return jsonify(output_files)
 
 def get_output_files_of(directory):
     if(directory == 'scalespace'):
@@ -32,7 +43,6 @@ def get_output_files_of(directory):
         for file in filelist:
             octave = re.search('(?<=_o).*(?=_)', file)
             if(scalespace.get(octave.group()) == None):
-                # scalespace[octave.group()] = [file] // We don't need the first (supporting) scale
                 scalespace[octave.group()] = []
             else:
                 scalespace[octave.group()].append(file)

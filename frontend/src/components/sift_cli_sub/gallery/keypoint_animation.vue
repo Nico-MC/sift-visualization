@@ -1,18 +1,42 @@
 <template lang="html">
   <form @submit.prevent.stop="submit" class="q-gutter-md">
     <q-btn class="animate_keypoints_button" label="Animate keypoints" type="submit" color="primary" />
-    <div class="animate_keypoints_image_container">
+    <div class="animate_keypoints_image_container" v-show="Object.keys(keypoints).length === 6">
+      <div
+        v-for="(step, step_number) in keypoints"
+        :key="'step_' + step_number"
+        class="step_container"
+      >
+      <p class="tab_content_header q-title text-h4">
+        Step: {{ parseInt(step_number) + 1 + ' : ' + steps[step_number]}}
+      </p>
+        <scaleWrapper
+          :step="step"
+        ></scaleWrapper>
+      </div>
     </div>
   </form>
 </template>
 
 <script>
 import axios from 'axios'
+import scaleWrapper from 'components/sift_cli_sub/gallery/scale_wrapper.vue'
 
 export default {
+  components: {
+    scaleWrapper
+  },
   data () {
     return {
-      'keypoints': {}
+      keypoints: {},
+      steps: [
+        'Discrete 3D extrema of DoG',
+        'Discrete 3D extrema passing a conservative threshold on DoG (DoG soft threshold)',
+        'Interpolated 3D extrema (Extrema interpolation)',
+        'Interpolated extrema passing the threshold on DoG (DoG threshold)',
+        'Interpolated extrema passing the Harris-Stephen edgeness test (On edge response)',
+        'Keypoints with reference orientation (far from border)'
+      ]
     }
   },
   methods: {
@@ -20,17 +44,22 @@ export default {
       var inputImageName = this.$store.inputImageName
       if (inputImageName != null) {
         return axios.get('http://localhost:5000/sift_cli/animate_keypoints?inputImageName=' + inputImageName)
-          .then(function (response) {
-            this.animateKeypoints(response.data)
-          }.bind(this))
+          .then((response) => {
+            return axios.get('http://localhost:5000/sift_cli/get_keypoints')
+              .then((response) => {
+                this.saveKeypoints(response.data)
+              })
+              .catch(function (error) {
+                console.log(error)
+              })
+          })
           .catch(function (error) {
             console.log(error)
           })
       }
     },
-    animateKeypoints (keypoints) {
+    saveKeypoints (keypoints) {
       this.keypoints = keypoints
-      console.log(keypoints)
     }
   }
 }
@@ -42,23 +71,15 @@ export default {
   }
 
   .animate_keypoints_image_container {
-    /* max-width: 600px; */
     position: relative;
   }
 
   .animate_keypoints_image_container .q-img {
     width: auto;
-    /* max-width: 600px; */
   }
 
-  .circle {
-    position: absolute;
-    width: 5px;
-    height: 5px;
-    border-radius: 40px;
-    border: 5px solid red;
-    left: 620.912231px;
-    bottom: 0;
-    z-index: 1;
+  .step_container {
+    margin-bottom: 75px
   }
+
 </style>

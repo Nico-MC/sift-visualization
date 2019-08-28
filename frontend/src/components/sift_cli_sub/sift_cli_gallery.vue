@@ -5,9 +5,9 @@
         v-model="currentTab"
         class="text-teal"
       >
-        <q-tab name="scalespace_tab" icon="blur_circular" label="Scalespace" @click="toggleLines(currentTab = 'scalespace_tab')"/>
-        <q-tab name="dog_tab" icon="brightness_1" label="Difference of Gaussian" @click="toggleLines(currentTab = 'dog_tab')"/>
-        <q-tab name="keypoints_tab" icon="brightness_1" label="Keypoints" @click="toggleLines(currentTab = 'keypoints_tab')"/>
+        <q-tab name="scalespace_tab" icon="layers" label="Scalespace" @click="toggleLines(currentTab = 'scalespace_tab')"/>
+        <q-tab name="dog_tab" icon="bubble_chart" label="Difference of Gaussian" @click="toggleLines(currentTab = 'dog_tab')"/>
+        <q-tab name="keypoints_tab" icon="linear_scale" label="Keypoints" @click="toggleLines(currentTab = 'keypoints_tab')"/>
       </q-tabs>
     </div>
     <!-- ### SCALESPACE TAB ### -->
@@ -71,11 +71,6 @@ export default {
         this.dogs_randomUuid = response.randomUuid
         this.dogs = response.dogs
       }.bind(this))
-      this.getKeypoints(inputImageName).then(function (response) {
-        var keypointsRandomUuid = response.randomUuid
-        var keypoints = response.keypoints
-        this.keypoints = 'http://localhost:5000/static/keypoints/' + keypoints + '?' + keypointsRandomUuid
-      }.bind(this))
     })
     this.$store.lines = []
     this.$eventBus.$on('resetGalleryData', () => {
@@ -97,18 +92,6 @@ export default {
     },
     getDogs () {
       return axios.get('http://localhost:5000/sift_cli/get_filenames/dog')
-        .then(function (response) {
-          var promise = new Promise(function (resolve, reject) {
-            resolve(response.data)
-          })
-          return promise
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-    },
-    getKeypoints (inputImageName) {
-      return axios.get('http://localhost:5000/sift_cli/get_keypoints/' + inputImageName)
         .then(function (response) {
           var promise = new Promise(function (resolve, reject) {
             resolve(response.data)
@@ -144,6 +127,7 @@ export default {
   .tab_content {
     padding: 0;
     margin-left: 32px;
+    margin-top: 30px;
   }
 
   .octave_container {
