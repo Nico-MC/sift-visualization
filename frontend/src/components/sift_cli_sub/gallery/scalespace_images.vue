@@ -63,10 +63,17 @@ export default {
     },
     enableLines (enable) {
       for (var i = 0; i < this.$store.lines.length; i++) {
+        var lines = document.querySelectorAll('.leader-line')
         if (enable) {
           this.$store.lines[i].show()
+          for (i = 0; i < lines.length; i++) {
+            lines[i].style.visibility = 'visible'
+          }
         } else {
           this.$store.lines[i].hide()
+          for (i = 0; i < lines.length; i++) {
+            lines[i].style.visibility = 'hidden'
+          }
         }
       }
     },
