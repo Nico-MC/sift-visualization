@@ -3,30 +3,37 @@
     <div id="myModal" class="modal">
       <span class="close">&times;</span>
       <img class="modal-content" id="img01">
+      <p id="keypoint_caption"></p>
     </div>
+    <p class="tab_content_header q-title text-h4">
+      Step {{ step_number + ': ' + step_name}}
+    </p>
     <div
       class="q-gutter-md column items-start"
-      v-for="(octave, octave_number) in step"
-      :key="'octave_' + octave_number"
+      v-for="(octave, o_number) in step"
+      :key="'octave_' + o_number"
     >
       <div>
         <p class="octave_headline">
-          Octave: {{ parseInt(octave_number) + 1 }}
+          Octave: {{ parseInt(o_number) + 1 }}
         </p>
         <div class="scale_container">
           <div
             class="keypoint_image"
-            v-for="(scale, scale_number) in octave"
-            :key="'scale_' + scale_number"
+            v-for="(scale, s_number) in octave"
+            :key="'scale_' + s_number"
           >
             <q-img
               :src="'http://localhost:5000/' + scale.scale + '?' + scale.randomUuid"
               spinner-color="white"
               @click="zoomImg"
               style="width: 360px"
+              :class="'octave_' + o_number + ' ' + 'scale_' + s_number"
+              :data-stepName="step_name"
+              :data-stepNumber="step_number"
             >
               <div class="absolute-bottom-right text-subtitle2">
-                {{ parseInt(scale_number) + 1 }}
+                {{ parseInt(s_number) + 1 }}
               </div>
             </q-img>
           </div>
@@ -44,10 +51,21 @@ export default {
     QImg
   },
   props: {
-    step: Object
+    step: Object,
+    defaultWidth: Number,
+    step_number: Number,
+    step_name: String
   },
   methods: {
     zoomImg (img) {
+      var classes = img.target.parentElement.className.split(' ')
+      var octaveOfImage = parseInt(classes[2].split('_')[1]) + 1
+      var scaleOfImage = parseInt(classes[3].split('_')[1]) + 1
+      var stepOfImage = img.target.parentElement.dataset.stepname
+      var stepNumberOfImage = img.target.parentElement.dataset.stepnumber
+      document.getElementById('keypoint_caption').innerHTML = 'Step ' +
+      stepNumberOfImage + ': ' + stepOfImage + '<br />Octave: ' + octaveOfImage + ' - Scale: ' + scaleOfImage
+
       var modal = document.getElementById('myModal')
       var modalImg = document.getElementById('img01')
       modal.style.display = 'block'
@@ -64,6 +82,13 @@ export default {
 </script>
 
 <style lang="css">
+  #keypoint_caption {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 18pt;
+    color: white;
+  }
+
   .keypoint_image {
     margin-right: 15px;
     margin-bottom: 15px;
@@ -72,7 +97,7 @@ export default {
   }
 
   .keypoint_image:hover {
-    transform: scale(1.2);
+    transform: scale(1.03);
     z-index: 1;
   }
 

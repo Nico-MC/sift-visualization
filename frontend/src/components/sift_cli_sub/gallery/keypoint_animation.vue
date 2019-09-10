@@ -7,11 +7,11 @@
         :key="'step_' + step_number"
         class="step_container"
       >
-      <p class="tab_content_header q-title text-h4">
-        Step: {{ parseInt(step_number) + 1 + ' : ' + steps[step_number]}}
-      </p>
         <scaleWrapper
+          :step_name="steps[step_number]"
+          :step_number="parseInt(step_number) + 1"
           :step="step"
+          :defaultWidth="defaultWidth"
         ></scaleWrapper>
       </div>
     </div>
@@ -25,6 +25,9 @@ import scaleWrapper from 'components/sift_cli_sub/gallery/scale_wrapper.vue'
 export default {
   components: {
     scaleWrapper
+  },
+  props: {
+    defaultWidth: Number
   },
   data () {
     return {
@@ -67,7 +70,7 @@ export default {
 
 <style lang="css">
   .animate_keypoints_button {
-    margin-bottom: 25px;
+    margin: 0 0 25px 50px;
   }
 
   .animate_keypoints_image_container {
@@ -79,7 +82,9 @@ export default {
   }
 
   .step_container {
-    margin-bottom: 75px
+    margin-bottom: 50px;
+    background-color: #f4f4f4;
+    padding: 15px 0 25px 32px;
   }
 
 </style>

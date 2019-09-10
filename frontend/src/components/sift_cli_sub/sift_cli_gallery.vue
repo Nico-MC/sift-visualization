@@ -13,24 +13,26 @@
     <!-- ### SCALESPACE TAB ### -->
     <div class="tab_content items-start" v-show="currentTab === 'scalespace_tab'" v-if="Object.keys(scalespace).length > 0">
       <scalespaceImages
-        :scalespace=scalespace
-        :defaultWidth=defaultWidth
-        :scalespace_randomUuid=scalespace_randomUuid
+        :scalespace="scalespace"
+        :defaultWidth="defaultWidth"
+        :scalespace_randomUuid="scalespace_randomUuid"
         ref="scalespaceImages"
       ></scalespaceImages>
     </div>
     <!-- ### DIFFERENCE-OF-GAUSSIAN TAB ### -->
     <div class="tab_content items-start" v-show="currentTab === 'dog_tab'" v-if="Object.keys(dogs).length > 0">
       <dogImages
-        :dogs=dogs
-        :defaultWidth=defaultWidth
-        :dogs_randomUuid=dogs_randomUuid
+        :dogs="dogs"
+        :scalespace="scalespace"
+        :defaultWidth="defaultWidth"
+        :dogs_randomUuid="dogs_randomUuid"
         ref="dogImages"
       ></dogImages>
     </div>
     <!-- ### KEYPOINTS TAB ### -->
     <div class="tab_content" v-show="currentTab === 'keypoints_tab'">
       <keypointAnimation
+        :defaultWidth="defaultWidth"
         ref="keypointAnimation"
       ></keypointAnimation>
     </div>
@@ -126,7 +128,7 @@ export default {
 <style media="screen">
   .tab_content {
     padding: 0;
-    margin-left: 32px;
+    /* margin-left: 32px; */
     margin-top: 30px;
   }
 
