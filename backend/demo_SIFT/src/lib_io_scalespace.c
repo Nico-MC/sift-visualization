@@ -362,7 +362,8 @@ void print_sift_scalespace_rgb(const struct sift_scalespace* scalespace, const c
         int nSca = octave->nSca;
         int w = octave->w;
         int h = octave->h;
-        for(int s = 1; s < nSca; s++){
+        // 's = 1; s < nSca - 1' changed
+        for(int s = 0; s < nSca; s++){
             const float* image = &octave->imStack[s*w*h];
             nearestneighbor_interp(image,w,h,imtemp,wALL,hALL);
             gray2Msh2rgb(imtemp, imrgb, wALL, hALL);
@@ -388,6 +389,7 @@ void print_sift_scalespace_gray_nearestneighbor(const struct sift_scalespace* sc
         int nSca = octave->nSca;
         int w = octave->w;
         int h = octave->h;
+        // 's=0;s<nSca-1' changed
         for(int s=0;s<nSca;s++){
             const float* image = &octave->imStack[s*w*h];
             nearestneighbor_interp(image,w,h,
