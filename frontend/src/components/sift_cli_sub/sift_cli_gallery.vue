@@ -2,16 +2,16 @@
   <div class="octave_container" v-if="Object.keys(scalespace).length > 0">
     <div class="output_tab_navigation q-gutter-md" style="max-width: 600px">
       <q-tabs
-        v-model="currentTab"
+        v-model="click"
         class="text-teal"
       >
-        <q-tab name="scalespace_tab" icon="layers" label="Scalespace" @click="toggleLines(currentTab = 'scalespace_tab')"/>
-        <q-tab name="dog_tab" icon="bubble_chart" label="Difference of Gaussian" @click="toggleLines(currentTab = 'dog_tab')"/>
-        <q-tab name="keypoints_tab" icon="linear_scale" label="Keypoints" @click="toggleLines(currentTab = 'keypoints_tab')"/>
+        <q-tab name="scalespace_tab" icon="layers" label="Scalespace" @click="toggleLines('scalespace_tab')"/>
+        <q-tab name="dog_tab" icon="bubble_chart" label="Difference of Gaussian" @click="toggleLines('dog_tab')"/>
+        <q-tab name="keypoints_tab" icon="linear_scale" label="Keypoints" @click="toggleLines('keypoints_tab')"/>
       </q-tabs>
     </div>
     <!-- ### SCALESPACE TAB ### -->
-    <div class="tab_content items-start" v-show="currentTab === 'scalespace_tab'" v-if="Object.keys(scalespace).length > 0">
+    <div class="tab_content items-start" v-show="$store.currentTab === 'scalespace_tab'" v-if="Object.keys(scalespace).length > 0">
       <scalespaceImages
         :scalespace="scalespace"
         :defaultWidth="defaultWidth"
@@ -20,7 +20,7 @@
       ></scalespaceImages>
     </div>
     <!-- ### DIFFERENCE-OF-GAUSSIAN TAB ### -->
-    <div class="tab_content items-start" v-show="currentTab === 'dog_tab'" v-if="Object.keys(dogs).length > 0">
+    <div class="tab_content items-start" v-show="$store.currentTab === 'dog_tab'" v-if="Object.keys(dogs).length > 0">
       <dogImages
         :dogs="dogs"
         :scalespace="scalespace"
@@ -30,7 +30,7 @@
       ></dogImages>
     </div>
     <!-- ### KEYPOINTS TAB ### -->
-    <div class="tab_content" v-show="currentTab === 'keypoints_tab'">
+    <div class="tab_content" v-show="$store.currentTab === 'keypoints_tab'">
       <keypointAnimation
         :defaultWidth="defaultWidth"
         ref="keypointAnimation"
@@ -59,11 +59,12 @@ export default {
       scalespace: {},
       dogs: {},
       keypoints: '',
-      currentTab: 'scalespace_tab',
-      defaultWidth: 240
+      defaultWidth: 240,
+      click: 'scalespace_tab'
     }
   },
   created () {
+    this.$store.currentTab = 'scalespace_tab'
     this.$eventBus.$on('buildGallery', (inputImageName) => {
       this.getScalespace().then(function (response) {
         this.scalespace_randomUuid = response.randomUuid
@@ -74,7 +75,8 @@ export default {
         this.dogs = response.dogs
       }.bind(this))
     })
-    this.$store.lines = []
+    this.$store.scalespaceLines = []
+    this.$store.dogLines = []
     this.$eventBus.$on('resetGalleryData', () => {
       this.resetGalleryData()
     })
@@ -109,16 +111,23 @@ export default {
       this.scalespace = {}
       this.dogs = {}
       this.keypoints = ''
-      this.currentTab = 'scalespace_tab'
+      this.$store.currentTab = 'scalespace_tab'
     },
-    toggleLines () {
+    toggleLines (currentTab) {
+      this.$store.currentTab = currentTab
+      this.click = this.$store.currentTab
       setTimeout(function () {
         window.dispatchEvent(new Event('resize'))
       }, 200)
-      if (this.currentTab === 'dog_tab' || this.currentTab === 'keypoints_tab') {
-        this.$refs.scalespaceImages.enableLines(false)
-      } else if (this.currentTab === 'scalespace_tab') {
+      if (this.$store.currentTab === 'scalespace_tab') {
         this.$refs.scalespaceImages.enableLines(true)
+      } else {
+        this.$refs.scalespaceImages.enableLines(false)
+      }
+      if (this.$store.currentTab === 'dog_tab') {
+        this.$refs.dogImages.enableLines(true)
+      } else {
+        this.$refs.dogImages.enableLines(false)
       }
     }
   }

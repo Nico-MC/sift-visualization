@@ -47,41 +47,40 @@ export default {
         var start = JQuery('.scalespace_container #scale_2')
         var end = JQuery('.scalespace_container #scale_0')
         for (var i = 0; i < start.length - 1; i++) {
+          var line = null
           var startElement = start[i],
             endElement = end[i + 1]
           if (i === 0) {
             // eslint-disable-next-line
-            var line = new window.LeaderLine(startElement, endElement, { hide: true, size: 2, startLabel: 'take this...', endLabel: '...and halve it.' })
+            line = new window.LeaderLine(startElement, endElement, { size: 2, startLabel: 'take this...', endLabel: '...and halve it.' })
           } else {
             // eslint-disable-next-line
-            var line = new window.LeaderLine(startElement, endElement, { hide: true, size: 2 })
+            line = new window.LeaderLine(startElement, endElement, { size: 2 })
           }
-          line.show('draw', { duration: 300, timing: [1, 1, 1, 1] })
-          this.$store.lines.push(line)
+          line.hide('draw', { duration: 500, timing: [1, 1, 1, 1] })
+          this.$store.scalespaceLines.push(line)
+          if (this.$store.currentTab === 'scalespace_tab') {
+            this.enableLines(true)
+          } else {
+            this.enableLines(false)
+          }
         }
       }.bind(this), 5000)
     },
     enableLines (enable) {
-      for (var i = 0; i < this.$store.lines.length; i++) {
-        var lines = document.querySelectorAll('.leader-line')
+      for (var i = 0; i < this.$store.scalespaceLines.length; i++) {
         if (enable) {
-          this.$store.lines[i].show()
-          for (i = 0; i < lines.length; i++) {
-            lines[i].style.visibility = 'visible'
-          }
+          this.$store.scalespaceLines[i].show('draw', { duration: 500, timing: [1, 1, 1, 1] })
         } else {
-          this.$store.lines[i].hide()
-          for (i = 0; i < lines.length; i++) {
-            lines[i].style.visibility = 'hidden'
-          }
+          this.$store.scalespaceLines[i].hide('draw', { duration: 500, timing: [1, 1, 1, 1] })
         }
       }
     },
     removeLines () {
-      for (var i = 0; i < this.$store.lines.length; i++) {
-        this.$store.lines[i].remove()
+      for (var i = 0; i < this.$store.scalespaceLines.length; i++) {
+        this.$store.scalespaceLines[i].remove()
       }
-      this.$store.lines = []
+      this.$store.scalespaceLines = []
     }
   },
   directives: {
@@ -113,6 +112,7 @@ export default {
 
   .leader-line {
     white-space: pre-line;
+    /* visibility: hidden; */
   }
 
   @media screen and (max-width: 720px) {
