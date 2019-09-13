@@ -16,9 +16,11 @@
           :key="s_number"
         >
           <q-img
+            :class="'octave_' + parseInt(o_number) + ' ' + 'scale_' + s_number"
             :src="'http://localhost:5000/static/scalespace/' + scale + '?' + scalespace_randomUuid"
             :style="{ width: defaultWidth / (Math.pow(2, parseInt(o_number))) + 'px' }"
             spinner-color="white"
+            @click="showKeypointsForClickedScale"
           >
           </q-img>
         </div>
@@ -37,6 +39,7 @@ export default {
   },
   props: {
     scalespace: Object,
+    keypoints: Object,
     defaultWidth: Number,
     scalespace_randomUuid: String
   },
@@ -52,27 +55,26 @@ export default {
             endElement = end[i + 1]
           if (i === 0) {
             // eslint-disable-next-line
-            line = new window.LeaderLine(startElement, endElement, { size: 2, startLabel: 'take this...', endLabel: '...and halve it.' })
+            line = new window.LeaderLine(startElement, endElement, { hide: true, size: 2, startLabel: 'take this...', endLabel: '...and halve it.' })
           } else {
             // eslint-disable-next-line
-            line = new window.LeaderLine(startElement, endElement, { size: 2 })
+            line = new window.LeaderLine(startElement, endElement, { hide: true, size: 2 })
           }
-          line.hide('draw', { duration: 500, timing: [1, 1, 1, 1] })
           this.$store.scalespaceLines.push(line)
-          if (this.$store.currentTab === 'scalespace_tab') {
-            this.enableLines(true)
-          } else {
-            this.enableLines(false)
-          }
+        }
+        if (this.$store.currentTab === 'scalespace_tab') {
+          this.enableLines(true)
+        } else {
+          this.enableLines(false)
         }
       }.bind(this), 5000)
     },
     enableLines (enable) {
       for (var i = 0; i < this.$store.scalespaceLines.length; i++) {
         if (enable) {
-          this.$store.scalespaceLines[i].show('draw', { duration: 500, timing: [1, 1, 1, 1] })
+          this.$store.scalespaceLines[i].show('draw', { animOptions: { duration: 3000, timing: [0.5, 0, 1, 0.42] } })
         } else {
-          this.$store.scalespaceLines[i].hide('draw', { duration: 500, timing: [1, 1, 1, 1] })
+          this.$store.scalespaceLines[i].hide()
         }
       }
     },
@@ -81,6 +83,18 @@ export default {
         this.$store.scalespaceLines[i].remove()
       }
       this.$store.scalespaceLines = []
+    },
+    showKeypointsForClickedScale (img) {
+      try {
+        var classes = img.target.parentElement.className.split(' ')
+        var octaveOfImage = parseInt(classes[2].split('_')[1])
+        var scaleOfImage = parseInt(classes[3].split('_')[1])
+        console.log(this.keypoints[5][octaveOfImage][scaleOfImage].scale)
+        console.log(octaveOfImage)
+        console.log(scaleOfImage)
+        console.log(this.keypoints[5])
+      } catch (e) {
+      }
     }
   },
   directives: {
@@ -118,6 +132,60 @@ export default {
   @media screen and (max-width: 720px) {
     .tab_content_header  {
       font-size: 16px
+    }
+  }
+
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 9; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+  }
+
+  .modal-content {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 50%;
+  }
+
+  .modal-content, #caption {
+    animation-name: zoom;
+    animation-duration: 0.6s;
+  }
+
+  @keyframes zoom {
+    from {transform:scale(0)}
+    to {transform:scale(1)}
+  }
+
+  .close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  @media only screen and (max-width: 700px){
+    .modal-content {
+      width: 100%;
     }
   }
 </style>

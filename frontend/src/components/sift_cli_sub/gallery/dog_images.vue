@@ -16,7 +16,7 @@
             :key="s_number"
           >
             <q-img
-              :id="'scale_' + s_number"
+              :class="'octave_' + parseInt(o_number) + ' ' + 'scale_' + s_number"
               :src="'http://localhost:5000/static/scalespace/' + scale + '?' + dogs_randomUuid"
               :style="{ width: defaultWidth / (Math.pow(2, parseInt(o_number))) + 'px' }"
               spinner-color="white"
@@ -28,13 +28,21 @@
           <div
             v-for="(dog, d_number) in octave"
             :key="d_number"
+            class="dog_img"
           >
             <q-img
-              :id="'dog_' + d_number"
+              :class="'octave_' + parseInt(o_number) + ' ' + 'dog_' + d_number"
               :src="'http://localhost:5000/static/dog/' + dog + '?' + dogs_randomUuid"
               :style="{ width: defaultWidth / (Math.pow(2, parseInt(o_number))) + 'px' }"
               spinner-color="white"
             >
+              <div
+                class="absolute-full text-subtitle2 flex flex-center dog_caption"
+                v-if="d_number > 0 && d_number < Object.keys(octave).length - 1"
+                v-on:click="showKeypointsForClickedDog($event)"
+              >
+                Show extrema
+              </div>
             </q-img>
           </div>
         </div>
@@ -54,6 +62,7 @@ export default {
   props: {
     dogs: Object,
     scalespace: Object,
+    keypoints: Object,
     defaultWidth: Number,
     dogs_randomUuid: String
   },
@@ -63,38 +72,36 @@ export default {
       setTimeout(function () {
         for (var i = 0; i < numberOfOctaves; i++) {
           for (var j = 0; j < numberOfScales; j++) {
-            var start = JQuery('.dog_container #octave_' + i + ' #scale_' + j)[0]
-            var start2 = JQuery('.dog_container #octave_' + i + ' #scale_' + (j + 1))[0]
-            var end = JQuery('.dog_container #octave_' + i + ' #dog_' + j)[0]
+            var start = JQuery('.dog_container .octave_' + i + '.scale_' + j)[0]
+            var startAdjacent = JQuery('.dog_container .octave_' + i + '.scale_' + (j + 1))[0]
+            var end = JQuery('.dog_container .octave_' + i + '.dog_' + j)[0]
             var line = null
-            var line2 = null
+            var lineAdjacent = null
             // eslint-disable-next-line
             if (i === 0 && j == 0) {
-              line = new window.LeaderLine(start, end, { size: 2, startLabel: 'Subtract two adjacent LoG scales', endLabel: 'to DoG scale' })
-              line2 = new window.LeaderLine(start2, end, { size: 2 })
+              line = new window.LeaderLine(start, end, { hide: true, size: 2, startLabel: 'Subtract two adjacent LoG scales', endLabel: 'to DoG scale' })
+              lineAdjacent = new window.LeaderLine(startAdjacent, end, { hide: true, size: 2 })
             } else {
-              line = new window.LeaderLine(start, end, { size: 2 })
-              line2 = new window.LeaderLine(start2, end, { size: 2 })
+              line = new window.LeaderLine(start, end, { hide: true, size: 2 })
+              lineAdjacent = new window.LeaderLine(startAdjacent, end, { hide: true, size: 2 })
             }
-            line.hide('draw', { duration: 500, timing: [1, 1, 1, 1] })
-            line2.hide('draw', { duration: 500, timing: [1, 1, 1, 1] })
             this.$store.dogLines.push(line)
-            this.$store.dogLines.push(line2)
-            if (this.$store.currentTab === 'dog_tab') {
-              this.enableLines(true)
-            } else {
-              this.enableLines(false)
-            }
+            this.$store.dogLines.push(lineAdjacent)
           }
+        }
+        if (this.$store.currentTab === 'dog_tab') {
+          this.enableLines(true)
+        } else {
+          this.enableLines(false)
         }
       }.bind(this), 5000)
     },
     enableLines (enable) {
       for (var i = 0; i < this.$store.dogLines.length; i++) {
         if (enable) {
-          this.$store.dogLines[i].show('draw', { duration: 500, timing: [1, 1, 1, 1] })
+          this.$store.dogLines[i].show('draw', { animOptions: { duration: 3000, timing: [0.5, 0, 1, 0.42] } })
         } else {
-          this.$store.dogLines[i].hide('draw', { duration: 500, timing: [1, 1, 1, 1] })
+          this.$store.dogLines[i].hide()
         }
       }
     },
@@ -103,6 +110,20 @@ export default {
         this.$store.dogLines[i].remove()
       }
       this.$store.dogLines = []
+    },
+    showKeypointsForClickedDog ($event) {
+      try {
+        var classes = $event.target.offsetParent.offsetParent.className.split(' ')
+        var octaveOfImage = parseInt(classes[2].split('_')[1])
+        var scaleOfImage = parseInt(classes[3].split('_')[1]) - 1
+        console.log(octaveOfImage)
+        console.log(scaleOfImage)
+        var src = 'http://localhost:5000/' + this.keypoints[5][octaveOfImage][scaleOfImage].scale
+        console.log(src)
+        var caption = ''
+        this.$eventBus.$emit('showModalImage', src, caption)
+      } catch (e) {
+      }
     }
   },
   directives: {
@@ -145,4 +166,15 @@ export default {
   .dogs {
     align-items: center;
   }
+
+  .dogs .dog_caption {
+    opacity: 0;
+  }
+
+  .dogs .dog_caption:hover {
+    opacity: 1;
+    padding: 0;
+    cursor: pointer;
+  }
+
 </style>

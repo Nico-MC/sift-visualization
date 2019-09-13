@@ -1,4 +1,4 @@
-import os, re, uuid, glob
+import os, re, uuid, glob, cv2 as cv, numpy as np
 from flask import Blueprint, jsonify, abort
 
 get_filenames = Blueprint('get_filenames', __name__)
@@ -26,14 +26,11 @@ def sift_cli_get_keypoints():
                 output_files[step_number] = { octave_number: {} }
             listing = glob.glob(octave + "/scale*")
             for scale_number, scale in enumerate(listing):
-                scaleImage = {
-                    'scale': scale,
-                    'randomUuid': uuid.uuid4()
-                }
+                scaleImage = { 'scale': scale }
                 output_files[step_number][octave_number][scale_number] = (scaleImage)
 
-    print(output_files)
-    return jsonify(output_files)
+    obj = { 'keypoints': output_files, 'randomUuid': uuid.uuid4() }
+    return jsonify(obj)
 
 def get_output_files_of(directory):
     if(directory == 'scalespace'):
@@ -42,6 +39,7 @@ def get_output_files_of(directory):
         scalespace = {}
         for file in filelist:
             octave = re.search('(?<=_o).*(?=_)', file)
+            draw_keypoints_for_that_scale(file)
             if(scalespace.get(octave.group()) == None):
                 scalespace[octave.group()] = [file]
             else:
@@ -68,3 +66,33 @@ def get_output_files_of(directory):
             'randomUuid': uuid.uuid4()
         }
         return(jsonify(dogsWithUniqueKey))
+
+
+def draw_keypoints_for_that_scale(scale):
+    path = "static/keypoints/extra_FarFromBorder_*.txt"
+    file = open(glob.glob(path)[0], "r")
+    keypointsFromFile = file.read()
+    keypointsFromFile = keypointsFromFile.splitlines()
+
+    keypoints = []
+    for line in keypointsFromFile:
+        y = line.split(' ')[0]
+        x = line.split(' ')[1]
+        sigma = line.split(' ')[2]
+        theta = line.split(' ')[3]
+        octa = line.split(' ')[4]
+        sca = line.split(' ')[5]
+        keypoint = cv.KeyPoint(
+                                x = float(x)*2,
+                                y = float(y)*2,
+                                _size = float(sigma) * 4,
+                                _angle = np.degrees(float(theta)),
+                                _response = 0,
+                                _octave = int(octa),
+                                _class_id = -1
+                              )
+        keypoints.append(keypoint)
+
+    gray = cv.imread('static/scalespace/' + scale)
+    img = cv.drawKeypoints(gray, keypoints, gray)
+    cv.imwrite('static/scalespace/sift_keypoints.jpg', img)

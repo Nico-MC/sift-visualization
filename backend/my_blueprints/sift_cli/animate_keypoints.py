@@ -1,5 +1,5 @@
 from flask import request, Blueprint, current_app as app, jsonify
-import cv2 as cv, numpy as np, uuid, os, shutil
+import cv2 as cv, numpy as np, uuid, os, shutil, glob, re
 
 animate_keypoints = Blueprint('animate_keypoints', __name__)
 
@@ -13,12 +13,12 @@ def sift_cli_animate_keypoints():
     cv.imwrite( "static/keypoints/" + inputImageName + "_gray.jpg", gray);
 
     allKeypoints = {
-        "0": get_keypoints("extra_NES", label, inputImageName, "step_1", img, gray),
-        "1": get_keypoints("extra_DoGSoftThresh", label, inputImageName, "step_2", img, gray),
-        "2": get_keypoints("extra_ExtrInterp", label, inputImageName, "step_3", img, gray),
-        "3": get_keypoints("extra_DoGThresh", label, inputImageName, "step_4", img, gray),
-        "4": get_keypoints("extra_OnEdgeResp", label, inputImageName, "step_5", img, gray),
-        "5": get_keypoints("extra_FarFromBorder", label, inputImageName, "step_6", img, gray),
+        "0": get_keypoints("extra_NES", label, inputImageName, "step_0", img, gray),
+        "1": get_keypoints("extra_DoGSoftThresh", label, inputImageName, "step_1", img, gray),
+        "2": get_keypoints("extra_ExtrInterp", label, inputImageName, "step_2", img, gray),
+        "3": get_keypoints("extra_DoGThresh", label, inputImageName, "step_3", img, gray),
+        "4": get_keypoints("extra_OnEdgeResp", label, inputImageName, "step_4", img, gray),
+        "5": get_keypoints("extra_FarFromBorder", label, inputImageName, "step_5", img, gray),
         "randomUuid": uuid.uuid4()
     }
 
@@ -30,8 +30,9 @@ def get_keypoints(filename, label, inputImageName, step, img, gray):
     file = open("static/keypoints/" + filename + label + ".txt", "r")
     keypointsFromFile = file.read()
     keypointsFromFile = keypointsFromFile.splitlines()
-    justForTesting = {}
-    producedKeypointsInThisStep = []
+    keypoints_cv_scaled = {}
+    keypoints_cv = {}
+    keypoints_cv_draw_step = []
     keypoints = {}
     for line in keypointsFromFile:
         y = line.split(' ')[0]
@@ -40,58 +41,75 @@ def get_keypoints(filename, label, inputImageName, step, img, gray):
         theta = line.split(' ')[3]
         octa = line.split(' ')[4]
         sca = line.split(' ')[5]
-        justForTesting_kp = ({
+        keypoint = ({
                                 "x": float(x),
                                 "y": float(y),
-                                "_size": float(sigma) * 62,
+                                "_size": float(sigma) * 2,
                                 "_angle": np.degrees(float(theta)),
                                 "_response": 0,
                                 "_octave": int(octa),
                                 "_class_id": -1
-                             })
-        keypoint = cv.KeyPoint(
+                    })
+        keypoint_cv = cv.KeyPoint(
                                 x = float(x),
                                 y = float(y),
-                                _size = float(sigma) * 62,
+                                _size = float(sigma) * 2,
                                 _angle = np.degrees(float(theta)),
                                 _response = 0,
                                 _octave = int(octa),
                                 _class_id = -1
-                              )
-        producedKeypointsInThisStep.append(keypoint)
+                                )
+        keypoint_cv_scaled = cv.KeyPoint(
+                                x = float(x)*2,
+                                y = float(y)*2,
+                                _size = float(sigma),
+                                _angle = np.degrees(float(theta)),
+                                _response = 0,
+                                _octave = int(octa),
+                                _class_id = -1
+                                )
+        keypoints_cv_draw_step.append(keypoint_cv)
 
+        # Sort the keypoint_cv after each octave and each scale
         if octa in keypoints.keys():
             if sca in keypoints[octa].keys():
+                keypoints_cv_scaled[octa][sca].append(keypoint_cv_scaled)
+                keypoints_cv[octa][sca].append(keypoint_cv)
                 keypoints[octa][sca].append(keypoint)
-                justForTesting[octa][sca].append(justForTesting_kp)
             else:
+                keypoints_cv_scaled[octa].update({ sca: [keypoint_cv_scaled] })
+                keypoints_cv[octa].update({ sca: [keypoint_cv] })
                 keypoints[octa].update({ sca: [keypoint] })
-                justForTesting[octa].update({ sca: [justForTesting_kp] })
 
         else:
+            keypoints_cv_scaled[octa] = { sca: [keypoint_cv_scaled] }
+            keypoints_cv[octa] = { sca: [keypoint_cv] }
             keypoints[octa] = { sca: [keypoint] }
-            justForTesting[octa] = { sca: [justForTesting_kp] }
             os.makedirs(currentDirectoryPath + "/Octave_" + octa)
 
-    drawKeypoints(keypoints, currentDirectoryPath, img, gray)
+    drawKeypoints(keypoints_cv, currentDirectoryPath, img, gray, step, keypoints_cv_scaled)
 
     # Now draw all keypoints of this step to an image
     path = currentDirectoryPath + "/keypoints.jpg"
-    img = cv.drawKeypoints(gray, producedKeypointsInThisStep, img)
+    img = cv.drawKeypoints(gray, keypoints_cv_draw_step, img)
     cv.imwrite(path, img)
 
-    return justForTesting
+    return keypoints
 
-
-
-
-def drawKeypoints(keypoints, currentDirectoryPath, img, gray):
-    for octave_number, octave in keypoints.items():
+def drawKeypoints(keypoints_cv, currentDirectoryPath, img, gray, step, keypoints_cv_scaled):
+    for octave_number, octave in keypoints_cv.items():
         for scale_number, scale in octave.items():
-            path = currentDirectoryPath + "/Octave_" + octave_number + "/scale_" + scale_number + ".jpg"
+            path_originalImage = currentDirectoryPath + "/Octave_" + octave_number + "/scale_" + scale_number + ".jpg"
             img = cv.drawKeypoints(gray, scale, img)
-            cv.imwrite(path, img)
+            cv.imwrite(path_originalImage, img)
 
+    if(step == "step_5"):
+        for octave_number, octave in keypoints_cv_scaled.items():
+            for scale_number, scale in octave.items():
+                path_scaledImage = "static/scalespace/scalespace_o" + octave_number + "_s" + scale_number + ".jpg"
+                file = cv.imread(glob.glob("static/scalespace/*o*" + octave_number + "_s*" + scale_number + ".png")[0])
+                img = cv.drawKeypoints(file, scale, file)
+                cv.imwrite(path_scaledImage, img)
 
 
 

@@ -18,6 +18,7 @@
               change: 'Change image'
             }">
           </picture-input>
+          <div class="image_type">*Only .png files are allowed.</div>
         </div>
 
         <div class="q-gutter-md row items-start">
@@ -143,7 +144,7 @@ export default {
       }
     },
     reset () {
-      Object.assign(this.siftCliParams, siftCliParamsDefault)
+      // Object.assign(this.siftCliParams, siftCliParamsDefault) // Resets the parameter values
       this.image = ''
       this.$refs.pictureInput.removeImage()
       // Triggers an event in sift_cli_gallery to reset the drawings from DOM
@@ -171,5 +172,13 @@ export default {
     right: 0;
     top: 0;
     margin-right: 32px;
+    z-index: 99;
+  }
+
+  .image_type {
+    text-align: center;
+    padding-top: 5px;
+    color: #d2d2d2;
+    font-variant: super;
   }
 </style>

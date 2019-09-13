@@ -1,10 +1,5 @@
 <template lang="html">
   <div>
-    <div id="myModal" class="modal">
-      <span class="close">&times;</span>
-      <img class="modal-content" id="img01">
-      <p id="keypoint_caption"></p>
-    </div>
     <p class="tab_content_header q-title text-h4">
       Step {{ step_number + ': ' + step_name}}
     </p>
@@ -24,7 +19,8 @@
             :key="'scale_' + s_number"
           >
             <q-img
-              :src="'http://localhost:5000/' + scale.scale + '?' + scale.randomUuid"
+              :id="keypoints_randomUuid"
+              :src="'http://localhost:5000/' + scale.scale + '?' + keypoints_randomUuid"
               spinner-color="white"
               @click="zoomImg"
               style="width: 360px"
@@ -54,27 +50,23 @@ export default {
     step: Object,
     defaultWidth: Number,
     step_number: Number,
-    step_name: String
+    step_name: String,
+    keypoints_randomUuid: String
   },
   methods: {
     zoomImg (img) {
-      var classes = img.target.parentElement.className.split(' ')
-      var octaveOfImage = parseInt(classes[2].split('_')[1]) + 1
-      var scaleOfImage = parseInt(classes[3].split('_')[1]) + 1
-      var stepOfImage = img.target.parentElement.dataset.stepname
-      var stepNumberOfImage = img.target.parentElement.dataset.stepnumber
-      document.getElementById('keypoint_caption').innerHTML = 'Step ' +
-      stepNumberOfImage + ': ' + stepOfImage + '<br />Octave: ' + octaveOfImage + ' - Scale: ' + scaleOfImage
+      try {
+        var classes = img.target.parentElement.className.split(' ')
+        var octaveOfImage = parseInt(classes[2].split('_')[1]) + 1
+        var scaleOfImage = parseInt(classes[3].split('_')[1]) + 1
+        var stepOfImage = img.target.parentElement.dataset.stepname
+        var stepNumberOfImage = img.target.parentElement.dataset.stepnumber
 
-      var modal = document.getElementById('myModal')
-      var modalImg = document.getElementById('img01')
-      modal.style.display = 'block'
-      var srcUrl = img.srcElement.previousSibling.style.backgroundImage
-      var src = srcUrl.substring(srcUrl.lastIndexOf('http'), srcUrl.lastIndexOf(')'))
-      modalImg.src = src
-      modal.onclick = function () {
-        if (modal.style.display === 'block') modal.style.display = 'none'
-        else modal.style.display = 'block'
+        var srcUrl = img.srcElement.previousSibling.style.backgroundImage
+        var src = srcUrl.substring(srcUrl.lastIndexOf('http'), srcUrl.lastIndexOf(')'))
+        var caption = 'Step ' + stepNumberOfImage + ': ' + stepOfImage + '\nOctave: ' + octaveOfImage + ' - Scale: ' + scaleOfImage
+        this.$eventBus.$emit('showModalImage', src, caption)
+      } catch (e) {
       }
     }
   }
