@@ -1,7 +1,7 @@
 <template lang="html">
   <div>
     <p class="tab_content_header q-title text-h4">
-      Step {{ step_number + ': ' + step_name}}
+      Filter {{ step_number + ': ' + step_name}}
     </p>
     <div
       class="q-gutter-md column items-start"
@@ -9,9 +9,9 @@
       :key="'octave_' + o_number"
     >
       <div>
-        <p class="octave_headline">
+        <span class="octave_headline">
           Octave: {{ parseInt(o_number) + 1 }}
-        </p>
+        </span>
         <div class="scale_container">
           <div
             class="keypoint_image"
@@ -103,6 +103,7 @@ export default {
     flex-wrap: wrap;
   }
 
+  /* MODAL */
   .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */

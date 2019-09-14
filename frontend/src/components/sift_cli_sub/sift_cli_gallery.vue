@@ -16,34 +16,34 @@
       <pre id="keypoint_caption">{{modalImgCaption}}</pre>
     </div>
     <!-- ### SCALESPACE TAB ### -->
-    <div class="tab_content items-start" v-show="$store.currentTab === 'scalespace_tab'" v-if="Object.keys(scalespace).length > 0">
-      <scalespaceImages
+    <div class="tab_content items-start scalespace-images" v-show="$store.currentTab === 'scalespace_tab'" v-if="Object.keys(scalespace).length > 0">
+      <scalespace-images
         :scalespace="scalespace"
         :keypoints="keypointsOriginalImage"
         :defaultWidth="defaultWidth"
         :scalespace_randomUuid="scalespace_randomUuid"
         ref="scalespaceImages"
-      ></scalespaceImages>
+      ></scalespace-images>
     </div>
     <!-- ### DIFFERENCE-OF-GAUSSIAN TAB ### -->
-    <div class="tab_content items-start" v-show="$store.currentTab === 'dog_tab'" v-if="Object.keys(dogs).length > 0">
-      <dogImages
+    <div class="tab_content items-start dog-images" v-show="$store.currentTab === 'dog_tab'" v-if="Object.keys(dogs).length > 0">
+      <dog-images
         :dogs="dogs"
         :scalespace="scalespace"
         :keypoints="keypointsDog"
         :defaultWidth="defaultWidth"
         :dogs_randomUuid="dogs_randomUuid"
         ref="dogImages"
-      ></dogImages>
+      ></dog-images>
     </div>
     <!-- ### KEYPOINTS TAB ### -->
-    <div class="tab_content" v-show="$store.currentTab === 'keypoints_tab'" v-if="Object.keys(keypointsOriginalImage).length > 0">
-      <keypointAnimation
+    <div class="tab_content keypoint-animation" v-show="$store.currentTab === 'keypoints_tab'" v-if="Object.keys(keypointsOriginalImage).length > 0">
+      <keypoint-animation
         :keypoints="keypointsOriginalImage"
         :defaultWidth="defaultWidth"
         :keypoints_randomUuid="keypointsOriginalImage_randomUuid"
         ref="keypointAnimation"
-      ></keypointAnimation>
+      ></keypoint-animation>
     </div>
   </div>
 </template>
@@ -162,7 +162,6 @@ export default {
         this.getKeypoints('dog').then((response) => {
           this.keypointsDog_randomUuid = response.randomUuid
           this.keypointsDog = response.keypoints
-          console.log(this.keypointsDog)
         })
       })
       this.getScalespace().then((response) => {
@@ -199,8 +198,18 @@ export default {
 </script>
 
 <style media="screen">
-  .tab_content {
-    padding: 0;
+  .tab_content.scalespace-images {
+    padding: 0px;
+    margin-top: 30px;
+  }
+
+  .tab_content.dog-images {
+    padding: 0px;
+    margin-top: 30px;
+  }
+
+  .tab_content.keypoint-animation {
+    padding: 0px;
     margin-top: 30px;
   }
 
