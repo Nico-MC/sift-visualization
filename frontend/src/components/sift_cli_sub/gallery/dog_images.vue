@@ -119,7 +119,7 @@ export default {
         console.log(octaveOfImage)
         console.log(scaleOfImage)
         var src = 'http://localhost:5000/' + this.keypoints[5][octaveOfImage][scaleOfImage].scale
-        console.log(src)
+        console.log(this.keypoints[5])
         var caption = ''
         this.$eventBus.$emit('showModalImage', src, caption)
       } catch (e) {

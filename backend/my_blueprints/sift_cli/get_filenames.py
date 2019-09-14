@@ -12,19 +12,23 @@ def sift_cli_get_scales(filename):
     else:
         abort(400, 'No such filename')
 
-@get_filenames.route('/get_keypoints', methods=['GET'])
-def sift_cli_get_keypoints():
+@get_filenames.route('/get_keypoints/<type>', methods=['GET'])
+def sift_cli_get_keypoints(type):
     output_files = {}
     listing = glob.glob('static/keypoints/step*')
     for step_number, step in enumerate(listing):
         output_files[step_number] = {}
-        listing = glob.glob(step + "/Octave*")
+        if (type == 'scalespace'):
+            listing = glob.glob(step + "/Octave*/Scalespace/")
+        elif (type == 'dog'):
+            listing = glob.glob(step + "/Octave*/DoG/")
         for octave_number, octave in enumerate(listing):
             if(bool(output_files[step_number])):
                 output_files[step_number].update({ octave_number: {} })
             else:
                 output_files[step_number] = { octave_number: {} }
-            listing = glob.glob(octave + "/scale*")
+
+            listing = glob.glob(octave + "scale*")
             for scale_number, scale in enumerate(listing):
                 scaleImage = { 'scale': scale }
                 output_files[step_number][octave_number][scale_number] = (scaleImage)
@@ -39,7 +43,6 @@ def get_output_files_of(directory):
         scalespace = {}
         for file in filelist:
             octave = re.search('(?<=_o).*(?=_)', file)
-            draw_keypoints_for_that_scale(file)
             if(scalespace.get(octave.group()) == None):
                 scalespace[octave.group()] = [file]
             else:
@@ -66,33 +69,3 @@ def get_output_files_of(directory):
             'randomUuid': uuid.uuid4()
         }
         return(jsonify(dogsWithUniqueKey))
-
-
-def draw_keypoints_for_that_scale(scale):
-    path = "static/keypoints/extra_FarFromBorder_*.txt"
-    file = open(glob.glob(path)[0], "r")
-    keypointsFromFile = file.read()
-    keypointsFromFile = keypointsFromFile.splitlines()
-
-    keypoints = []
-    for line in keypointsFromFile:
-        y = line.split(' ')[0]
-        x = line.split(' ')[1]
-        sigma = line.split(' ')[2]
-        theta = line.split(' ')[3]
-        octa = line.split(' ')[4]
-        sca = line.split(' ')[5]
-        keypoint = cv.KeyPoint(
-                                x = float(x)*2,
-                                y = float(y)*2,
-                                _size = float(sigma) * 4,
-                                _angle = np.degrees(float(theta)),
-                                _response = 0,
-                                _octave = int(octa),
-                                _class_id = -1
-                              )
-        keypoints.append(keypoint)
-
-    gray = cv.imread('static/scalespace/' + scale)
-    img = cv.drawKeypoints(gray, keypoints, gray)
-    cv.imwrite('static/scalespace/sift_keypoints.jpg', img)

@@ -19,7 +19,7 @@
     <div class="tab_content items-start" v-show="$store.currentTab === 'scalespace_tab'" v-if="Object.keys(scalespace).length > 0">
       <scalespaceImages
         :scalespace="scalespace"
-        :keypoints="keypoints"
+        :keypoints="keypointsOriginalImage"
         :defaultWidth="defaultWidth"
         :scalespace_randomUuid="scalespace_randomUuid"
         ref="scalespaceImages"
@@ -30,18 +30,18 @@
       <dogImages
         :dogs="dogs"
         :scalespace="scalespace"
-        :keypoints="keypoints"
+        :keypoints="keypointsDog"
         :defaultWidth="defaultWidth"
         :dogs_randomUuid="dogs_randomUuid"
         ref="dogImages"
       ></dogImages>
     </div>
     <!-- ### KEYPOINTS TAB ### -->
-    <div class="tab_content" v-show="$store.currentTab === 'keypoints_tab'" v-if="Object.keys(keypoints).length > 0">
+    <div class="tab_content" v-show="$store.currentTab === 'keypoints_tab'" v-if="Object.keys(keypointsOriginalImage).length > 0">
       <keypointAnimation
-        :keypoints="keypoints"
+        :keypoints="keypointsOriginalImage"
         :defaultWidth="defaultWidth"
-        :keypoints_randomUuid="keypoints_randomUuid"
+        :keypoints_randomUuid="keypointsOriginalImage_randomUuid"
         ref="keypointAnimation"
       ></keypointAnimation>
     </div>
@@ -67,7 +67,8 @@ export default {
     return {
       scalespace: {},
       dogs: {},
-      keypoints: {},
+      keypointsOriginalImage: {},
+      keypointsDog: {},
       defaultWidth: 240,
       click: 'scalespace_tab',
       modalImg: '',
@@ -115,15 +116,14 @@ export default {
           console.log(error)
         })
     },
-    getKeypoints () {
+    getKeypoints (type) {
       var inputImageName = this.$store.inputImageName
       if (inputImageName != null) {
         return axios.get('http://localhost:5000/sift_cli/animate_keypoints?inputImageName=' + inputImageName)
           .then((response) => {
-            return axios.get('http://localhost:5000/sift_cli/get_keypoints')
+            return axios.get('http://localhost:5000/sift_cli/get_keypoints/' + type)
               .then((response) => {
                 var promise = new Promise(function (resolve, reject) {
-                  console.log(response.data)
                   resolve(response.data)
                 })
                 return promise
@@ -156,9 +156,14 @@ export default {
     },
     // Events
     buildGallery () {
-      this.getKeypoints().then((response) => {
-        this.keypoints_randomUuid = response.randomUuid
-        this.keypoints = response.keypoints
+      this.getKeypoints('scalespace').then((response) => {
+        this.keypointsOriginalImage_randomUuid = response.randomUuid
+        this.keypointsOriginalImage = response.keypoints
+        this.getKeypoints('dog').then((response) => {
+          this.keypointsDog_randomUuid = response.randomUuid
+          this.keypointsDog = response.keypoints
+          console.log(this.keypointsDog)
+        })
       })
       this.getScalespace().then((response) => {
         this.scalespace_randomUuid = response.randomUuid
@@ -174,7 +179,8 @@ export default {
       this.$refs.dogImages.removeLines()
       this.scalespace = {}
       this.dogs = {}
-      this.keypoints = {}
+      this.keypointsOriginalImage = {}
+      this.keypointsDog = {}
       this.click = 'scalespace_tab'
       this.$store.currentTab = this.click
     },

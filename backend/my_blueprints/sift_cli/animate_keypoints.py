@@ -60,9 +60,9 @@ def get_keypoints(filename, label, inputImageName, step, img, gray):
                                 _class_id = -1
                                 )
         keypoint_cv_scaled = cv.KeyPoint(
-                                x = float(x)*2,
-                                y = float(y)*2,
-                                _size = float(sigma),
+                                x = float(x) * 2,
+                                y = float(y) * 2,
+                                _size = float(sigma) * 2,
                                 _angle = np.degrees(float(theta)),
                                 _response = 0,
                                 _octave = int(octa),
@@ -85,7 +85,8 @@ def get_keypoints(filename, label, inputImageName, step, img, gray):
             keypoints_cv_scaled[octa] = { sca: [keypoint_cv_scaled] }
             keypoints_cv[octa] = { sca: [keypoint_cv] }
             keypoints[octa] = { sca: [keypoint] }
-            os.makedirs(currentDirectoryPath + "/Octave_" + octa)
+            os.makedirs(currentDirectoryPath + "/Octave_" + octa + "/Scalespace")
+            os.makedirs(currentDirectoryPath + "/Octave_" + octa + "/DoG")
 
     drawKeypoints(keypoints_cv, currentDirectoryPath, img, gray, step, keypoints_cv_scaled)
 
@@ -99,17 +100,16 @@ def get_keypoints(filename, label, inputImageName, step, img, gray):
 def drawKeypoints(keypoints_cv, currentDirectoryPath, img, gray, step, keypoints_cv_scaled):
     for octave_number, octave in keypoints_cv.items():
         for scale_number, scale in octave.items():
-            path_originalImage = currentDirectoryPath + "/Octave_" + octave_number + "/scale_" + scale_number + ".jpg"
+            path_originalImage = currentDirectoryPath + "/Octave_" + octave_number + "/Scalespace/scale_" + scale_number + ".jpg"
             img = cv.drawKeypoints(gray, scale, img)
             cv.imwrite(path_originalImage, img)
 
-    if(step == "step_5"):
-        for octave_number, octave in keypoints_cv_scaled.items():
-            for scale_number, scale in octave.items():
-                path_scaledImage = "static/scalespace/scalespace_o" + octave_number + "_s" + scale_number + ".jpg"
-                file = cv.imread(glob.glob("static/scalespace/*o*" + octave_number + "_s*" + scale_number + ".png")[0])
-                img = cv.drawKeypoints(file, scale, file)
-                cv.imwrite(path_scaledImage, img)
+    for octave_number, octave in keypoints_cv_scaled.items():
+        for scale_number, scale in octave.items():
+            path_scaledImage = currentDirectoryPath + "/Octave_" + octave_number + "/DoG/scale_" + scale_number + ".jpg"
+            file = cv.imread(glob.glob("static/dog/*o*" + octave_number + "_s*" + scale_number + ".png")[0])
+            img = cv.drawKeypoints(file, scale, file)
+            cv.imwrite(path_scaledImage, img)
 
 
 
