@@ -29,7 +29,7 @@
               :data-stepNumber="step_number"
             >
               <div class="absolute-bottom-right text-subtitle2">
-                {{ parseInt(s_number) + 1 }}
+                {{ parseInt(s_number)}}
               </div>
             </q-img>
           </div>
@@ -58,13 +58,13 @@ export default {
       try {
         var classes = img.target.parentElement.className.split(' ')
         var octaveOfImage = parseInt(classes[2].split('_')[1]) + 1
-        var scaleOfImage = parseInt(classes[3].split('_')[1]) + 1
+        var scaleOfImage = parseInt(classes[3].split('_')[1])
         var stepOfImage = img.target.parentElement.dataset.stepname
         var stepNumberOfImage = img.target.parentElement.dataset.stepnumber
 
         var srcUrl = img.srcElement.previousSibling.style.backgroundImage
         var src = srcUrl.substring(srcUrl.lastIndexOf('http'), srcUrl.lastIndexOf(')'))
-        var caption = 'Step ' + stepNumberOfImage + ': ' + stepOfImage + '\nOctave: ' + octaveOfImage + ' - Scale: ' + scaleOfImage
+        var caption = 'Filter ' + stepNumberOfImage + ': ' + stepOfImage + '\nOctave: ' + octaveOfImage + ' - Scale: ' + scaleOfImage
         this.$eventBus.$emit('showModalImage', src, caption)
       } catch (e) {
       }
@@ -101,60 +101,5 @@ export default {
   .scale_container {
     display: flex;
     flex-wrap: wrap;
-  }
-
-  /* MODAL */
-  .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 9; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
-  }
-
-  .modal-content {
-    margin: auto;
-    display: block;
-    width: 80%;
-    max-width: 50%;
-  }
-
-  .modal-content, #caption {
-    animation-name: zoom;
-    animation-duration: 0.6s;
-  }
-
-  @keyframes zoom {
-    from {transform:scale(0)}
-    to {transform:scale(1)}
-  }
-
-  .close {
-    position: absolute;
-    top: 15px;
-    right: 35px;
-    color: #f1f1f1;
-    font-size: 40px;
-    font-weight: bold;
-    transition: 0.3s;
-  }
-
-  .close:hover,
-  .close:focus {
-    color: #bbb;
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  @media only screen and (max-width: 700px){
-    .modal-content {
-      width: 100%;
-    }
   }
 </style>

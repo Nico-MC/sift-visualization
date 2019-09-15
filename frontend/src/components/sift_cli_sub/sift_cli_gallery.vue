@@ -11,8 +11,8 @@
       </q-tabs>
     </div>
     <div id="myModal" class="modal">
-      <span class="close">&times;</span>
-      <img class="modal-content" id="img01" :src="modalImg">
+      <span class="close" id="modalImgClose">&times;</span>
+      <img class="modal-content" id="modalImg" :src="modalImgSrc">
       <pre id="keypoint_caption">{{modalImgCaption}}</pre>
     </div>
     <!-- ### SCALESPACE TAB ### -->
@@ -71,7 +71,7 @@ export default {
       keypointsDog: {},
       defaultWidth: 240,
       click: 'scalespace_tab',
-      modalImg: '',
+      modalImgSrc: '',
       modalImgCaption: ''
     }
   },
@@ -185,10 +185,11 @@ export default {
     },
     showModalImage (src, caption) {
       var modal = document.getElementById('myModal')
+      var modalImgClose = document.getElementById('modalImgClose')
       modal.style.display = 'block'
-      this.modalImg = src
+      this.modalImgSrc = src
       this.modalImgCaption = caption
-      modal.onclick = function () {
+      modalImgClose.onclick = function () {
         if (modal.style.display === 'block') modal.style.display = 'none'
         else modal.style.display = 'block'
       }
@@ -221,5 +222,61 @@ export default {
     white-space: pre-wrap;
     word-wrap: break-word;
     font-family: inherit;
+  }
+
+  /* MODAL */
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 9; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+  }
+
+  .modal-content {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 50%;
+    cursor: pointer;
+  }
+
+  .modal-content, #caption {
+    animation-name: zoom;
+    animation-duration: 0.6s;
+  }
+
+  @keyframes zoom {
+    from { transform:scale(0) }
+    to { transform:scale(1) }
+  }
+
+  .close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  @media only screen and (max-width: 700px) {
+    .modal-content {
+      width: 100%;
+    }
   }
 </style>

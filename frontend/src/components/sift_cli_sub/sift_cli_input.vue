@@ -51,19 +51,19 @@ import axios from 'axios'
 import PictureInput from 'vue-picture-input'
 
 var siftCliParamsDefault = {
-  ss_noct: '8', // number of octaves
+  ss_noct: '3', // number of octaves
   ss_nspo: '3', // number of scales per octave
   ss_dmin: '0.5', // the sampling distance in the first octave
-  ss_smin: '0.8', // blur level on the seed image
+  ss_smin: '1.6', // blur level on the seed image
   ss_sin: '0.5', // assumed level of blur in the input image
-  thresh_dog: '0.0133', // threshold over the DoG response
+  thresh_dog: '0.03', // threshold over the DoG response
   thresh_edge: '10', // threshold over the ratio of principal curvature
   ori_nbins: '36', // number of bins in the orientation histogram
   ori_thresh: '0.8', // threshold for considering local maxima in the orientation histogram
   ori_lambda: '1.5', // sets how local is the analysis of the gradient distribution
   descr_nhist: '4', // number of histograms per dimension
   descr_nori: '8', // number of bins in each histogram
-  descr_lambda: '6', // sets how local the descriptor is
+  descr_lambda: '16', // sets how local the descriptor is
   verb_keys: '1', // flag to output the intermediary sets of keypoints
   verb_ss: '1' // flag to output the scalespaces (Gaussian and DoG)
 }
@@ -172,7 +172,6 @@ export default {
     right: 0;
     top: 0;
     margin-right: 32px;
-    z-index: 99;
   }
 
   .image_type {

@@ -73,7 +73,8 @@ def sift_cli():
             file.close()
             return handle_keypoints(features2lowe_string, inputImagePath)
         abort(400, "Can't convert keypoints by execute features2lowe")
-
+    else:
+        return handle_keypoints("", inputImagePath)
 
 def check_output_directory():
     try:

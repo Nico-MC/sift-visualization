@@ -115,9 +115,10 @@ export default {
       var caption = ''
       try {
         var classes = $event.target.offsetParent.offsetParent.className.split(' ')
-        var octaveOfImage = parseInt(classes[2].split('_')[1])
-        var scaleOfImage = parseInt(classes[3].split('_')[1]) - 1
-        var src = 'http://localhost:5000/' + this.keypoints[5][octaveOfImage][scaleOfImage].scale
+        var octaveOfImage = parseInt(classes[2].split('_')[1]) + 1
+        var scaleOfImage = parseInt(classes[3].split('_')[1])
+        var src = 'http://localhost:5000/' + this.keypoints[0][octaveOfImage][scaleOfImage].scale
+        caption = 'Octave: ' + octaveOfImage + ' - Scale: ' + scaleOfImage
         this.$eventBus.$emit('showModalImage', src, caption)
       } catch (e) {
         caption = 'SIFT does not found any keypoints for this scale.\nOctave: ' + octaveOfImage + ' - Scale: ' + scaleOfImage

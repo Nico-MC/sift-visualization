@@ -22,15 +22,17 @@ def sift_cli_get_keypoints(type):
             listing = glob.glob(step + "/Octave*/Scalespace/")
         elif (type == 'dog'):
             listing = glob.glob(step + "/Octave*/DoG/")
-        for octave_number, octave in enumerate(listing):
+        for octave_fileString in listing:
+            octave_number = re.search('(?<=Octave_).*?(?=/)', octave_fileString).group()
             if(bool(output_files[step_number])):
                 output_files[step_number].update({ octave_number: {} })
             else:
                 output_files[step_number] = { octave_number: {} }
 
-            listing = glob.glob(octave + "scale*")
-            for scale_number, scale in enumerate(listing):
-                scaleImage = { 'scale': scale }
+            listing = glob.glob(octave_fileString + "scale*")
+            for scale_fileString in listing:
+                scale_number = re.search('(?<=scale_).*(?=.jpg)', scale_fileString).group()
+                scaleImage = { 'scale': scale_fileString }
                 output_files[step_number][octave_number][scale_number] = (scaleImage)
 
     obj = { 'keypoints': output_files, 'randomUuid': uuid.uuid4() }

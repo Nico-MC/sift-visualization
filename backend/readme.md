@@ -12,3 +12,9 @@ If you want to compile sift_cli of the demo_SIFT you can use
 
 sift_cli output
 > x, y, sigma, theta, octave, scale
+
+CAUTION!
+The Octave number of a keypoint file starts at 0!
+The Scale number of a keypoint file start at 1!
+That has to be changed in the demo_SIFT c files!
+Otherwise the Octave number needs to increment with 1 when showing on frontend.
