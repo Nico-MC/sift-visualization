@@ -63,9 +63,9 @@ export default {
         var stepNumberOfImage = img.target.parentElement.dataset.stepnumber
 
         var srcUrl = img.srcElement.previousSibling.style.backgroundImage
-        var src = srcUrl.substring(srcUrl.lastIndexOf('http'), srcUrl.lastIndexOf(')'))
+        var modalImgSrc = srcUrl.substring(srcUrl.lastIndexOf('http'), srcUrl.lastIndexOf(')') - 1)
         var caption = 'Filter ' + stepNumberOfImage + ': ' + stepOfImage + '\nOctave: ' + octaveOfImage + ' - Scale: ' + scaleOfImage
-        this.$eventBus.$emit('showModalImage', src, caption)
+        this.$eventBus.$emit('showModalImage', modalImgSrc, caption)
       } catch (e) {
       }
     }

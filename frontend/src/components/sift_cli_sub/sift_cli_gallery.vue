@@ -1,5 +1,5 @@
 <template>
-  <div class="octave_container" v-if="Object.keys(scalespace).length > 0">
+  <div class="octave_container" v-show="Object.keys(scalespace).length > 0">
     <div class="output_tab_navigation q-gutter-md" style="max-width: 600px">
       <q-tabs
         v-model="click"
@@ -10,10 +10,11 @@
         <q-tab name="keypoints_tab" icon="linear_scale" label="Keypoints (original image)" @click="toggleLines('keypoints_tab')"/>
       </q-tabs>
     </div>
-    <div id="myModal" class="modal">
+    <div id="myModal" class="modal img-magnifier-container" ref="myModal">
       <span class="close" id="modalImgClose">&times;</span>
-      <img class="modal-content" id="modalImg" :src="modalImgSrc">
+      <img class="modal-content" id="modalImg" :src="modalImgSrc" ref="modalImg">
       <pre id="keypoint_caption">{{modalImgCaption}}</pre>
+      <div class="img-magnifier-glass" ref="glass"></div>
     </div>
     <!-- ### SCALESPACE TAB ### -->
     <div class="tab_content items-start scalespace-images" v-show="$store.currentTab === 'scalespace_tab'" v-if="Object.keys(scalespace).length > 0">
@@ -183,17 +184,87 @@ export default {
       this.click = 'scalespace_tab'
       this.$store.currentTab = this.click
     },
-    showModalImage (src, caption) {
+    showModalImage (modalImgSrc, caption) {
       var modal = document.getElementById('myModal')
       var modalImgClose = document.getElementById('modalImgClose')
       modal.style.display = 'block'
-      this.modalImgSrc = src
+      this.modalImgSrc = modalImgSrc
       this.modalImgCaption = caption
       modalImgClose.onclick = function () {
         if (modal.style.display === 'block') modal.style.display = 'none'
         else modal.style.display = 'block'
       }
+      this.magnify(modalImgSrc)
+    },
+    createMagnifier (img) {
+      // eslint-disable-next-line
+      var glass, width, height, myModal
+      glass = this.$refs['glass']
+      myModal = this.$refs['myModal']
+      this.$refs.glass_BackgroundWidth = 3
+      this.$refs.glass_Zoom = 2
+      // ### --- GLOBAL VARS OF MAGNIFIER GLASS --- ###
+      glass.addEventListener('mousemove', this.moveMagnifier)
+      img.addEventListener('mousemove', this.moveMagnifier) // touch
+      myModal.addEventListener('mousemove', this.CheckIfMagnifierInImage, myModal)
+    },
+    magnify (modalImgSrc) {
+      var glass = this.$refs['glass']
+      var img = this.$refs['modalImg']
+      // ### --- BACKGROUND PROPERTIES OF MAGNIFIER GLASS --- ###
+      glass.style.backgroundImage = 'url("' + modalImgSrc + '")'
+      glass.style.backgroundRepeat = 'no-repeat'
+      setTimeout(function () {
+        glass.style.backgroundSize = (img.width * this.$refs.glass_Zoom) + 'px ' + (img.clientHeight * this.$refs.glass_Zoom) + 'px'
+        this.$refs.glass_Width = glass.offsetWidth / 2
+        this.$refs.glass_Height = glass.offsetHeight / 2
+      }.bind(this), 500)
+      // ### --- HOVER EVENT LISTENER OF MAGNIFIER GLASS --- ###
+      glass.addEventListener('touchmove', this.moveMagnifier)
+      img.addEventListener('touchmove', this.moveMagnifier) // touch
+    },
+    moveMagnifier (e) {
+      var glass = this.$refs['glass']
+      // eslint-disable-next-line
+      var pos, x, y, width, height, backgroundWidth = 0, zoom
+      /* prevent any other actions that may occur when moving over the image */
+      e.preventDefault()
+      pos = { x: e.clientX, y: e.clientY }
+      x = pos.x
+      y = pos.y
+      width = this.$refs.glass_Width
+      height = this.$refs.glass_Height
+      zoom = this.$refs.glass_Zoom
+      // ### --- SET POSITION OF MAGNIFIER GLASS --- ###
+      glass.style.left = x + 'px' // (x - w) + "px"
+      glass.style.top = y + 'px' // (y - h) + "px"
+      // ### --- COMPUTE LENSE EFFECT OF MAGNIFIER GLASS --- ###
+      // eslint-disable-next-line
+      var posToImage = this.getCursorPos()
+      glass.style.backgroundPosition = '+' + ((posToImage.x * zoom) - width + backgroundWidth) + 'px -' + ((posToImage.y * zoom) - height + backgroundWidth) + 'px'
+      console.log(glass.style.backgroundPosition)
+    },
+    getCursorPos (e) {
+      var a, x = 0, y = 0
+      var img = this.$refs['modalImg']
+      e = e || window.event
+      a = img.getBoundingClientRect()
+      x = e.pageX - a.left
+      y = e.pageY - a.top
+      x = x - window.pageXOffset
+      y = y - window.pageYOffset
+      return { x: x, y: y }
+    },
+    CheckIfMagnifierInImage (e) {
+      if (e.target.id === 'myModal') {
+        this.$refs['glass'].style.visibility = 'hidden'
+      } else if (e.target.id === 'modalImg') {
+        this.$refs['glass'].style.visibility = 'visible'
+      }
     }
+  },
+  mounted () {
+    this.createMagnifier(this.$refs['modalImg'], 2)
   }
 }
 </script>
@@ -236,7 +307,7 @@ export default {
     height: 100%; /* Full height */
     overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+    background-color: rgba(0,0,0,0.9); /* Black width/ opacity */
   }
 
   .modal-content {
@@ -278,5 +349,14 @@ export default {
     .modal-content {
       width: 100%;
     }
+  }
+
+  .img-magnifier-glass {
+    position: absolute;
+    border: 3px solid #000;
+    border-radius: 50%;
+    cursor: none;
+    width: 100px;
+    height: 100px;
   }
 </style>
