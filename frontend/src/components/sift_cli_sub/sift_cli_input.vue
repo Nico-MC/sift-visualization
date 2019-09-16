@@ -38,6 +38,7 @@
           <q-input v-model="siftCliParams.descr_lambda" filled type="text" hint="sets how local the descriptor is" />
         </div>
         <div class="sift_cli_buttons q-gutter-md row items-start">
+          <q-toggle v-model="drawType" />
           <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
           <q-btn id="sift_cli_button_execute" label="Run Sift Algorithm" type="submit" color="primary" />
         </div>
@@ -47,7 +48,7 @@
 </template>
 
 <script>
-import { QInput } from 'quasar'
+import { QInput, QToggle } from 'quasar'
 import axios from 'axios'
 import PictureInput from 'vue-picture-input'
 
@@ -72,11 +73,13 @@ var siftCliParamsDefault = {
 export default {
   components: {
     QInput,
-    PictureInput
+    PictureInput,
+    QToggle
   },
   data () {
     return {
-      siftCliParams: Object.assign({}, siftCliParamsDefault)
+      siftCliParams: Object.assign({}, siftCliParamsDefault),
+      drawType: true
     }
   },
   methods: {
@@ -107,7 +110,7 @@ export default {
       })
         .then(() => {
           console.log('SIFT finished.')
-          this.$eventBus.$emit('buildGallery', inputImageName)
+          this.$eventBus.$emit('buildGallery', this.drawType)
           this.$eventBus.$emit('hideLoader')
           document.getElementById('sift_cli_button_execute').disabled = false
         })
@@ -145,11 +148,7 @@ export default {
       }
     },
     reset () {
-      // Object.assign(this.siftCliParams, siftCliParamsDefault) // Resets the parameter values
-      this.image = ''
-      this.$refs.pictureInput.removeImage()
-      // Triggers an event in sift_cli_gallery to reset the drawings from DOM
-      this.$eventBus.$emit('resetGalleryData')
+      Object.assign(this.siftCliParams, siftCliParamsDefault) // Resets the parameter values
     },
     onChange () {
       if (this.$refs.pictureInput.file) {

@@ -22,3 +22,4 @@ yarn-error.log*
 backend/static
 __pycache__
 backend/demo_SIFT
+backend/Test_Data

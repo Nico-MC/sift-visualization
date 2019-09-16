@@ -83,8 +83,8 @@ export default {
     this.$store.scalespaceLines = []
     this.$store.dogLines = []
     // Event-Listener
-    this.$eventBus.$on('buildGallery', (inputImageName) => {
-      this.buildGallery()
+    this.$eventBus.$on('buildGallery', (drawType) => {
+      this.buildGallery(drawType)
     })
     this.$eventBus.$on('resetGalleryData', () => {
       this.resetGalleryData()
@@ -118,10 +118,10 @@ export default {
           console.log(error)
         })
     },
-    getKeypoints (type) {
+    getKeypoints (type, drawType) {
       var inputImageName = this.$store.inputImageName
       if (inputImageName != null) {
-        return axios.get('http://localhost:5000/sift_cli/animate_keypoints?inputImageName=' + inputImageName)
+        return axios.get('http://localhost:5000/sift_cli/animate_keypoints?inputImageName=' + inputImageName + '&drawType=' + drawType)
           .then((response) => {
             return axios.get('http://localhost:5000/sift_cli/get_keypoints/' + type)
               .then((response) => {
@@ -155,11 +155,11 @@ export default {
       }
     },
     // Events
-    buildGallery () {
-      this.getKeypoints('scalespace').then((response) => {
+    buildGallery (drawType) {
+      this.getKeypoints('scalespace', drawType).then((response) => {
         this.keypointsOriginalImage_randomUuid = response.randomUuid
         this.keypointsOriginalImage = response.keypoints
-        this.getKeypoints('dog').then((response) => {
+        this.getKeypoints('dog', drawType).then((response) => {
           this.keypointsDog_randomUuid = response.randomUuid
           this.keypointsDog = response.keypoints
         })

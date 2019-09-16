@@ -117,7 +117,7 @@ export default {
         var classes = $event.target.offsetParent.offsetParent.className.split(' ')
         var octaveOfImage = parseInt(classes[2].split('_')[1])
         var scaleOfImage = parseInt(classes[3].split('_')[1])
-        var src = 'http://localhost:5000/' + this.keypoints[0][octaveOfImage][scaleOfImage].scale
+        var src = 'http://localhost:5000/' + this.keypoints[0][octaveOfImage][scaleOfImage].scale + '?' + this.dogs_randomUuid
         caption = 'Octave: ' + (octaveOfImage + 1) + ' - Scale: ' + scaleOfImage
         this.$eventBus.$emit('showModalImage', src, caption)
       } catch (e) {
