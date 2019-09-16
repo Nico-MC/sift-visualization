@@ -12,7 +12,7 @@
     </div>
     <div class="modal" ref="myModal" style="padding-top: 75px">
       <span class="close" id="modalImgClose">&times;</span>
-      <v-zoomer>
+      <v-zoomer ref="vue-zoomer">
         <img class="modal-content" :src="modalImgSrc" ref="modalImg" style="object-fit: contain; width: 100%;" v-on:click="zoomerClicked()">
         <pre id="keypoint_caption">{{modalImgCaption}}</pre>
       </v-zoomer>
@@ -196,6 +196,8 @@ export default {
       this.$refs['modalImg'].ondragstart = function () {
         return false
       }
+      var vueZoomer = this.$refs['vue-zoomer']
+      vueZoomer.reset()
       this.triggerResizeEvent()
     },
     triggerResizeEvent (timeout = 200) {
