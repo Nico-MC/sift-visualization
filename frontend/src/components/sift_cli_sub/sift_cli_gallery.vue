@@ -10,11 +10,12 @@
         <q-tab name="keypoints_tab" icon="linear_scale" label="Keypoints (original image)" @click="toggleLines('keypoints_tab')"/>
       </q-tabs>
     </div>
-    <div id="myModal" class="modal img-magnifier-container" ref="myModal">
+    <div class="modal" ref="myModal" style="padding-top: 75px">
       <span class="close" id="modalImgClose">&times;</span>
-      <img class="modal-content" id="modalImg" :src="modalImgSrc" ref="modalImg">
-      <pre id="keypoint_caption">{{modalImgCaption}}</pre>
-      <div class="img-magnifier-glass" ref="glass"></div>
+      <v-zoomer>
+        <img class="modal-content" :src="modalImgSrc" ref="modalImg" style="object-fit: contain; width: 100%;" v-on:click="zoomerClicked()">
+        <pre id="keypoint_caption">{{modalImgCaption}}</pre>
+      </v-zoomer>
     </div>
     <!-- ### SCALESPACE TAB ### -->
     <div class="tab_content items-start scalespace-images" v-show="$store.currentTab === 'scalespace_tab'" v-if="Object.keys(scalespace).length > 0">
@@ -141,9 +142,7 @@ export default {
     toggleLines (currentTab) {
       this.$store.currentTab = currentTab
       this.click = this.$store.currentTab
-      setTimeout(function () {
-        window.dispatchEvent(new Event('resize'))
-      }, 200)
+      this.triggerResizeEvent()
       if (this.$store.currentTab === 'scalespace_tab') {
         this.$refs.scalespaceImages.enableLines(true)
       } else {
@@ -185,7 +184,7 @@ export default {
       this.$store.currentTab = this.click
     },
     showModalImage (modalImgSrc, caption) {
-      var modal = document.getElementById('myModal')
+      var modal = this.$refs['myModal']
       var modalImgClose = document.getElementById('modalImgClose')
       modal.style.display = 'block'
       this.modalImgSrc = modalImgSrc
@@ -194,77 +193,41 @@ export default {
         if (modal.style.display === 'block') modal.style.display = 'none'
         else modal.style.display = 'block'
       }
-      this.magnify(modalImgSrc)
-    },
-    createMagnifier (img) {
-      // eslint-disable-next-line
-      var glass, width, height, myModal
-      glass = this.$refs['glass']
-      myModal = this.$refs['myModal']
-      this.$refs.glass_BackgroundWidth = 3
-      this.$refs.glass_Zoom = 2
-      // ### --- GLOBAL VARS OF MAGNIFIER GLASS --- ###
-      glass.addEventListener('mousemove', this.moveMagnifier)
-      img.addEventListener('mousemove', this.moveMagnifier) // touch
-      myModal.addEventListener('mousemove', this.CheckIfMagnifierInImage, myModal)
-    },
-    magnify (modalImgSrc) {
-      var glass = this.$refs['glass']
-      var img = this.$refs['modalImg']
-      // ### --- BACKGROUND PROPERTIES OF MAGNIFIER GLASS --- ###
-      glass.style.backgroundImage = 'url("' + modalImgSrc + '")'
-      glass.style.backgroundRepeat = 'no-repeat'
-      setTimeout(function () {
-        glass.style.backgroundSize = (img.width * this.$refs.glass_Zoom) + 'px ' + (img.clientHeight * this.$refs.glass_Zoom) + 'px'
-        this.$refs.glass_Width = glass.offsetWidth / 2
-        this.$refs.glass_Height = glass.offsetHeight / 2
-      }.bind(this), 500)
-      // ### --- HOVER EVENT LISTENER OF MAGNIFIER GLASS --- ###
-      glass.addEventListener('touchmove', this.moveMagnifier)
-      img.addEventListener('touchmove', this.moveMagnifier) // touch
-    },
-    moveMagnifier (e) {
-      var glass = this.$refs['glass']
-      // eslint-disable-next-line
-      var pos, x, y, width, height, backgroundWidth = 0, zoom
-      /* prevent any other actions that may occur when moving over the image */
-      e.preventDefault()
-      pos = { x: e.clientX, y: e.clientY }
-      x = pos.x
-      y = pos.y
-      width = this.$refs.glass_Width
-      height = this.$refs.glass_Height
-      zoom = this.$refs.glass_Zoom
-      // ### --- SET POSITION OF MAGNIFIER GLASS --- ###
-      glass.style.left = x + 'px' // (x - w) + "px"
-      glass.style.top = y + 'px' // (y - h) + "px"
-      // ### --- COMPUTE LENSE EFFECT OF MAGNIFIER GLASS --- ###
-      // eslint-disable-next-line
-      var posToImage = this.getCursorPos()
-      glass.style.backgroundPosition = '+' + ((posToImage.x * zoom) - width + backgroundWidth) + 'px -' + ((posToImage.y * zoom) - height + backgroundWidth) + 'px'
-      console.log(glass.style.backgroundPosition)
-    },
-    getCursorPos (e) {
-      var a, x = 0, y = 0
-      var img = this.$refs['modalImg']
-      e = e || window.event
-      a = img.getBoundingClientRect()
-      x = e.pageX - a.left
-      y = e.pageY - a.top
-      x = x - window.pageXOffset
-      y = y - window.pageYOffset
-      return { x: x, y: y }
-    },
-    CheckIfMagnifierInImage (e) {
-      if (e.target.id === 'myModal') {
-        this.$refs['glass'].style.visibility = 'hidden'
-      } else if (e.target.id === 'modalImg') {
-        this.$refs['glass'].style.visibility = 'visible'
+      this.$refs['modalImg'].ondragstart = function () {
+        return false
       }
+      this.triggerResizeEvent()
+    },
+    triggerResizeEvent (timeout = 200) {
+      // The plugins (LeaderLine and Zoomer) make some problems
+      setTimeout(function () {
+        window.dispatchEvent(new Event('resize'))
+      }, timeout)
+    },
+    zoomerClicked () {
+      setTimeout(() => {
+        var transformationScale = this.$refs['modalImg'].parentElement.style.transform.split(' ')[2]
+        var vueZoomer = this.$refs['modalImg'].parentElement.parentElement
+        var padding = this.$refs['myModal'].style.paddingTop
+        console.log(this.$refs['myModal'])
+        if (transformationScale != null) {
+          // This is because the plugin Zoomer.js shows strange behaviour
+          if (padding === '75px') {
+            this.triggerResizeEvent()
+            console.log(padding)
+          }
+          this.$refs['myModal'].style.paddingTop = 0 // For full screen zoom
+          vueZoomer.style.height = '100%'
+        } else {
+          // This is because the plugin Zoomer.js shows strange behaviour
+          if (padding === '0px') {
+            this.triggerResizeEvent()
+            console.log(padding)
+          }
+          this.$refs['myModal'].style.paddingTop = '75px'
+        }
+      }, 500)
     }
-  },
-  mounted () {
-    this.createMagnifier(this.$refs['modalImg'], 2)
   }
 }
 </script>
@@ -297,10 +260,10 @@ export default {
 
   /* MODAL */
   .modal {
+    z-index: 9999;
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 9; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
     left: 0;
     top: 0;
     width: 100%; /* Full width */
@@ -336,6 +299,7 @@ export default {
     font-size: 40px;
     font-weight: bold;
     transition: 0.3s;
+    z-index: 9;
   }
 
   .close:hover,

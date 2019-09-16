@@ -46,7 +46,7 @@ export default {
   methods: {
     callback (numberOfScales) {
       this.removeLines()
-      setTimeout(function () {
+      setTimeout(() => {
         var start = JQuery('.scalespace_container #scale_2')
         var end = JQuery('.scalespace_container #scale_0')
         for (var i = 0; i < start.length - 1; i++) {
@@ -67,7 +67,7 @@ export default {
         } else {
           this.enableLines(false)
         }
-      }.bind(this), 5000)
+      }, 5000)
     },
     enableLines (enable) {
       for (var i = 0; i < this.$store.scalespaceLines.length; i++) {

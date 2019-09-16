@@ -69,7 +69,7 @@ export default {
   methods: {
     callback (numberOfOctaves, numberOfScales) {
       this.removeLines()
-      setTimeout(function () {
+      setTimeout(() => {
         for (var i = 0; i < numberOfOctaves; i++) {
           for (var j = 0; j < numberOfScales; j++) {
             var start = JQuery('.dog_container .octave_' + i + '.scale_' + j)[0]
@@ -94,7 +94,7 @@ export default {
         } else {
           this.enableLines(false)
         }
-      }.bind(this), 5000)
+      }, 5000)
     },
     enableLines (enable) {
       for (var i = 0; i < this.$store.dogLines.length; i++) {
@@ -115,13 +115,14 @@ export default {
       var caption = ''
       try {
         var classes = $event.target.offsetParent.offsetParent.className.split(' ')
-        var octaveOfImage = parseInt(classes[2].split('_')[1]) + 1
+        var octaveOfImage = parseInt(classes[2].split('_')[1])
         var scaleOfImage = parseInt(classes[3].split('_')[1])
         var src = 'http://localhost:5000/' + this.keypoints[0][octaveOfImage][scaleOfImage].scale
-        caption = 'Octave: ' + octaveOfImage + ' - Scale: ' + scaleOfImage
+        caption = 'Octave: ' + (octaveOfImage + 1) + ' - Scale: ' + scaleOfImage
         this.$eventBus.$emit('showModalImage', src, caption)
       } catch (e) {
-        caption = 'SIFT does not found any keypoints for this scale.\nOctave: ' + octaveOfImage + ' - Scale: ' + scaleOfImage
+        console.log(e)
+        caption = 'SIFT does not found any keypoints for this scale.\nOctave: ' + (octaveOfImage + 1) + ' - Scale: ' + scaleOfImage
         this.$eventBus.$emit('showModalImage', '', caption)
       }
     }

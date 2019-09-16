@@ -9,6 +9,7 @@
             width="300"
             height="300"
             margin="16"
+            zIndex="0"
             accept="image/jpeg,image/png"
             size="10"
             buttonClass="btn"
@@ -38,7 +39,7 @@
         </div>
         <div class="sift_cli_buttons q-gutter-md row items-start">
           <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
-          <q-btn id="sift_cli_button_execute" label="Start Sift Algorithm" type="submit" color="primary" />
+          <q-btn id="sift_cli_button_execute" label="Run Sift Algorithm" type="submit" color="primary" />
         </div>
       </form>
     </div>
