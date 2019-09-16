@@ -211,21 +211,14 @@ export default {
         var transformationScale = this.$refs['modalImg'].parentElement.style.transform.split(' ')[2]
         var vueZoomer = this.$refs['modalImg'].parentElement.parentElement
         var padding = this.$refs['myModal'].style.paddingTop
-        console.log(this.$refs['myModal'])
         if (transformationScale != null) {
           // This is because the plugin Zoomer.js shows strange behaviour
-          if (padding === '75px') {
-            this.triggerResizeEvent()
-            console.log(padding)
-          }
+          if (padding === '75px') this.triggerResizeEvent()
           this.$refs['myModal'].style.paddingTop = 0 // For full screen zoom
           vueZoomer.style.height = '100%'
         } else {
           // This is because the plugin Zoomer.js shows strange behaviour
-          if (padding === '0px') {
-            this.triggerResizeEvent()
-            console.log(padding)
-          }
+          if (padding === '0px') this.triggerResizeEvent()
           this.$refs['myModal'].style.paddingTop = '75px'
         }
       }, 500)

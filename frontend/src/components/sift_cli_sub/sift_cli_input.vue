@@ -149,6 +149,7 @@ export default {
     },
     reset () {
       Object.assign(this.siftCliParams, siftCliParamsDefault) // Resets the parameter values
+      this.drawType = true
     },
     onChange () {
       if (this.$refs.pictureInput.file) {
