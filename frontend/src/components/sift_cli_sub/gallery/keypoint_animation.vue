@@ -19,7 +19,6 @@
         :key="'step_' + step_number"
         :class="'step_container tab_content items-start'"
         v-show="currentKeypointTab === 'step_' + step_number"
-        animated
       >
         <scaleWrapper
           :step_name="steps[step_number]"
