@@ -111,8 +111,6 @@ export default {
         .then(() => {
           console.log('SIFT finished.')
           this.$eventBus.$emit('buildGallery', this.drawType)
-          this.$eventBus.$emit('hideLoader')
-          document.getElementById('sift_cli_button_execute').disabled = false
         })
         .catch((error) => {
           console.error(error)

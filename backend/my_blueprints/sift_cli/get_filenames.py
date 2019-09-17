@@ -12,7 +12,7 @@ def sift_cli_get_scales(filename):
     else:
         abort(400, 'No such filename')
 
-@get_filenames.route('/get_keypoints/<type>', methods=['GET'])
+@get_filenames.route('/get_filenames/keypoints/<type>', methods=['GET'])
 def sift_cli_get_keypoints(type):
     output_files = {}
     listing = glob.glob('static/keypoints/step*')
@@ -32,8 +32,8 @@ def sift_cli_get_keypoints(type):
             listing = glob.glob(octave_fileString + "scale*")
             for scale_fileString in listing:
                 scale_number = re.search('(?<=scale_).*(?=.jpg)', scale_fileString).group()
-                scaleImage = { 'scale': scale_fileString }
-                output_files[step_number][octave_number][scale_number] = (scaleImage)
+                print(scale_fileString)
+                output_files[step_number][octave_number][scale_number] = 'http://localhost:5000/' + scale_fileString
 
     obj = { 'keypoints': output_files, 'randomUuid': uuid.uuid4() }
     return jsonify(obj)
@@ -46,9 +46,9 @@ def get_output_files_of(directory):
         for file in filelist:
             octave = re.search('(?<=_o).*(?=_)', file)
             if(scalespace.get(int(octave.group())) == None):
-                scalespace[int(octave.group())] = [file]
+                scalespace[int(octave.group())] = ['http://localhost:5000/static/scalespace/' + file]
             else:
-                scalespace[int(octave.group())].append(file)
+                scalespace[int(octave.group())].append('http://localhost:5000/static/scalespace/' + file)
             octaveList.append(int(octave.group(0)))
         scalespaceWithUniqueKey = {
             'scalespace': scalespace,
@@ -62,9 +62,9 @@ def get_output_files_of(directory):
         for file in filelist:
             octave = re.search('(?<=_o).*(?=_)', file)
             if(dogs.get(int(octave.group())) == None):
-                dogs[int(octave.group())] = [file]
+                dogs[int(octave.group())] = ['http://localhost:5000/static/dog/' + file]
             else:
-                dogs[int(octave.group())].append(file)
+                dogs[int(octave.group())].append('http://localhost:5000/static/dog/' + file)
             octaveList.append(int(octave.group(0)))
         dogsWithUniqueKey = {
             'dogs': dogs,

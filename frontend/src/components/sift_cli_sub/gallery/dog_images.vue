@@ -16,7 +16,7 @@
           >
             <q-img
               :class="'octave_' + parseInt(o_number) + ' scale_' + s_number"
-              :src="'http://localhost:5000/static/scalespace/' + scale + '?' + dogs_randomUuid"
+              :src="scale + '?' + dogs_randomUuid"
               @load="loaded"
               :style="{ width: defaultWidth / (Math.pow(2, parseInt(o_number))) + 'px' }"
               spinner-color="white"
@@ -31,7 +31,7 @@
           >
             <q-img
               :class="'octave_' + parseInt(o_number) + ' dog_' + d_number"
-              :src="'http://localhost:5000/static/dog/' + dog + '?' + dogs_randomUuid"
+              :src="dog + '?' + dogs_randomUuid"
               @load="loaded"
               :style="{ width: defaultWidth / (Math.pow(2, parseInt(o_number))) + 'px' }"
               spinner-color="white"

@@ -128,14 +128,13 @@ export default {
       if (inputImageName != null) {
         return axios.get('http://localhost:5000/sift_cli/animate_keypoints?inputImageName=' + inputImageName + '&drawType=' + drawType)
           .then((response) => {
-            return axios.get('http://localhost:5000/sift_cli/get_keypoints/' + type)
+            return axios.get('http://localhost:5000/sift_cli/get_filenames/keypoints/' + type)
               .then((response) => {
                 var promise = new Promise(function (resolve, reject) {
                   resolve(response.data)
                 })
                 return promise
               })
-              // TODO throws error sometimes ?
               .catch(function (error) {
                 console.log(error)
               })
@@ -162,22 +161,34 @@ export default {
     },
     // Events
     buildGallery (drawType) {
+      var counter = 0
       this.getKeypoints('scalespace', drawType).then((response) => {
         this.keypointsOriginalImage_randomUuid = response.randomUuid
         this.keypointsOriginalImage = response.keypoints
         this.getKeypoints('dog', drawType).then((response) => {
           this.keypointsDog_randomUuid = response.randomUuid
           this.keypointsDog = response.keypoints
+          increaseCounter()
         })
       })
       this.getScalespace().then((response) => {
         this.scalespace_randomUuid = response.randomUuid
         this.scalespace = response.scalespace
+        increaseCounter()
       })
       this.getDogs().then((response) => {
         this.dogs_randomUuid = response.randomUuid
         this.dogs = response.dogs
+        increaseCounter()
       })
+
+      var increaseCounter = () => {
+        counter++
+        if (counter === 3) {
+          this.$eventBus.$emit('hideLoader')
+          document.getElementById('sift_cli_button_execute').disabled = false
+        }
+      }
     },
     resetGalleryData () {
       this.$refs.scalespaceImages.removeLines()

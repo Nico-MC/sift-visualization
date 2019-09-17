@@ -21,7 +21,7 @@
           >
             <q-img
               :id="keypoints_randomUuid"
-              :src="'http://localhost:5000/' + scale.scale + '?' + keypoints_randomUuid"
+              :src="scale + '?' + keypoints_randomUuid"
               spinner-color="white"
               @click="zoomImg"
               style="width: 360px"

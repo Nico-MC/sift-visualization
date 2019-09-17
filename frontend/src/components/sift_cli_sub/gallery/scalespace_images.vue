@@ -17,7 +17,7 @@
         >
           <q-img
             :class="'octave_' + parseInt(o_number) + ' ' + 'scale_' + s_number"
-            :src="'http://localhost:5000/static/scalespace/' + scale + '?' + scalespace_randomUuid"
+            :src="scale + '?' + scalespace_randomUuid"
             @load="loaded(Object.keys(scalespace).length * Object.keys(octave).length)"
             :style="{ width: defaultWidth / (Math.pow(2, parseInt(o_number))) + 'px' }"
             spinner-color="white"
