@@ -1,6 +1,6 @@
 <template lang="html">
   <form @submit.prevent.stop="submit" class="q-gutter-md">
-    <div class="animate_keypoints_image_container" v-show="Object.keys(keypoints).length === 6">
+    <div class="animate_keypoints_image_container" v-show="Object.keys(keypoints.original).length === 6">
       <q-tabs
         v-model="currentKeypointTab"
         class="text-teal keypoint_tabs"
@@ -15,7 +15,7 @@
       </q-tabs>
 
       <q-tab-panel :name="'step_' + step_number"
-        v-for="(step, step_number) in keypoints"
+        v-for="(step, step_number) in keypoints.original"
         :key="'step_' + step_number"
         :class="'step_container tab_content items-start'"
         v-show="currentKeypointTab === 'step_' + step_number"

@@ -8,21 +8,26 @@
       <p class="tab_content_header q-title text-h6">
         Octave: {{ parseInt(o_number) + 1 }}
       </p>
-      <div class="q-gutter-md column items-start">
+      <div class="q-gutter-md column items-start scales">
         <div
           v-for="(scale, s_number) in octave"
-          :id="'scale_' + s_number"
           :key="s_number"
           :style="{ width: defaultWidth / (Math.pow(2, parseInt(o_number))) + 'px' }"
         >
           <q-img
-            :class="'octave_' + parseInt(o_number) + ' ' + 'scale_' + s_number"
-            :src="scale + '?' + scalespace_randomUuid"
+            :class="'octave_' + parseInt(o_number) + ' ' + 'scale_' + s_number + ' scalespace-image'"
+            :src="scale + '?' + keypoints_randomUuid"
             @load="loaded(Object.keys(scalespace).length * Object.keys(octave).length)"
             :style="{ width: defaultWidth / (Math.pow(2, parseInt(o_number))) + 'px' }"
             spinner-color="white"
-            @click="showKeypointsForClickedScale"
           >
+            <div
+              class="absolute-full text-subtitle2 flex flex-center scale_caption"
+              v-if="s_number > 0 && s_number < Object.keys(octave).length - 2"
+              v-on:click="showKeypointsForClickedScale($event)"
+            >
+              Show extrema
+            </div>
           </q-img>
         </div>
       </div>
@@ -32,7 +37,6 @@
 
 <script>
 import { QImg } from 'quasar'
-import JQuery from 'jquery'
 
 export default {
   components: {
@@ -47,7 +51,7 @@ export default {
     scalespace: Object,
     keypoints: Object,
     defaultWidth: Number,
-    scalespace_randomUuid: String
+    keypoints_randomUuid: String
   },
   methods: {
     loaded (maxScales) {
@@ -63,8 +67,8 @@ export default {
     },
     drawLines () {
       this.removeLines()
-      var start = JQuery('.scalespace_container #scale_2')
-      var end = JQuery('.scalespace_container #scale_0')
+      var start = document.getElementsByClassName('scalespace-image scale_2')
+      var end = document.getElementsByClassName('scalespace-image scale_0')
       for (var i = 0; i < start.length - 1; i++) {
         var line = null
         var startElement = start[i],
@@ -99,12 +103,20 @@ export default {
       }
       this.$store.scalespaceLines = []
     },
-    showKeypointsForClickedScale (img) {
+    showKeypointsForClickedScale ($event) {
+      var caption = ''
       try {
-        // var classes = img.target.parentElement.className.split(' ')
-        // var octaveOfImage = parseInt(classes[2].split('_')[1])
-        // var scaleOfImage = parseInt(classes[3].split('_')[1])
+        var classes = $event.target.offsetParent.offsetParent.className.split(' ')
+        var octaveOfImage = parseInt(classes[2].split('_')[1])
+        var scaleOfImage = parseInt(classes[3].split('_')[1])
+        var src = this.keypoints.scalespace[0][octaveOfImage][scaleOfImage] + '?' + this.keypoints_randomUuid
+        if (src.split('?')[0] === 'undefined') throw new Error('undefined')
+        caption = 'Octave: ' + (octaveOfImage + 1) + ' - Scale: ' + scaleOfImage
+        this.$eventBus.$emit('showModalImage', src, caption)
       } catch (e) {
+        console.log(e)
+        caption = 'SIFT does not found any keypoints for this scale.\nOctave: ' + (octaveOfImage + 1) + ' - Scale: ' + scaleOfImage
+        this.$eventBus.$emit('showModalImage', '', caption)
       }
     }
   }
@@ -112,6 +124,10 @@ export default {
 </script>
 
 <style lang="css">
+  .tab_content_header {
+    text-align: center;
+  }
+
   .scalespace_octave_container {
     flex: 1 0 auto;
   }
@@ -184,5 +200,19 @@ export default {
     .modal-content {
       width: 100%;
     }
+  }
+
+  .scales {
+    align-items: center;
+  }
+
+  .scales .scale_caption {
+    opacity: 0;
+  }
+
+  .scales .scale_caption:hover {
+    opacity: 1;
+    padding: 0;
+    cursor: pointer;
   }
 </style>

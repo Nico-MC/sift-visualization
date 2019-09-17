@@ -26,9 +26,9 @@
     <div class="tab_content items-start scalespace-images" v-show="$store.currentTab === 'scalespace_tab'" v-if="Object.keys(scalespace).length > 0">
       <scalespace-images
         :scalespace="scalespace"
-        :keypoints="keypointsOriginalImage"
+        :keypoints="keypoints"
+        :keypoints_randomUuid="keypoints_randomUuid"
         :defaultWidth="defaultWidth"
-        :scalespace_randomUuid="scalespace_randomUuid"
         ref="scalespaceImages"
       ></scalespace-images>
     </div>
@@ -37,18 +37,18 @@
       <dog-images
         :dogs="dogs"
         :scalespace="scalespace"
-        :keypoints="keypointsDog"
+        :keypoints="keypoints"
+        :keypoints_randomUuid="keypoints_randomUuid"
         :defaultWidth="defaultWidth"
-        :dogs_randomUuid="dogs_randomUuid"
         ref="dogImages"
       ></dog-images>
     </div>
     <!-- ### KEYPOINTS TAB ### -->
-    <div class="tab_content keypoint-animation" v-show="$store.currentTab === 'keypoints_tab'" v-if="Object.keys(keypointsOriginalImage).length > 0">
+    <div class="tab_content keypoint-animation" v-show="$store.currentTab === 'keypoints_tab'" v-if="Object.keys(keypoints).length > 0">
       <keypoint-animation
-        :keypoints="keypointsOriginalImage"
+        :keypoints="keypoints"
+        :keypoints_randomUuid="keypoints_randomUuid"
         :defaultWidth="defaultWidth"
-        :keypoints_randomUuid="keypointsOriginalImage_randomUuid"
         ref="keypointAnimation"
       ></keypoint-animation>
     </div>
@@ -74,8 +74,8 @@ export default {
     return {
       scalespace: {},
       dogs: {},
-      keypointsOriginalImage: {},
-      keypointsDog: {},
+      keypoints: {},
+      keypoints_randomUuid: '',
       defaultWidth: 240,
       click: 'scalespace_tab',
       modalImgSrc: '',
@@ -123,12 +123,12 @@ export default {
           console.log(error)
         })
     },
-    getKeypoints (type, drawType) {
+    getKeypoints (drawType) {
       var inputImageName = this.$store.inputImageName
       if (inputImageName != null) {
         return axios.get('http://localhost:5000/sift_cli/animate_keypoints?inputImageName=' + inputImageName + '&drawType=' + drawType)
           .then((response) => {
-            return axios.get('http://localhost:5000/sift_cli/get_filenames/keypoints/' + type)
+            return axios.get('http://localhost:5000/sift_cli/get_filenames/keypoints/')
               .then((response) => {
                 var promise = new Promise(function (resolve, reject) {
                   resolve(response.data)
@@ -162,22 +162,16 @@ export default {
     // Events
     buildGallery (drawType) {
       var counter = 0
-      this.getKeypoints('scalespace', drawType).then((response) => {
-        this.keypointsOriginalImage_randomUuid = response.randomUuid
-        this.keypointsOriginalImage = response.keypoints
-        this.getKeypoints('dog', drawType).then((response) => {
-          this.keypointsDog_randomUuid = response.randomUuid
-          this.keypointsDog = response.keypoints
-          increaseCounter()
-        })
+      this.getKeypoints(drawType).then((response) => {
+        this.keypoints = response.keypoints
+        this.keypoints_randomUuid = response.randomUuid
+        increaseCounter()
       })
       this.getScalespace().then((response) => {
-        this.scalespace_randomUuid = response.randomUuid
         this.scalespace = response.scalespace
         increaseCounter()
       })
       this.getDogs().then((response) => {
-        this.dogs_randomUuid = response.randomUuid
         this.dogs = response.dogs
         increaseCounter()
       })
@@ -195,8 +189,7 @@ export default {
       this.$refs.dogImages.removeLines()
       this.scalespace = {}
       this.dogs = {}
-      this.keypointsOriginalImage = {}
-      this.keypointsDog = {}
+      this.keypoints = {}
       this.click = 'scalespace_tab'
       this.$store.currentTab = this.click
     },

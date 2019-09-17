@@ -16,7 +16,7 @@
           >
             <q-img
               :class="'octave_' + parseInt(o_number) + ' scale_' + s_number"
-              :src="scale + '?' + dogs_randomUuid"
+              :src="scale + '?' + keypoints_randomUuid"
               @load="loaded"
               :style="{ width: defaultWidth / (Math.pow(2, parseInt(o_number))) + 'px' }"
               spinner-color="white"
@@ -31,7 +31,7 @@
           >
             <q-img
               :class="'octave_' + parseInt(o_number) + ' dog_' + d_number"
-              :src="dog + '?' + dogs_randomUuid"
+              :src="dog + '?' + keypoints_randomUuid"
               @load="loaded"
               :style="{ width: defaultWidth / (Math.pow(2, parseInt(o_number))) + 'px' }"
               spinner-color="white"
@@ -69,7 +69,7 @@ export default {
     scalespace: Object,
     keypoints: Object,
     defaultWidth: Number,
-    dogs_randomUuid: String
+    keypoints_randomUuid: String
   },
   methods: {
     loaded () {
@@ -133,7 +133,9 @@ export default {
         var classes = $event.target.offsetParent.offsetParent.className.split(' ')
         var octaveOfImage = parseInt(classes[2].split('_')[1])
         var scaleOfImage = parseInt(classes[3].split('_')[1])
-        var src = 'http://localhost:5000/' + this.keypoints[0][octaveOfImage][scaleOfImage].scale + '?' + this.dogs_randomUuid
+
+        // Only show keypoints of first step
+        var src = this.keypoints.dog[0][octaveOfImage][scaleOfImage] + '?' + this.keypoints_randomUuid
         caption = 'Octave: ' + (octaveOfImage + 1) + ' - Scale: ' + scaleOfImage
         this.$eventBus.$emit('showModalImage', src, caption)
       } catch (e) {
@@ -193,5 +195,4 @@ export default {
     padding: 0;
     cursor: pointer;
   }
-
 </style>
