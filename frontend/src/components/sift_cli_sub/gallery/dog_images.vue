@@ -2,9 +2,8 @@
   <div class="dog_container">
     <div class="dog_octave_container"
       :id="'octave_' + parseInt(o_number)"
-      v-for="(octave, o_number) in dogs"
-      :key="'dog_' + o_number"
-      v-for-callback="{key: o_number, array: dogs, callback: callback}"
+      v-for="(octave, o_number) in scalespace"
+      :key="'octave_' + o_number"
     >
       <p class="tab_content_header q-title text-h6">
         Octave: {{ parseInt(o_number) + 1 }}
@@ -12,12 +11,13 @@
       <div class="scales_and_dogs">
         <div class="q-gutter-md column items-start scales">
           <div
-            v-for="(scale, s_number) in scalespace[o_number]"
+            v-for="(scale, s_number) in octave"
             :key="s_number"
           >
             <q-img
-              :class="'octave_' + parseInt(o_number) + ' ' + 'scale_' + s_number"
+              :class="'octave_' + parseInt(o_number) + ' scale_' + s_number"
               :src="'http://localhost:5000/static/scalespace/' + scale + '?' + dogs_randomUuid"
+              @load="loaded"
               :style="{ width: defaultWidth / (Math.pow(2, parseInt(o_number))) + 'px' }"
               spinner-color="white"
             >
@@ -26,13 +26,13 @@
         </div>
         <div class="q-gutter-md column items-start dogs">
           <div
-            v-for="(dog, d_number) in octave"
+            v-for="(dog, d_number) in dogs[o_number]"
             :key="d_number"
-            class="dog_img"
           >
             <q-img
-              :class="'octave_' + parseInt(o_number) + ' ' + 'dog_' + d_number"
+              :class="'octave_' + parseInt(o_number) + ' dog_' + d_number"
               :src="'http://localhost:5000/static/dog/' + dog + '?' + dogs_randomUuid"
+              @load="loaded"
               :style="{ width: defaultWidth / (Math.pow(2, parseInt(o_number))) + 'px' }"
               spinner-color="white"
             >
@@ -59,6 +59,11 @@ export default {
   components: {
     QImg
   },
+  data () {
+    return {
+      counter: 0
+    }
+  },
   props: {
     dogs: Object,
     scalespace: Object,
@@ -67,34 +72,45 @@ export default {
     dogs_randomUuid: String
   },
   methods: {
-    callback (numberOfOctaves, numberOfScales) {
+    loaded () {
+      var maxScales = (Object.keys(this.dogs).length * this.dogs[0].length) +
+                      (Object.keys(this.scalespace).length * this.scalespace[0].length)
+      this.counter++
+      if (this.counter === maxScales) {
+        setTimeout(() => {
+          this.drawLines()
+        }, 2000)
+      }
+    },
+    created () {
       this.removeLines()
-      setTimeout(() => {
-        for (var i = 0; i < numberOfOctaves; i++) {
-          for (var j = 0; j < numberOfScales; j++) {
-            var start = JQuery('.dog_container .octave_' + i + '.scale_' + j)[0]
-            var startAdjacent = JQuery('.dog_container .octave_' + i + '.scale_' + (j + 1))[0]
-            var end = JQuery('.dog_container .octave_' + i + '.dog_' + j)[0]
-            var line = null
-            var lineAdjacent = null
-            // eslint-disable-next-line
-            if (i === 0 && j == 0) {
-              line = new window.LeaderLine(start, end, { hide: true, size: 2, startLabel: 'Subtract two adjacent LoG scales', endLabel: 'to DoG scale' })
-              lineAdjacent = new window.LeaderLine(startAdjacent, end, { hide: true, size: 2 })
-            } else {
-              line = new window.LeaderLine(start, end, { hide: true, size: 2 })
-              lineAdjacent = new window.LeaderLine(startAdjacent, end, { hide: true, size: 2 })
-            }
-            this.$store.dogLines.push(line)
-            this.$store.dogLines.push(lineAdjacent)
+    },
+    drawLines () {
+      this.removeLines()
+      for (var i = 0; i < Object.keys(this.dogs).length; i++) {
+        for (var j = 0; j < this.dogs[0].length; j++) {
+          var start = JQuery('.dog_container .octave_' + i + '.scale_' + j)[0]
+          var startAdjacent = JQuery('.dog_container .octave_' + i + '.scale_' + (j + 1))[0]
+          var end = JQuery('.dog_container .octave_' + i + '.dog_' + j)[0]
+          var line = null
+          var lineAdjacent = null
+          // eslint-disable-next-line
+          if (i === 0 && j == 0) {
+            line = new window.LeaderLine(start, end, { hide: true, size: 2, startLabel: 'Subtract two adjacent LoG scales', endLabel: 'to DoG scale' })
+            lineAdjacent = new window.LeaderLine(startAdjacent, end, { hide: true, size: 2 })
+          } else {
+            line = new window.LeaderLine(start, end, { hide: true, size: 2 })
+            lineAdjacent = new window.LeaderLine(startAdjacent, end, { hide: true, size: 2 })
           }
+          this.$store.dogLines.push(line)
+          this.$store.dogLines.push(lineAdjacent)
         }
-        if (this.$store.currentTab === 'dog_tab') {
-          this.enableLines(true)
-        } else {
-          this.enableLines(false)
-        }
-      }, 5000)
+      }
+      if (this.$store.currentTab === 'dog_tab') {
+        this.enableLines(true)
+      } else {
+        this.enableLines(false)
+      }
     },
     enableLines (enable) {
       for (var i = 0; i < this.$store.dogLines.length; i++) {

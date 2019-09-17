@@ -10,11 +10,16 @@
         <q-tab name="keypoints_tab" icon="linear_scale" label="Keypoints (original image)" @click="toggleLines('keypoints_tab')"/>
       </q-tabs>
     </div>
-    <div class="modal" ref="myModal" style="padding-top: 75px">
+    <div class="modal" ref="myModal">
       <span class="close" id="modalImgClose">&times;</span>
-      <v-zoomer ref="vue-zoomer">
-        <img class="modal-content" :src="modalImgSrc" ref="modalImg" style="object-fit: contain; width: 100%;" v-on:click="zoomerClicked()">
-        <pre id="keypoint_caption">{{modalImgCaption}}</pre>
+      <v-zoomer ref="vue-zoomer" style="height: 100%">
+        <div class="">
+          <div style="width: 100%; height: 100px"></div>
+          <div style="height: 720px">
+            <img class="modal-content" :src="modalImgSrc" ref="modalImg">
+            <div id="keypoint_caption">{{ modalImgCaption }}</div>
+          </div>
+        </div>
       </v-zoomer>
     </div>
     <!-- ### SCALESPACE TAB ### -->
@@ -130,6 +135,7 @@ export default {
                 })
                 return promise
               })
+              // TODO throws error sometimes ?
               .catch(function (error) {
                 console.log(error)
               })
@@ -205,23 +211,6 @@ export default {
       setTimeout(function () {
         window.dispatchEvent(new Event('resize'))
       }, timeout)
-    },
-    zoomerClicked () {
-      setTimeout(() => {
-        var transformationScale = this.$refs['modalImg'].parentElement.style.transform.split(' ')[2]
-        var vueZoomer = this.$refs['modalImg'].parentElement.parentElement
-        var padding = this.$refs['myModal'].style.paddingTop
-        if (transformationScale != null) {
-          // This is because the plugin Zoomer.js shows strange behaviour
-          if (padding === '75px') this.triggerResizeEvent()
-          this.$refs['myModal'].style.paddingTop = 0 // For full screen zoom
-          vueZoomer.style.height = '100%'
-        } else {
-          // This is because the plugin Zoomer.js shows strange behaviour
-          if (padding === '0px') this.triggerResizeEvent()
-          this.$refs['myModal'].style.paddingTop = '75px'
-        }
-      }, 500)
     }
   }
 }
@@ -266,6 +255,8 @@ export default {
     overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.9); /* Black width/ opacity */
+    padding-top: 0;
+
   }
 
   .modal-content {
@@ -273,12 +264,15 @@ export default {
     display: block;
     width: 80%;
     max-width: 50%;
+    max-height: 100%;
     cursor: pointer;
   }
 
   .modal-content, #caption {
     animation-name: zoom;
     animation-duration: 0.6s;
+    object-fit: contain;
+    width: 100%;
   }
 
   @keyframes zoom {
@@ -317,5 +311,23 @@ export default {
     cursor: none;
     width: 100px;
     height: 100px;
+  }
+
+  @media only screen and (max-width: 1700px) {
+    .modal-content {
+      max-height: 75%;
+    }
+  }
+
+  @media only screen and (max-width: 1300px) {
+    .modal-content {
+      max-height: 60%;
+    }
+  }
+
+  @media only screen and (min-width: 1700px) {
+    .modal-content {
+      max-height: 90%;
+    }
   }
 </style>

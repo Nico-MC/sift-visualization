@@ -45,12 +45,12 @@ def get_keypoints(filename, label, inputImageName, step, inputImagePath, grayIma
         theta = line.split(' ')[3]
         octa = line.split(' ')[4]
         sca = line.split(' ')[5]
-        keypoint = str(float(y)) + " " + str(float(x)) + " " + str(float(sigma)) + " " + str(np.degrees(float(theta)))
-        keypoint_scaled = str(float(y) * 2) + " " + str(float(x) * 2) + " " + str(float(sigma)) + " " + str(np.degrees(float(theta)))
+        keypoint = str(float(y)) + " " + str(float(x)) + " " + str(float(sigma) * 2) + " " + str(np.degrees(float(theta)))
+        keypoint_scaled = str(float(y) * 2) + " " + str(float(x) * 2) + " " + str(float(sigma) * 4) + " " + str(np.degrees(float(theta)))
         keypoint_cv = cv.KeyPoint(
                                 x = float(x),
                                 y = float(y),
-                                _size = 200,
+                                _size = float(sigma) * 4,
                                 _angle = np.degrees(float(theta)),
                                 _response = 0,
                                 _octave = int(octa),
@@ -59,7 +59,7 @@ def get_keypoints(filename, label, inputImageName, step, inputImagePath, grayIma
         keypoint_cv_scaled = cv.KeyPoint(
                                 x = float(x) * 2,
                                 y = float(y) * 2,
-                                _size = 200,
+                                _size = float(sigma) * 8,
                                 _angle = np.degrees(float(theta)),
                                 _response = 0,
                                 _octave = int(octa),
@@ -88,7 +88,7 @@ def get_keypoints(filename, label, inputImageName, step, inputImagePath, grayIma
             os.makedirs(currentDirectoryPath + "/Octave_" + octa + "/Scalespace")
             os.makedirs(currentDirectoryPath + "/Octave_" + octa + "/DoG")
 
-    if(drawType == 'true'):
+    if(drawType == 'false'):
         drawKeypoints(keypoints, keypoints_scaled, currentDirectoryPath, inputImagePath, grayImagePath, step)
     else:
         drawKeypointsWithCv(keypoints_cv, keypoints_cv_scaled, currentDirectoryPath, inputImagePath, grayImagePath, step, img, gray)
@@ -117,7 +117,7 @@ def drawKeypointsWithCv(keypoints_cv, keypoints_cv_scaled, currentDirectoryPath,
     for octave_number, octave in keypoints_cv.items():
         for scale_number, kp in octave.items():
             path_scaleImageKeypoints = currentDirectoryPath + "/Octave_" + octave_number + "/Scalespace/scale_" + scale_number + ".jpg"
-            img = cv.drawKeypoints(gray, kp, img)
+            img = cv.drawKeypoints(gray, kp, img, flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
             cv.imwrite(path_scaleImageKeypoints, img)
 
     for octave_number, octave in keypoints_cv_scaled.items():
@@ -125,7 +125,7 @@ def drawKeypointsWithCv(keypoints_cv, keypoints_cv_scaled, currentDirectoryPath,
             path_dogImage = glob.glob("static/dog/*o*" + octave_number + "_s*" + scale_number + ".png")[0]
             path_dogImageKeypoints = currentDirectoryPath + "/Octave_" + octave_number + "/DoG/scale_" + scale_number + ".jpg"
             dog = cv.imread(path_dogImage)
-            img = cv.drawKeypoints(dog, kp, img)
+            img = cv.drawKeypoints(dog, kp, img, flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
             cv.imwrite(path_dogImageKeypoints, img)
 
 
@@ -134,4 +134,4 @@ def check_output_directory(currentDirectoryPath):
         shutil.rmtree(currentDirectoryPath, ignore_errors = True, onerror = None)
         os.makedirs(currentDirectoryPath)
     except Exception as e:
-        return(e)
+        print(e)

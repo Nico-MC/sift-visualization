@@ -45,11 +45,11 @@ def get_output_files_of(directory):
         scalespace = {}
         for file in filelist:
             octave = re.search('(?<=_o).*(?=_)', file)
-            if(scalespace.get(octave.group()) == None):
-                scalespace[octave.group()] = [file]
+            if(scalespace.get(int(octave.group())) == None):
+                scalespace[int(octave.group())] = [file]
             else:
-                scalespace[octave.group()].append(file)
-            octaveList.append(octave.group(0))
+                scalespace[int(octave.group())].append(file)
+            octaveList.append(int(octave.group(0)))
         scalespaceWithUniqueKey = {
             'scalespace': scalespace,
             'randomUuid': uuid.uuid4()
@@ -61,11 +61,11 @@ def get_output_files_of(directory):
         dogs = {}
         for file in filelist:
             octave = re.search('(?<=_o).*(?=_)', file)
-            if(dogs.get(octave.group()) == None):
-                dogs[octave.group()] = [file]
+            if(dogs.get(int(octave.group())) == None):
+                dogs[int(octave.group())] = [file]
             else:
-                dogs[octave.group()].append(file)
-            octaveList.append(octave.group(0))
+                dogs[int(octave.group())].append(file)
+            octaveList.append(int(octave.group(0)))
         dogsWithUniqueKey = {
             'dogs': dogs,
             'randomUuid': uuid.uuid4()

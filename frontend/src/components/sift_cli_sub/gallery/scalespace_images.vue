@@ -3,7 +3,6 @@
     <div class="scalespace_octave_container"
       v-for="(octave, o_number) in scalespace"
       :key="'scalespace_' + o_number"
-      v-for-callback="{key: o_number, array: scalespace, callback: callback}"
       v-bind:class="'octave_' + parseInt(o_number)"
     >
       <p class="tab_content_header q-title text-h6">
@@ -14,10 +13,12 @@
           v-for="(scale, s_number) in octave"
           :id="'scale_' + s_number"
           :key="s_number"
+          :style="{ width: defaultWidth / (Math.pow(2, parseInt(o_number))) + 'px' }"
         >
           <q-img
             :class="'octave_' + parseInt(o_number) + ' ' + 'scale_' + s_number"
             :src="'http://localhost:5000/static/scalespace/' + scale + '?' + scalespace_randomUuid"
+            @load="loaded(Object.keys(scalespace).length * Object.keys(octave).length)"
             :style="{ width: defaultWidth / (Math.pow(2, parseInt(o_number))) + 'px' }"
             spinner-color="white"
             @click="showKeypointsForClickedScale"
@@ -37,6 +38,11 @@ export default {
   components: {
     QImg
   },
+  data () {
+    return {
+      counter: 0
+    }
+  },
   props: {
     scalespace: Object,
     keypoints: Object,
@@ -44,30 +50,39 @@ export default {
     scalespace_randomUuid: String
   },
   methods: {
-    callback (numberOfScales) {
+    loaded (maxScales) {
+      this.counter++
+      if (this.counter === maxScales) {
+        setTimeout(() => {
+          this.drawLines()
+        }, 2000)
+      }
+    },
+    created () {
       this.removeLines()
-      setTimeout(() => {
-        var start = JQuery('.scalespace_container #scale_2')
-        var end = JQuery('.scalespace_container #scale_0')
-        for (var i = 0; i < start.length - 1; i++) {
-          var line = null
-          var startElement = start[i],
-            endElement = end[i + 1]
-          if (i === 0) {
-            // eslint-disable-next-line
-            line = new window.LeaderLine(startElement, endElement, { hide: true, size: 2, startLabel: 'take this...', endLabel: '...and halve it.' })
-          } else {
-            // eslint-disable-next-line
-            line = new window.LeaderLine(startElement, endElement, { hide: true, size: 2 })
-          }
-          this.$store.scalespaceLines.push(line)
-        }
-        if (this.$store.currentTab === 'scalespace_tab') {
-          this.enableLines(true)
+    },
+    drawLines () {
+      this.removeLines()
+      var start = JQuery('.scalespace_container #scale_2')
+      var end = JQuery('.scalespace_container #scale_0')
+      for (var i = 0; i < start.length - 1; i++) {
+        var line = null
+        var startElement = start[i],
+          endElement = end[i + 1]
+        if (i === 0) {
+          // eslint-disable-next-line
+          line = new window.LeaderLine(startElement, endElement, { hide: true, size: 2, startLabel: 'take this...', endLabel: '...and halve it.' })
         } else {
-          this.enableLines(false)
+          // eslint-disable-next-line
+          line = new window.LeaderLine(startElement, endElement, { hide: true, size: 2 })
         }
-      }, 5000)
+        this.$store.scalespaceLines.push(line)
+      }
+      if (this.$store.currentTab === 'scalespace_tab') {
+        this.enableLines(true)
+      } else {
+        this.enableLines(false)
+      }
     },
     enableLines (enable) {
       for (var i = 0; i < this.$store.scalespaceLines.length; i++) {
@@ -86,28 +101,10 @@ export default {
     },
     showKeypointsForClickedScale (img) {
       try {
-        var classes = img.target.parentElement.className.split(' ')
-        var octaveOfImage = parseInt(classes[2].split('_')[1])
-        var scaleOfImage = parseInt(classes[3].split('_')[1])
-        console.log(this.keypoints[5][octaveOfImage][scaleOfImage].scale)
-        console.log(octaveOfImage)
-        console.log(scaleOfImage)
-        console.log(this.keypoints[5])
+        // var classes = img.target.parentElement.className.split(' ')
+        // var octaveOfImage = parseInt(classes[2].split('_')[1])
+        // var scaleOfImage = parseInt(classes[3].split('_')[1])
       } catch (e) {
-      }
-    }
-  },
-  directives: {
-    forCallback (el, binding) {
-      let element = binding.value
-      var key = element.key
-      var keys = Object.keys(element.array)
-      var len = keys.length
-      key = keys.indexOf(key)
-      if (key === len - 1) {
-        if (typeof element.callback === 'function') {
-          element.callback(Object.values(element.array)[0].length)
-        }
       }
     }
   }

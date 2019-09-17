@@ -3,6 +3,7 @@
     <p class="tab_content_header q-title text-h4">
       Filter {{ step_number + ': ' + step_name}}
     </p>
+    <p v-if="Object.keys(step).length == 0">SIFT does not found any keypoints in this step.</p>
     <div
       class="q-gutter-md column items-start"
       v-for="(octave, o_number) in step"
@@ -24,12 +25,12 @@
               spinner-color="white"
               @click="zoomImg"
               style="width: 360px"
-              :class="'octave_' + o_number + ' ' + 'scale_' + s_number"
+              :class="'octave_' + o_number + ' scale_' + s_number"
               :data-stepName="step_name"
               :data-stepNumber="step_number"
             >
               <div class="absolute-bottom-right text-subtitle2">
-                {{ parseInt(s_number)}}
+                {{ parseInt(s_number) }}
               </div>
             </q-img>
           </div>
