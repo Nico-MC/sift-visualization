@@ -77,6 +77,7 @@ export default {
                       (Object.keys(this.scalespace).length * this.scalespace[0].length)
       this.counter++
       if (this.counter === maxScales) {
+        this.counter = 0
         setTimeout(() => {
           this.drawLines()
         }, 2000)
