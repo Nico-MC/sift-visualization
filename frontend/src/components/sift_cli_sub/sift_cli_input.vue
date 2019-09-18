@@ -2,7 +2,7 @@
   <div class="input_container">
     <div class="q-pa-md">
       <form @submit.prevent.stop="submit" @reset.prevent.stop="reset" class="q-gutter-md">
-        <div>
+        <div class="input-picture">
           <picture-input
             ref="pictureInput"
             @change="onChange"
@@ -22,21 +22,65 @@
           <div class="image_type">*Only .png files are allowed.</div>
         </div>
 
-        <div class="q-gutter-md row items-start">
-          <q-input v-model="siftCliParams.ss_noct" filled type="text" hint="number of octaves" />
-          <q-input v-model="siftCliParams.ss_nspo" filled type="text" hint="number of scales per octave" />
-          <q-input v-model="siftCliParams.ss_dmin" filled type="text" hint="the sampling distance in the first octave" />
-          <q-input v-model="siftCliParams.ss_smin" filled type="text" hint="blur level on the seed image" />
-          <q-input v-model="siftCliParams.ss_sin" filled type="text" hint="assumed level of blur in the input image" />
-          <q-input v-model="siftCliParams.thresh_dog" filled type="text" hint="threshold over the DoG response" />
-          <q-input v-model="siftCliParams.thresh_edge" filled type="text" hint="threshold over the ratio of principal curvature" />
-          <q-input v-model="siftCliParams.ori_nbins" filled type="text" hint="number of bins in the orientation histogram" />
-          <q-input v-model="siftCliParams.ori_thresh" filled type="text" hint="threshold for considering local maxima in the orientation histogram" />
-          <q-input v-model="siftCliParams.ori_lambda" filled type="text" hint="sets how local is the analysis of the gradient distribution" />
-          <q-input v-model="siftCliParams.descr_nhist" filled type="text" hint="number of histograms per dimension" />
-          <q-input v-model="siftCliParams.descr_nori" filled type="text" hint="number of bins in each histogram" />
-          <q-input v-model="siftCliParams.descr_lambda" filled type="text" hint="sets how local the descriptor is" />
+        <div class="">
+          <div class="input-category-header flex-box">
+            <div class="flex-box-column">
+              <div class="flex-child">
+                <h4>Quantity</h4>
+                <div class="input-child-headline">Number of octaves</div>
+                <q-input class="input-child-field" v-model="siftCliParams.ss_noct" filled type="text" hint="How many octaves should be produced?" />
+                <div class="input-child-headline">Number of intervalls per octave</div>
+                <q-input class="input-child-field" v-model="siftCliParams.ss_nspo" filled type="text" hint="Sets the value 'S'. " />
+              </div>
+            </div>
+            <div class="flex-box-column">
+              <div class="flex-child">
+                <h4>Image</h4>
+                <div class="input-child-headline">Sampling distance</div>
+                <q-input class="input-child-field" v-model="siftCliParams.ss_dmin" filled type="text" hint="Distance between sample points (pixels)" />
+                <div class="input-child-headline">Blur Level</div>
+                <q-input class="input-child-field" v-model="siftCliParams.ss_smin" filled type="text" hint="Sets the Gaussian value (sigma) for blurring an image" />
+                <div class="input-child-headline">Blur Level in Input Image</div>
+                <q-input class="input-child-field" v-model="siftCliParams.ss_sin" filled type="text" hint="Level of blur in the input image" />
+              </div>
+            </div>
+            <div class="flex-box-column">
+              <div class="flex-child">
+                <h4>Threshold</h4>
+                <div class="input-child-headline">DoG</div>
+                <q-input class="input-child-field" v-model="siftCliParams.thresh_dog" filled type="text" hint="Threshold over the DoG response" />
+                <div class="input-child-headline">Principle curvature ratio</div>
+                <q-input class="input-child-field" v-model="siftCliParams.thresh_edge" filled type="text" hint="Threshold over the ratio of principal curvature"/>
+                <div class="input-child-headline">Threshold for orientation histogram</div>
+                <q-input class="input-child-field" v-model="siftCliParams.ori_thresh" filled type="text" hint="Threshold for considering local maxima in the orientation histogram"/>
+              </div>
+            </div>
+            <div class="flex-box-column">
+              <div class="flex-child">
+                <h4>Orientation</h4>
+                <div class="input-child-headline">Locality of gradient</div>
+                <q-input class="input-child-field" v-model="siftCliParams.ori_lambda" filled type="text" hint="Sets how local is the analysis of the gradient distribution" />
+                <div class="input-child-headline">Number of bins in orientation histogram</div>
+                <q-input class="input-child-field" v-model="siftCliParams.ori_nbins" filled type="text" hint="Number of bins in the orientation histogram" />
+              </div>
+            </div>
+            <div class="flex-box-column">
+              <div class="flex-child">
+                <h4>Descriptor</h4>
+                <div class="input-child-headline">Number of histograms</div>
+                <q-input class="input-child-field" v-model="siftCliParams.descr_nhist" filled type="text" hint="Number of histograms per dimension" />
+                <div class="input-child-headline">Number of bins in histogram</div>
+                <q-input class="input-child-field" v-model="siftCliParams.descr_nori" filled type="text" hint="Number of bins in each histogram" />
+                <div class="input-child-headline">Locality of Descriptor</div>
+                <q-input class="input-child-field" v-model="siftCliParams.descr_lambda" filled type="text" hint="Sets how local is the analysis of the gradient distribution" />
+              </div>
+            </div>
+          </div>
         </div>
+        <!--
+        <q-input v-model="siftCliParams.descr_nori" filled type="text" hint="number of bins in each histogram" />
+        <q-input v-model="siftCliParams.descr_lambda" filled type="text" hint="sets how local the descriptor is" />-->
+
         <div class="sift_cli_buttons q-gutter-md row items-start">
           <q-toggle v-model="drawType" />
           <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
@@ -56,7 +100,7 @@ var siftCliParamsDefault = {
   ss_noct: '3', // number of octaves
   ss_nspo: '3', // number of scales per octave
   ss_dmin: '0.5', // the sampling distance in the first octave
-  ss_smin: '1.6', // blur level on the seed image
+  ss_smin: '0.8', // blur level on the seed image
   ss_sin: '0.5', // assumed level of blur in the input image
   thresh_dog: '0.03', // threshold over the DoG response
   thresh_edge: '10', // threshold over the ratio of principal curvature
@@ -163,9 +207,30 @@ export default {
 </script>
 
 <style>
+  .input-picture {
+    margin-bottom: 50px;
+  }
+
+  .input-container-collection {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .input-container {
+    margin-right: 50px;
+    margin-bottom: 50px;
+    display: block;
+    flex: 0 1 auto;
+  }
+
+  .input-container-box {
+    display: flex;
+    flex-direction: column;
+  }
+
   .input_container .items-start {
     display: -webkit-inline-flex !important;
-    padding-bottom: 35px !important;
+    flex: 1;
   }
 
   .sift_cli_buttons {
@@ -180,5 +245,54 @@ export default {
     padding-top: 5px;
     color: #d2d2d2;
     font-variant: super;
+  }
+
+  .input-category-header {
+    margin-bottom: 50px;
+    margin-top: 0;
+  }
+
+  .flex-box {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    flex-wrap: wrap;
+  }
+
+  .flex-box-column {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    flex-wrap: wrap;
+    margin-right: 15px;
+    margin-left: 15px;
+    border-radius: 55pt;
+    background-color: #f4f4f4;
+    align-self: flex-start;
+  }
+
+  .flex-child {
+    flex: 1;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 50px;
+  }
+
+  .flex-child h4 {
+    margin-bottom: 15px;
+  }
+
+  .input-child {
+    margin-bottom: 50px;
+  }
+
+  .input-child-headline {
+    font-size: 16pt;
+    margin-bottom: 0;
+  }
+
+  .input-child-field {
+    margin-top: 15px;
+    margin-bottom: 75px;
   }
 </style>
