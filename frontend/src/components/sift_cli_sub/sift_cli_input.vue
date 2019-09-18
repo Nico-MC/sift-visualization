@@ -77,9 +77,6 @@
             </div>
           </div>
         </div>
-        <!--
-        <q-input v-model="siftCliParams.descr_nori" filled type="text" hint="number of bins in each histogram" />
-        <q-input v-model="siftCliParams.descr_lambda" filled type="text" hint="sets how local the descriptor is" />-->
 
         <div class="sift_cli_buttons q-gutter-md row items-start">
           <q-toggle v-model="drawType" />

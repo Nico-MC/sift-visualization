@@ -57,6 +57,7 @@ export default {
     loaded (maxScales) {
       this.counter++
       if (this.counter === maxScales) {
+        this.counter = 0
         setTimeout(() => {
           this.drawLines()
         }, 2000)
