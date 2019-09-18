@@ -38,7 +38,7 @@
             >
               <div
                 class="absolute-full text-subtitle2 flex flex-center dog_caption"
-                v-if="d_number > 0 && d_number < Object.keys(octave).length - 1"
+                v-if="d_number > 0 && d_number < Object.keys(octave).length - 2"
                 v-on:click="showKeypointsForClickedDog($event)"
               >
                 Show extrema
@@ -143,20 +143,6 @@ export default {
         console.log(e)
         caption = 'SIFT does not found any keypoints for this scale.\nOctave: ' + (octaveOfImage + 1) + ' - Scale: ' + scaleOfImage
         this.$eventBus.$emit('showModalImage', '', caption)
-      }
-    }
-  },
-  directives: {
-    forCallback (el, binding) {
-      let element = binding.value
-      var key = element.key
-      var keys = Object.keys(element.array)
-      var len = keys.length
-      key = keys.indexOf(key)
-      if (key === len - 1) {
-        if (typeof element.callback === 'function') {
-          element.callback(Object.values(element.array).length, Object.values(element.array)[0].length)
-        }
       }
     }
   }
