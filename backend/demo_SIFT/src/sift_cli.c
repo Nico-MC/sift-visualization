@@ -305,7 +305,7 @@ int main(int argc, char **argv)
         sprintf(name,"static/keypoints/extra_ExtrInterp_%s.txt",label_keys);       sift_save_keypoints(kk[2], name, 0);
         sprintf(name,"static/keypoints/extra_DoGThresh_%s.txt",label_keys);        sift_save_keypoints(kk[3], name, 0);
         sprintf(name,"static/keypoints/extra_OnEdgeResp_%s.txt",label_keys);       sift_save_keypoints(kk[4], name, 0);
-        sprintf(name,"static/keypoints/extra_FarFromBorder_%s.txt",label_keys);    sift_save_keypoints(kk[5], name, 0);
+        sprintf(name,"static/keypoints/extra_FarFromBorder_%s.txt",label_keys);    sift_save_keypoints(k, name, 0);
     }
     if (flagverb_ss == 1){
         sprintf(name,"static/scalespace/scalespace_%s",label_ss);     print_sift_scalespace_gray_nearestneighbor(ss[0],name);

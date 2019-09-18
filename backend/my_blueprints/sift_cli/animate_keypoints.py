@@ -89,7 +89,7 @@ def get_keypoints(filename, label, inputImageName, step, inputImagePath, grayIma
             os.makedirs(currentDirectoryPath + "/Octave_" + octa + "/DoG")
             os.makedirs(currentDirectoryPath + "/Octave_" + octa + "/Original")
 
-    if(drawType == 'false'):
+    if(drawType):
         drawKeypoints(keypoints, keypoints_scaled, currentDirectoryPath, inputImagePath, grayImagePath, step)
     else:
         drawKeypointsWithCv(keypoints_cv, keypoints_cv_scaled, currentDirectoryPath, inputImagePath, grayImagePath, step, img, gray)

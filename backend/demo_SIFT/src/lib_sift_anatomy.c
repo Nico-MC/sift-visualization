@@ -7,7 +7,7 @@ Version 20140911 (September 11th, 2014)
 
 This C ANSI source code is related to the IPOL publication
 
-    [1] "Anatomy of the SIFT Method." 
+    [1] "Anatomy of the SIFT Method."
         I. Rey Otero  and  M. Delbracio
         Image Processing Online, 2013.
         http://www.ipol.im/pub/algo/rd_anatomy_sift/
@@ -187,17 +187,17 @@ static void scalespace_compute_dog(const struct sift_scalespace *s,
 
 
 /** @brief Compute the 2d gradient of each image in the scale-space
- * 
+ *
  *  @in scalespace
  *  @out dx_scalespace,
  *       scalespace structure storing the gradient x-component of each image
- * 
+ *
  *  @out dy_scalespace,
- *       scalespace structure storing the gradient y-component of each image  
- * 
- * 
+ *       scalespace structure storing the gradient y-component of each image
+ *
+ *
  * The gradients of the auxiliary images are not computed.
- * 
+ *
  */
 void scalespace_compute_gradient(const struct sift_scalespace* scalespace,
                                  struct sift_scalespace* sx,
@@ -227,15 +227,15 @@ void scalespace_compute_gradient(const struct sift_scalespace* scalespace,
  *
  *
  *    The following parameters are for memory allocation only.
- * 
+ *
  * @param n_bins : Number of bins in the histogram
  *                 used to attribute principal orientation.
- * 
+ *
  * @param n_hist
  * @param n_ori  : The SIFT descriptor is an array of
  *                 n_hist X n_hist weighted orientation
  *                 with n_ori bins each.
- * 
+ *
  */
 static void keypoints_find_3d_discrete_extrema(struct sift_scalespace* d,
                                                struct sift_keypoints* keys,
@@ -317,11 +317,11 @@ static void keypoints_find_3d_discrete_extrema(struct sift_scalespace* d,
 /** @brief Filter a list of keypoints (copy the keypoints that satisfy a criteria)
  *
  * in  @param keysIn : list of keys to be filtered.
- * 
+ *
  * out @param keysAccept   list of keys with DoG absolute value beyond threshold.
- * 
+ *
  *  @param thresh    :constant threshold over the entire scale-space.
- * 
+ *
  */
 static void keypoints_discard_with_low_response(struct sift_keypoints *keysIn,
                                                 struct sift_keypoints *keysAccept,
@@ -341,19 +341,19 @@ static void keypoints_discard_with_low_response(struct sift_keypoints *keysIn,
 
 
 /** @brief Execute one interpolation (to refine extrema position)
- * 
+ *
  * in  @param imStck      : a stack of images in the DoG space
  *                    w X h X nscales samples.
- *                   
+ *
  * in  @param i , j ,  s  : 3d discrete extrema
- * 
+ *
  * out @param di , dj , ds : offset in each spatial direction
  * out @param dVal         , the extremum value is : imStck[i,j,s]+dVal
- * 
- * 
+ *
+ *
  * Computes the 3D Hessian of the DoG space in one point
- * 
- * 
+ *
+ *
  */
 static void inverse_3D_Taylor_second_order_expansion(float *stack,
                                               int w, int h, int ns,
@@ -364,7 +364,7 @@ static void inverse_3D_Taylor_second_order_expansion(float *stack,
     float det,aa,ab,ac,bb,bc,cc;
     float gX,gY,gS;
     float ofstX, ofstY, ofstS, ofstVal;
-    
+
     /** Compute the 3d Hessian at pixel (i,j,s)  Finite difference scheme  *****/
     hXX = stack[s*w*h+(i-1)*w+j] + stack[s*w*h+(i+1)*w+j] - 2*stack[s*w*h+i*w+j];
     hYY = stack[s*w*h+i*w+(j+1)] + stack[s*w*h+i*w+(j-1)] - 2*stack[s*w*h+i*w+j];
@@ -375,21 +375,21 @@ static void inverse_3D_Taylor_second_order_expansion(float *stack,
                 - (stack[(s-1)*w*h+(i+1)*w+j] - stack[(s-1)*w*h+(i-1)*w+j]) );
     hYS = 0.25*(  (stack[(s+1)*w*h+i*w+(j+1)] - stack[(s+1)*w*h+i*w+(j-1)])
                 - (stack[(s-1)*w*h+i*w+(j+1)] - stack[(s-1)*w*h+i*w+(j-1)]) );
-    
+
     /** Compute the 3d gradient at pixel (i,j,s) */
     gX = 0.5*( stack[s*w*h+(i+1)*w+j] - stack[s*w*h+(i-1)*w+j] );
     gY = 0.5*( stack[s*w*h+i*w+(j+1)] - stack[s*w*h+i*w+(j-1)] );
     gS = 0.5*( stack[(s+1)*w*h+i*w+j] - stack[(s-1)*w*h+i*w+j] );
-    
+
     /** Inverse the Hessian - Fitting a quadratic function */
-    det = hXX*hYY*hSS - hXX*hYS*hYS - hXY*hXY*hSS + 2*hXY*hXS*hYS - hXS*hXS*hYY ; 
+    det = hXX*hYY*hSS - hXX*hYS*hYS - hXY*hXY*hSS + 2*hXY*hXS*hYS - hXS*hXS*hYY ;
     aa = (hYY*hSS - hYS*hYS)/det;
     ab = (hXS*hYS - hXY*hSS)/det;
     ac = (hXY*hYS - hXS*hYY)/det;
     bb = (hXX*hSS - hXS*hXS)/det;
     bc = (hXY*hXS - hXX*hYS)/det;
     cc = (hXX*hYY - hXY*hXY)/det;
-    
+
     // offset
     ofstX = -aa*gX-ab*gY-ac*gS; // in position
     ofstY = -ab*gX-bb*gY-bc*gS;
@@ -408,20 +408,20 @@ static void inverse_3D_Taylor_second_order_expansion(float *stack,
 
 
 /** @brief Refine the position of candidate keypoints
- *         
+ *
  *  in  @param dog : difference of Gaussian
  *  in  @param keys : list candidate keypoints (3d discrete extrema)
- * 
+ *
  *  out @param keysInterpol : list of interpolated keypoints.
  *  out @param keysReject   : list of removed keypoints.
- * 
+ *
  *  The interpolation model consists in a local 3d quadratic model of the DoG space.
- *  
+ *
  *  An interpolation is successful if the interpolated extremum lays inside the pixel area
- *  
- *  Iterative process 
- * 
- * 
+ *
+ *  Iterative process
+ *
+ *
  */
 static void keypoints_interpolate_position(struct sift_scalespace *d,
                                     struct sift_keypoints *keys,
@@ -508,16 +508,16 @@ static void keypoints_interpolate_position(struct sift_scalespace *d,
 
 
 
-/** @brief  Compute Edge response 
+/** @brief  Compute Edge response
  *    i.e.  Compute the ratio of principal curvatures
  *    i.e.  Compute the ratio (hXX + hYY)*(hXX + hYY)/(hXX*hYY - hXY*hXY);
- *          
- * 
+ *
+ *
  *     The 2D hessian of the DoG operator is computed via finite difference schemes.
- * 
+ *
  *    in  @param dog  : difference of Gaussians
  *    out @param keys : candidate keypoints
- * 
+ *
  * Note:
  *  - No keypoint is removed here
  *
@@ -549,16 +549,16 @@ static void keypoints_compute_edge_response(struct sift_scalespace *d, struct si
 
 
 /** @brief Dissize keys with edge response
- * 
+ *
  *  in  @param keysIn : list of keypoints, the edge response is stored
- * 
+ *
  *  out @param keysAccepted : passing
  *  out @param keysRejected : failing
- * 
+ *
  *  @param threshold on (hXX + hYY)*(hXX + hYY)/(hXX*hYY - hXY*hXY)
  *                   on the ratio of principal curvatures.
- * 
- * 
+ *
+ *
  */
 static void keypoints_discard_on_edge(struct sift_keypoints *keysIn,
                                       struct sift_keypoints *keysAccept,
@@ -578,23 +578,23 @@ static void keypoints_discard_on_edge(struct sift_keypoints *keysIn,
 
 
 /** @brief Attribute a reference orientation to each keypoint of a list
- * 
- *  
+ *
+ *
  *   in  @param dx_scalespace, x component (up-bottom)
- *   in  @param dy_scalespace, y component (left-right) 
- * 
+ *   in  @param dy_scalespace, y component (left-right)
+ *
  *   in  @param keysIn     list of keypoints (pointer)
- * 
+ *
  *   out @param keysOut   list of oriented keypoints
  *
- *            size(keysIn) <= size(keysOut)          
+ *            size(keysIn) <= size(keysOut)
  *
- *   @param t  : threshold over a local maxima to constitute a reference orientation 
- * 
+ *   @param t  : threshold over a local maxima to constitute a reference orientation
+ *
  *   @param lambda_ori : size parameter for the Gaussian window
- * 
- * 
- * 
+ *
+ *
+ *
  */
 static void keypoints_attribute_orientations(const struct sift_scalespace *sx,
                                              const struct sift_scalespace *sy,
@@ -824,15 +824,15 @@ struct sift_keypoints* sift_anatomy(const float* x, int w, int h, const struct s
     //  ss[2]: pointers to two scalespace structures for lates use (The Gaussian
     //         scale-space and the DoG scale-space).
     //  kk[6]: pointers to six keypoint lists structure for later use.
-    
+
     struct sift_keypoints* k = sift_malloc_keypoints();
-   
+
     // The number of octaves.
     int n_oct = number_of_octaves(w, h, p);
-    
+
     // adapt the threshold to the scalespace discretization
     float thresh = convert_threshold(p);
-    
+
     /** MEMORY ALLOCATION **/
     /** scale-space structure */
     struct sift_scalespace* s   = sift_malloc_scalespace_lowe(n_oct,p->n_spo,w,h,p->delta_min,p->sigma_min);
@@ -854,8 +854,8 @@ struct sift_keypoints* sift_anatomy(const float* x, int w, int h, const struct s
     keypoints_find_3d_discrete_extrema(d, kA, p->n_ori, p->n_hist, p->n_bins);
     keypoints_discard_with_low_response(kA, kB, 0.8*thresh);
     keypoints_interpolate_position(d, kB, kC, p->itermax);
-    keypoints_discard_with_low_response(kC, kD, thresh); 
-    keypoints_compute_edge_response(d,kD); 
+    keypoints_discard_with_low_response(kC, kD, thresh);
+    keypoints_compute_edge_response(d,kD);
     keypoints_discard_on_edge(kD, kE, (p->C_edge+1)*(p->C_edge+1)/p->C_edge);
     keypoints_discard_near_the_border(kE, kF, w, h, 1.0);
 
@@ -878,7 +878,7 @@ struct sift_keypoints* sift_anatomy(const float* x, int w, int h, const struct s
 
 struct sift_keypoints* sift_anatomy_without_description(const float* x, int w, int h,
                                                         const struct sift_parameters* p,
-                                                        struct sift_scalespace* ss[2], 
+                                                        struct sift_scalespace* ss[2],
                                                         struct sift_keypoints* kk[5])
 
 
@@ -892,7 +892,7 @@ struct sift_keypoints* sift_anatomy_without_description(const float* x, int w, i
 
     // The number of octaves.
     int n_oct = number_of_octaves(w, h, p);
-    
+
     // Adapt the threshold to the scalespace discretization
     float thresh = convert_threshold(p);
 
@@ -973,5 +973,3 @@ void sift_anatomy_orientation_and_description(const float* x,
     sift_free_scalespace(sx);
     sift_free_scalespace(sy);
 }
-
-

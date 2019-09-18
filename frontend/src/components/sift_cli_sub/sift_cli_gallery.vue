@@ -1,13 +1,14 @@
 <template>
   <div class="octave_container" v-show="Object.keys(scalespace).length > 0">
-    <div class="output_tab_navigation q-gutter-md" style="max-width: 600px">
+    <div class="output_tab_navigation q-gutter-md" style="max-width: 720px">
       <q-tabs
         v-model="click"
         class="text-teal"
       >
         <q-tab name="scalespace_tab" icon="layers" label="Scalespace" @click="toggleLines('scalespace_tab')"/>
-        <q-tab name="dog_tab" icon="bubble_chart" label="Difference of Gaussian" @click="toggleLines('dog_tab')"/>
-        <q-tab name="keypoints_tab" icon="linear_scale" label="Keypoints (original image)" @click="toggleLines('keypoints_tab')"/>
+        <q-tab name="dog_tab" icon="donut_small" label="Difference of Gaussian" @click="toggleLines('dog_tab')"/>
+        <q-tab name="keypoints_tab" icon="bubble_chart" label="Keypoints (original image)" @click="toggleLines('keypoints_tab')"/>
+        <q-tab name="result_tab" icon="compare" label="IPOL/OpenCV" @click="toggleLines('comparison_tab')"/>
       </q-tabs>
     </div>
     <div class="modal" ref="myModal">
