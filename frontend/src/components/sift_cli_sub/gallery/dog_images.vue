@@ -137,6 +137,7 @@ export default {
 
         // Only show keypoints of first step
         var src = this.keypoints.dog[0][octaveOfImage][scaleOfImage] + '?' + this.keypoints_randomUuid
+        if (src.split('?')[0] === 'undefined') throw new Error('undefined')
         caption = 'Octave: ' + (octaveOfImage + 1) + ' - Scale: ' + scaleOfImage
         this.$eventBus.$emit('showModalImage', src, caption)
       } catch (e) {

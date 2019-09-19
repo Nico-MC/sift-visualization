@@ -30,7 +30,7 @@
                 <div class="input-child-headline">Number of octaves</div>
                 <q-input class="input-child-field" v-model="siftCliParams.ss_noct" filled type="text" hint="How many octaves should be produced?" />
                 <div class="input-child-headline">Number of intervalls per octave</div>
-                <q-input class="input-child-field" v-model="siftCliParams.ss_nspo" filled type="text" hint="Sets the value 'S'. " />
+                <q-input class="input-child-field" v-model="siftCliParams.ss_nspo" filled type="text" hint="Sets the value 'S'. Determines how many scales are produced. Scalespace: S+3; DoG: S+2; Extrema: S" />
               </div>
             </div>
             <div class="flex-box-column">
