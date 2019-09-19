@@ -113,7 +113,7 @@ def drawKeypoints(keypoints, keypoints_scaled, currentDirectoryPath, inputImageP
             path_scalespaceImage = glob.glob("static/scalespace/*o*" + octave_number + "_s*" + scale_number + ".png")[0]
             path_scalespaceImageKeypoints = currentDirectoryPath + "/Octave_" + octave_number + "/Scalespace/scale_" + scale_number + ".jpg"
             draw_keys_oriented(kp, path_dogImage, path_dogImageKeypoints)
-            draw_keys_oriented(kp, path_dogImage, path_scalespaceImageKeypoints)
+            draw_keys_oriented(kp, path_scalespaceImage, path_scalespaceImageKeypoints)
 
 # OpenCV
 def drawKeypointsWithCv(keypoints_cv, keypoints_cv_scaled, currentDirectoryPath, inputImagePath, grayImagePath, step, img, gray):

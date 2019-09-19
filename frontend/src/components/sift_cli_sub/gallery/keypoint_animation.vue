@@ -66,7 +66,7 @@ export default {
         'Interpolated 3D extrema (Extrema interpolation)',
         'Interpolated extrema passing the threshold on DoG (DoG threshold)',
         'Interpolated extrema passing the Harris-Stephen edgeness test (On edge response)',
-        'Keypoints with reference orientation (far from border)'
+        'Keypoints with reference orientation (far from edge)'
       ],
       currentKeypointTab: 'step_0'
     }

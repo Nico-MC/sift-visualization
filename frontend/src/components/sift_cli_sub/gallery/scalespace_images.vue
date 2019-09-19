@@ -111,6 +111,7 @@ export default {
         var octaveOfImage = parseInt(classes[2].split('_')[1])
         var scaleOfImage = parseInt(classes[3].split('_')[1])
         var src = this.keypoints.scalespace[0][octaveOfImage][scaleOfImage] + '?' + this.keypoints_randomUuid
+        console.log(src)
         if (src.split('?')[0] === 'undefined') throw new Error('undefined')
         caption = 'Octave: ' + (octaveOfImage + 1) + ' - Scale: ' + scaleOfImage
         this.$eventBus.$emit('showModalImage', src, caption)
