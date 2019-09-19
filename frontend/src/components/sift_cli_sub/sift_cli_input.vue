@@ -79,7 +79,7 @@
         </div>
 
         <div class="sift_cli_buttons q-gutter-md row items-start">
-          <q-toggle v-model="drawType" />
+          <!-- <q-toggle v-model="drawType" /> -->
           <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
           <q-btn id="sift_cli_button_execute" label="Run Sift Algorithm" type="submit" color="primary" />
         </div>
@@ -89,7 +89,7 @@
 </template>
 
 <script>
-import { QInput, QToggle } from 'quasar'
+import { QInput } from 'quasar'
 import axios from 'axios'
 import PictureInput from 'vue-picture-input'
 
@@ -114,8 +114,7 @@ var siftCliParamsDefault = {
 export default {
   components: {
     QInput,
-    PictureInput,
-    QToggle
+    PictureInput
   },
   data () {
     return {

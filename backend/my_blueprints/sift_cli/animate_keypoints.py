@@ -31,6 +31,8 @@ def get_keypoints(filename, label, inputImageName, step, inputImagePath, grayIma
     currentDirectoryPath = "static/keypoints/" + step + "_" + filename
     check_output_directory(currentDirectoryPath)
     filePath = "static/keypoints/" + filename + label + ".txt"
+    if((drawType == "false") and (step == "step_5")):
+        filePath = "static/keypoints/features.txt"
     file = open(filePath, "r")
     keypointsFromFile = file.read()
     keypointsFromFile = keypointsFromFile.splitlines()
@@ -47,11 +49,12 @@ def get_keypoints(filename, label, inputImageName, step, inputImagePath, grayIma
         sca = line.split(' ')[5]
         keypoint = str(float(y)) + " " + str(float(x)) + " " + str(float(sigma) * 2) + " " + str(np.degrees(float(theta)))
         keypoint_scaled = str(float(y) * 2) + " " + str(float(x) * 2) + " " + str(float(sigma) * 4) + " " + str(np.degrees(float(theta)))
+        theta = float(float(theta)*(360/np.pi))
         keypoint_cv = cv.KeyPoint(
                                 x = float(x),
                                 y = float(y),
                                 _size = float(sigma) * 2,
-                                _angle = np.degrees(float(theta)),
+                                _angle = theta,
                                 _response = 0,
                                 _octave = int(octa),
                                 _class_id = -1
@@ -60,7 +63,7 @@ def get_keypoints(filename, label, inputImageName, step, inputImagePath, grayIma
                                 x = float(x) * 2,
                                 y = float(y) * 2,
                                 _size = float(sigma) * 4,
-                                _angle = np.degrees(float(theta)),
+                                _angle = np.radians(theta),
                                 _response = 0,
                                 _octave = int(octa),
                                 _class_id = -1
@@ -89,14 +92,10 @@ def get_keypoints(filename, label, inputImageName, step, inputImagePath, grayIma
             os.makedirs(currentDirectoryPath + "/Octave_" + octa + "/DoG")
             os.makedirs(currentDirectoryPath + "/Octave_" + octa + "/Original")
 
-    if(drawType):
+    if(drawType == "true"):
         drawKeypoints(keypoints, keypoints_scaled, currentDirectoryPath, inputImagePath, grayImagePath, step)
     else:
         drawKeypointsWithCv(keypoints_cv, keypoints_cv_scaled, currentDirectoryPath, inputImagePath, grayImagePath, step, img, gray)
-
-    # Now draw all keypoints of this step to an image
-    # outputImagePath = currentDirectoryPath + "/keypoints.jpg"
-    # draw_keys_oriented(filePath, inputImagePath, outputImagePath)
 
     return keypoints
 

@@ -194,13 +194,13 @@ void fprintf_one_keypoint(FILE* f, const struct keypoint* k, int n_descr, int n_
     if (flag>0){
         // descriptor
         for(int n = 0; n < n_descr; n++){
-            fprintf(f,"%i ", (int)k->descr[n]);
+            fprintf(f," %i", (int)k->descr[n]);
         }
     }
     if (flag>1){
         // orientation histogram
         for(int n = 0; n < n_bins; n++){
-            fprintf(f,"%f ", k->orihist[n]);
+            fprintf(f," %f", k->orihist[n]);
         }
 
     }

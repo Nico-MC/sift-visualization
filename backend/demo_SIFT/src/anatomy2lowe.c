@@ -48,14 +48,16 @@ int main(int argc, char** argv)
     for(int n = 0; n < nkeys; n++){
         fgets(text, 4096, f);
         pos = 0; read = 0;
-        sscanf(text+pos,"%f %f %f %f %n", &l[n*length]
+        sscanf(text+pos,"%f %f %f %f %f %f %n", &l[n*length]
                                         , &l[n*length+1]
                                         , &l[n*length+2]
                                         , &l[n*length+3]
+                                        , &l[n*length+4]
+                                        , &l[n*length+5]
                                         , &read);
         pos += read;
         for(int m = 0; m < ndescr; m++){
-            sscanf(text+pos,"%f %n", &l[n*length+4+m],&read);
+            sscanf(text+pos,"%f %n", &l[n*length+6+m],&read);
             pos += read;
         }
     }
@@ -65,16 +67,21 @@ int main(int argc, char** argv)
     for(int n = 0; n < nkeys; n++){
         // conversion orientation
         float ori = l[n*length+3] - M_PI/2+2*M_PI;
+        int octave = l[n*length+4];
+        int scale = l[n*length+5];
         if (ori>M_PI)
             ori -= 2*M_PI;
-        fprintf(stdout, "%f %f %f %f ", l[n*length]
+        fprintf(stdout, "%f %f %f %f %d %d ", l[n*length]
                                       , l[n*length+1]
                                       , l[n*length+2]
-                                      , ori);
-        float* descr = &l[n*length+4];
+                                      , ori
+                                      , octave
+                                      , scale
+                                    );
+        float* descr = &l[n*length+6];
         for(int i = 0; i < nhist; i++){
             for(int j = 0; j < nhist; j++){
-                // conversion descriptor 
+                // conversion descriptor
                 int iA = j;
                 int jA = nhist-1-i;
                 for(int k = 0; k < nori; k++){
@@ -84,5 +91,5 @@ int main(int argc, char** argv)
         }
         fprintf(stdout,"\n");
     }
-    
+
 }

@@ -12,6 +12,7 @@
         <q-tab name="step_3" icon="filter_4" label=""/>
         <q-tab name="step_4" icon="filter_5" label=""/>
         <q-tab name="step_5" icon="filter_6" label=""/>
+        <q-tab name="ipolOpencv" icon="" label="openCV"/>
       </q-tabs>
 
       <q-tab-panel :name="'step_' + step_number"
@@ -27,6 +28,15 @@
           :defaultWidth="defaultWidth"
           :keypoints_randomUuid="keypoints_randomUuid"
         ></scaleWrapper>
+      </q-tab-panel>
+
+      <q-tab-panel :name="'openCV'"
+        :class="'tab_content'"
+        v-show="currentKeypointTab === 'ipolOpencv'"
+      >
+        <div class="opencv-image">
+          <img :src="'http://localhost:5000/static/keypoints/keypoints_openCV.jpg?' + keypoints_randomUuid" @click="zoomImg" width="25%">
+        </div>
       </q-tab-panel>
     </div>
   </form>
@@ -60,6 +70,16 @@ export default {
       ],
       currentKeypointTab: 'step_0'
     }
+  },
+  methods: {
+    zoomImg (img) {
+      try {
+        var caption = 'All keypoints that are found with OpenCV.'
+        this.$eventBus.$emit('showModalImage', 'http://localhost:5000/static/keypoints/keypoints_openCV.jpg?' +
+          this.keypoints_randomUuid, caption)
+      } catch (e) {
+      }
+    }
   }
 }
 </script>
@@ -82,4 +102,11 @@ export default {
     margin-top: 75px;
   }
 
+  .opencv-image {
+    text-align: center;
+  }
+
+  .opencv-image img:hover {
+    cursor: pointer;
+  }
 </style>
