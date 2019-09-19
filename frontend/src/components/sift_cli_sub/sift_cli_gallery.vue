@@ -88,6 +88,7 @@ export default {
     this.$store.currentTab = 'scalespace_tab'
     this.$store.scalespaceLines = []
     this.$store.dogLines = []
+    this.$store.doubleClicked = false
     // Event-Listener
     this.$eventBus.$on('buildGallery', (drawType) => {
       this.buildGallery(drawType)
@@ -200,9 +201,13 @@ export default {
       modal.style.display = 'block'
       this.modalImgSrc = modalImgSrc
       this.modalImgCaption = caption
-      modalImgClose.onclick = function () {
-        if (modal.style.display === 'block') modal.style.display = 'none'
-        else modal.style.display = 'block'
+      modalImgClose.onclick = () => {
+        if (modal.style.display === 'block') {
+          this.$store.doubleClicked = false
+          modal.style.display = 'none'
+        } else {
+          modal.style.display = 'block'
+        }
       }
       this.$refs['modalImg'].ondragstart = function () {
         return false

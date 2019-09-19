@@ -21,13 +21,15 @@
           >
             <q-img
               :id="keypoints_randomUuid"
-              :src="scale + '?' + keypoints_randomUuid"
+              :src="initImg(step_number-1, o_number, s_number)"
               spinner-color="white"
-              @click="zoomImg"
+              v-on:dblclick="zoomImg"
+              v-on:click="changeImg(step_number-1, o_number, s_number)"
               style="width: 360px"
               :class="'octave_' + o_number + ' scale_' + s_number"
               :data-stepName="step_name"
               :data-stepNumber="step_number"
+              :ref="step_number-1 + '_' + o_number + '_' + s_number"
             >
               <div class="absolute-bottom-right text-subtitle2">
                 {{ parseInt(s_number) }}
@@ -56,6 +58,7 @@ export default {
   },
   methods: {
     zoomImg (img) {
+      this.$store.doubleClicked = true
       try {
         var classes = img.target.parentElement.className.split(' ')
         var octaveOfImage = parseInt(classes[2].split('_')[1]) + 1
@@ -69,9 +72,35 @@ export default {
         this.$eventBus.$emit('showModalImage', modalImgSrc, caption)
       } catch (e) {
       }
+    },
+    initImg (step, octave, scale) {
+      var src = 'http://localhost:5000/static/keypoints/step_' + step + '/Octave_' +
+        octave + '/Original/scale_' + scale + '.jpg?' + this.keypoints_randomUuid
+      return src
+    },
+    changeImg (step, octave, scale) {
+      var promise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (!this.$store.doubleClicked) {
+            var newSrc = ''
+            var SrcOfClickedComponent = this.$refs[step + '_' + octave + '_' + scale][0].src
+            if (SrcOfClickedComponent.includes('Original')) {
+              newSrc = 'http://localhost:5000/static/keypoints/step_' + step + '/Octave_' +
+                octave + '/DoG/scale_' + scale + '.jpg?' + this.keypoints_randomUuid
+            } else if (SrcOfClickedComponent.includes('DoG')) {
+              newSrc = 'http://localhost:5000/static/keypoints/step_' + step + '/Octave_' +
+                octave + '/Original/scale_' + scale + '.jpg?' + this.keypoints_randomUuid
+            }
+            this.$refs[step + '_' + octave + '_' + scale][0].src = newSrc
+            resolve(newSrc)
+          }
+        }, 300)
+        return promise
+      })
     }
   }
 }
+
 </script>
 
 <style lang="css">

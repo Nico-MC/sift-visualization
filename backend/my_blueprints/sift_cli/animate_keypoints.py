@@ -27,10 +27,10 @@ def sift_cli_animate_keypoints():
     }
     return jsonify(allKeypoints)
 
-def get_keypoints(filename, label, inputImageName, step, inputImagePath, grayImagePath, drawType, img, gray):
-    currentDirectoryPath = "static/keypoints/" + step + "_" + filename
+def get_keypoints(stepname, label, inputImageName, step, inputImagePath, grayImagePath, drawType, img, gray):
+    currentDirectoryPath = "static/keypoints/" + step
     check_output_directory(currentDirectoryPath)
-    filePath = "static/keypoints/" + filename + label + ".txt"
+    filePath = "static/keypoints/" + stepname + label + ".txt"
     if((drawType == "false") and (step == "step_5")):
         filePath = "static/keypoints/features.txt"
     file = open(filePath, "r")
