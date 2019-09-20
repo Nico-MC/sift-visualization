@@ -1,8 +1,5 @@
 # Visualization App for SIFT
 
-> WIP
-  - [x] Set up endpoints (for api)
-
 
 # Get started
 - **Use Ubuntu Bash on Windows** (linux subsystem)
