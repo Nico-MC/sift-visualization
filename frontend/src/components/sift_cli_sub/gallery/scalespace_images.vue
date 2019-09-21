@@ -8,7 +8,7 @@
       <p class="tab_content_header q-title text-h6">
         Octave: {{ parseInt(o_number) + 1 }}
       </p>
-      <p style="font-size: 8pt; text-align: center; margin-top: -24px" v-if="parseInt(o_number) === 0">(doubled by interpolation)</p>
+      <p style="font-size: 12pt; text-align: center; margin-top: -24px" v-if="parseInt(o_number) === 0">(doubled by interpolation)</p>
       <div class="q-gutter-md column items-start scales">
         <div
           v-for="(scale, s_number) in octave"
