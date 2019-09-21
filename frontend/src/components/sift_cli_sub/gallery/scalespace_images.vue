@@ -8,7 +8,7 @@
       <p class="tab_content_header q-title text-h6">
         Octave: {{ parseInt(o_number) + 1 }}
       </p>
-      <p style="font-size: 12pt; text-align: center; margin-top: -24px" v-if="parseInt(o_number) === 0">(doubled by interpolation)</p>
+      <div style="font-size: 12pt; text-align: center; margin-top: -9px" v-if="parseInt(o_number) === 0">(doubled by interpolation)</div>
       <div class="q-gutter-md column items-start scales">
         <div
           v-for="(scale, s_number) in octave"
@@ -22,6 +22,9 @@
             :style="{ width: defaultWidth / (Math.pow(2, parseInt(o_number))) + 'px' }"
             spinner-color="white"
           >
+            <div class="absolute-top text-center q-pa-xs" v-if="parseInt(o_number) === 0 && parseInt(s_number) === 0">
+              {{ 'Top of stack' }}
+            </div>
             <div
               class="absolute-full text-subtitle2 flex flex-center scale_caption"
               v-if="s_number > 0 && s_number < Object.keys(octave).length - 2"
@@ -130,6 +133,7 @@ export default {
 <style lang="css">
   .tab_content_header {
     text-align: center;
+    margin-bottom: 0;
   }
 
   .scalespace_octave_container {
@@ -139,6 +143,7 @@ export default {
   .scalespace_container {
     display: flex;
     align-items: center;
+    flex-direction: column;
   }
 
   .leader-line {
@@ -206,15 +211,20 @@ export default {
     }
   }
 
-  .scales {
+  .scalespace_container .scalespace_octave_container .scales {
     align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 75px;
+    margin-top: -12px
   }
 
-  .scales .scale_caption {
+  .scalespace_container .scales .scale_caption {
     opacity: 0;
   }
 
-  .scales .scale_caption:hover {
+  .scalespace_container .scales .scale_caption:hover {
     opacity: 1;
     padding: 0;
     cursor: pointer;
