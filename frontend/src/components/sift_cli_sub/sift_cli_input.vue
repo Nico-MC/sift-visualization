@@ -29,7 +29,7 @@
                 <h4>Quantity</h4>
                 <div class="input-child-headline">Number of octaves</div>
                 <q-input class="input-child-field" v-model="siftCliParams.ss_noct" filled type="text" hint="How many octaves should be produced?" />
-                <div class="input-child-headline">Number of intervalls per octave</div>
+                <div class="input-child-headline">Number of scales per octave</div>
                 <q-input class="input-child-field" v-model="siftCliParams.ss_nspo" filled type="text" hint="Sets the value 'S'. Determines how many scales are produced. Scalespace: S+3; DoG: S+2; Extrema: S" />
               </div>
             </div>
@@ -69,7 +69,7 @@
                 <h4>Descriptor</h4>
                 <div class="input-child-headline">Number of histograms</div>
                 <q-input class="input-child-field" v-model="siftCliParams.descr_nhist" filled type="text" hint="Number of histograms per dimension" />
-                <div class="input-child-headline">Number of bins in histogram</div>
+                <div class="input-child-headline">Number of bins per histogram</div>
                 <q-input class="input-child-field" v-model="siftCliParams.descr_nori" filled type="text" hint="Number of bins in each histogram" />
                 <div class="input-child-headline">Locality of Descriptor</div>
                 <q-input class="input-child-field" v-model="siftCliParams.descr_lambda" filled type="text" hint="Sets how local is the analysis of the gradient distribution" />
