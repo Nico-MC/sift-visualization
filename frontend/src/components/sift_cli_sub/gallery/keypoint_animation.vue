@@ -30,7 +30,7 @@
         ></scaleWrapper>
       </q-tab-panel>
 
-      <q-tab-panel :class="'keypointsPerOctave'" v-show="currentKeypointTab === 'eachoctave'">
+      <q-tab-panel :class="'keypointsPerStep'" v-show="currentKeypointTab === 'eachoctave'">
         <div class="opencv-image">
           <p>{{ 'OpenCV with 8 Octaves' }}</p>
           <img :src="'http://localhost:5000/static/keypoints/keypoints_openCV.jpg?' + keypoints_randomUuid" @click="zoomImg" width="400px">
@@ -89,7 +89,7 @@ export default {
 </script>
 
 <style lang="css">
-  .keypointsPerOctave {
+  .keypointsPerStep {
     display: flex;
     width: 100%;
     flex-wrap: wrap;
@@ -117,15 +117,15 @@ export default {
     width: 100%;
   }
 
-  .keypointsPerOctave img:hover {
+  .keypointsPerStep img:hover {
     cursor: pointer;
   }
 
-  .keypointsPerOctave div {
+  .keypointsPerStep div {
     margin-bottom: 50px;
   }
 
-  .keypointsPerOctave p {
+  .keypointsPerStep p {
     text-align: center;
     font-size: 16pt;
     margin-bottom: 0;
