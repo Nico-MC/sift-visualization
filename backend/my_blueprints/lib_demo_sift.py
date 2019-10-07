@@ -189,11 +189,8 @@ def draw_keys(keys, image, imout):
     image = Image.new('RGB', temp.size)
     image.paste(temp,(0, 0))
     draw = ImageDraw.Draw(image)
-    f = open(keys)
-    for key in f:
+    for key in keys:
         key = key.split()
-
-     #  [y,x,sigma] = map(float,key[0:3])
         [x, y, sigma] = [float(x) for x in key[0:3]]
 
         if max(x, y, sigma) > max(image.size):

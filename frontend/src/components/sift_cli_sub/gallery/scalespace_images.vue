@@ -18,11 +18,11 @@
           <q-img
             :class="'octave_' + parseInt(o_number) + ' ' + 'scale_' + s_number + ' scalespace-image'"
             :src="scale + '?' + keypoints_randomUuid"
-            @load="loaded(Object.keys(scalespace).length * Object.keys(octave).length)"
+            @load="loaded(Object.keys(scalespace).length * Object.keys(octave).length, Object.keys(octave).length)"
             :style="{ width: defaultWidth / (Math.pow(2, parseInt(o_number))) + 'px' }"
             spinner-color="white"
           >
-            <div class="absolute-top text-center q-pa-xs" v-if="parseInt(o_number) === 0 && parseInt(s_number) === 0">
+            <div class="absolute-top text-center q-pa-xs" v-if="parseInt(o_number) === 0 && parseInt(s_number) === (Object.keys(octave).length - 1)">
               {{ 'Top of stack' }}
             </div>
             <div
@@ -58,21 +58,21 @@ export default {
     keypoints_randomUuid: String
   },
   methods: {
-    loaded (maxScales) {
+    loaded (maxScales, scalesPerOctave) {
       this.counter++
       if (this.counter === maxScales) {
         this.counter = 0
         setTimeout(() => {
-          this.drawLines()
+          this.drawLines(scalesPerOctave)
         }, 2000)
       }
     },
     created () {
       this.removeLines()
     },
-    drawLines () {
+    drawLines (scalesPerOctave) {
       this.removeLines()
-      var start = document.getElementsByClassName('scalespace-image scale_2')
+      var start = document.getElementsByClassName('scalespace-image scale_' + (scalesPerOctave - 3))
       var end = document.getElementsByClassName('scalespace-image scale_0')
       for (var i = 0; i < start.length - 1; i++) {
         var line = null
@@ -80,10 +80,10 @@ export default {
           endElement = end[i + 1]
         if (i === 0) {
           // eslint-disable-next-line
-          line = new window.LeaderLine(startElement, endElement, { hide: true, size: 2, startLabel: 'take this...', endLabel: '...and halve it.' })
+          line = new window.LeaderLine(LeaderLine.pointAnchor(startElement, { y: '100%' }), LeaderLine.pointAnchor(endElement, { y: 0 }), { startSocket: 'bottom', endSocket: 'top', path: 'fluid', hide: true, size: 2, startLabel: 'take this...', endLabel: '...and halve it.' })
         } else {
           // eslint-disable-next-line
-          line = new window.LeaderLine(startElement, endElement, { hide: true, size: 2 })
+          line = new window.LeaderLine(LeaderLine.pointAnchor(startElement, { y: '100%' }), LeaderLine.pointAnchor(endElement, { y: 0 }), { startSocket: 'bottom', endSocket: 'top', path: 'fluid', hide: true, size: 2 })
         }
         this.$store.scalespaceLines.push(line)
       }
@@ -138,6 +138,7 @@ export default {
 
   .scalespace_octave_container {
     flex: 1 0 auto;
+    margin-bottom: 50px;
   }
 
   .scalespace_container {

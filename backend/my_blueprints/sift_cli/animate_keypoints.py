@@ -47,8 +47,12 @@ def get_keypoints(stepname, label, inputImageName, step, inputImagePath, grayIma
         theta = line.split(' ')[3]
         octa = line.split(' ')[4]
         sca = line.split(' ')[5]
-        keypoint = str(float(y)) + " " + str(float(x)) + " " + str(float(sigma) * 2) + " " + str(np.degrees(float(theta)))
-        keypoint_scaled = str(float(y) * 2) + " " + str(float(x) * 2) + " " + str(float(sigma) * 4) + " " + str(np.degrees(float(theta)))
+        if(step == "step_5"):
+            keypoint = str(float(y)) + " " + str(float(x)) + " " + str(float(sigma)) + " " + str(float(theta))
+            keypoint_scaled = str(float(y) * 2) + " " + str(float(x) * 2) + " " + str(float(sigma) * 2) + " " + str(float(theta))
+        else:
+            keypoint = str(float(y)) + " " + str(float(x)) + " " + str(float(sigma))
+            keypoint_scaled = str(float(y) * 2) + " " + str(float(x) * 2) + " " + str(float(sigma) * 2)
         theta = float(float(theta)*(360/np.pi))
         keypoint_cv = cv.KeyPoint(
                                 x = float(x),
@@ -104,7 +108,11 @@ def drawKeypoints(keypoints, keypoints_scaled, currentDirectoryPath, inputImageP
     for octave_number, octave in keypoints.items():
         for scale_number, kp in octave.items():
             path_scaleImageKeypoints = currentDirectoryPath + "/Octave_" + octave_number + "/Original/scale_" + scale_number + ".jpg"
-            draw_keys_oriented(kp, grayImagePath, path_scaleImageKeypoints)
+            if(step == "step_5"):
+                draw_keys_oriented(kp, grayImagePath, path_scaleImageKeypoints)
+            else:
+                draw_keys(kp, grayImagePath, path_scaleImageKeypoints)
+
 
     for octave_number, octave in keypoints_scaled.items():
         for scale_number, kp in octave.items():
@@ -112,8 +120,12 @@ def drawKeypoints(keypoints, keypoints_scaled, currentDirectoryPath, inputImageP
             path_dogImageKeypoints = currentDirectoryPath + "/Octave_" + octave_number + "/DoG/scale_" + scale_number + ".jpg"
             path_scalespaceImage = glob.glob("static/scalespace/*o*" + octave_number + "_s*" + scale_number + ".png")[0]
             path_scalespaceImageKeypoints = currentDirectoryPath + "/Octave_" + octave_number + "/Scalespace/scale_" + scale_number + ".jpg"
-            draw_keys_oriented(kp, path_dogImage, path_dogImageKeypoints)
-            draw_keys_oriented(kp, path_scalespaceImage, path_scalespaceImageKeypoints)
+            if(step == "step_5"):
+                draw_keys_oriented(kp, path_dogImage, path_dogImageKeypoints)
+                draw_keys_oriented(kp, path_scalespaceImage, path_scalespaceImageKeypoints)
+            else:
+                draw_keys(kp, path_dogImage, path_dogImageKeypoints)
+                draw_keys(kp, path_scalespaceImage, path_scalespaceImageKeypoints)
 
 # OpenCV
 def drawKeypointsWithCv(keypoints_cv, keypoints_cv_scaled, currentDirectoryPath, inputImagePath, grayImagePath, step, img, gray):
