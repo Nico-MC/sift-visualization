@@ -6,14 +6,13 @@
         class="text-teal keypoint_tabs"
         active-color="primary"
       >
-        <q-tab name="eachoctave" icon="" label="Keypoints per Octave"/>
         <q-tab name="step_0" icon="filter_1" label=""/>
         <q-tab name="step_1" icon="filter_2" label=""/>
         <q-tab name="step_2" icon="filter_3" label=""/>
         <q-tab name="step_3" icon="filter_4" label=""/>
         <q-tab name="step_4" icon="filter_5" label=""/>
         <q-tab name="step_5" icon="filter_6" label=""/>
-        <q-tab name="ipolOpencv" icon="" label="openCV"/>
+        <q-tab name="eachoctave" icon="" label="All Keypoints"/>
       </q-tabs>
 
       <q-tab-panel :name="'step_' + step_number"
@@ -31,21 +30,16 @@
         ></scaleWrapper>
       </q-tab-panel>
 
-      <q-tab-panel :name="'openCV'"
-        :class="'tab_content'"
-        v-show="currentKeypointTab === 'ipolOpencv'"
-      >
+      <q-tab-panel :class="'keypointsPerOctave'" v-show="currentKeypointTab === 'eachoctave'">
         <div class="opencv-image">
-          <img :src="'http://localhost:5000/static/keypoints/keypoints_openCV.jpg?' + keypoints_randomUuid" @click="zoomImg" width="25%">
+          <p>{{ 'OpenCV with 8 Octaves' }}</p>
+          <img :src="'http://localhost:5000/static/keypoints/keypoints_openCV.jpg?' + keypoints_randomUuid" @click="zoomImg" width="400px">
         </div>
-      </q-tab-panel>
-
-      <q-tab-panel :class="'keypointsPerOctave'">
         <div :name="'eachoctave'"
-          v-show="currentKeypointTab === 'eachoctave'"
           v-for="(step, step_number) in keypoints.original"
           :key="'step_' + step_number"
         >
+          <p>{{ 'Step: ' + (parseInt(step_number) + 1) }}</p>
           <img :src="'http://localhost:5000/static/keypoints/step_' + step_number + '/keypoints.jpg?' + keypoints_randomUuid" @click="zoomImg" width="400px">
         </div>
       </q-tab-panel>
@@ -84,7 +78,6 @@ export default {
   },
   methods: {
     zoomImg (img) {
-      console.log(img.srcElement.src)
       try {
         var caption = 'All keypoints that are found with OpenCV.'
         this.$eventBus.$emit('showModalImage', img.srcElement.src, caption)
@@ -121,9 +114,20 @@ export default {
 
   .opencv-image {
     text-align: center;
+    width: 100%;
   }
 
-  .opencv-image img:hover {
+  .keypointsPerOctave img:hover {
     cursor: pointer;
+  }
+
+  .keypointsPerOctave div {
+    margin-bottom: 50px;
+  }
+
+  .keypointsPerOctave p {
+    text-align: center;
+    font-size: 16pt;
+    margin-bottom: 0;
   }
 </style>

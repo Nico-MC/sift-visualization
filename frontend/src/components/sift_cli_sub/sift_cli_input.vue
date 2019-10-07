@@ -94,7 +94,7 @@ import axios from 'axios'
 import PictureInput from 'vue-picture-input'
 
 var siftCliParamsDefault = {
-  ss_noct: '3', // number of octaves
+  ss_noct: '5', // number of octaves
   ss_nspo: '3', // number of scales per octave
   ss_dmin: '0.5', // the sampling distance in the first octave
   ss_smin: '0.8', // blur level on the seed image
