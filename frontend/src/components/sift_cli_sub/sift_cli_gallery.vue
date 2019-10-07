@@ -7,7 +7,7 @@
       >
         <q-tab name="scalespace_tab" icon="layers" label="Scalespace" @click="toggleLines('scalespace_tab')"/>
         <q-tab name="dog_tab" icon="donut_small" label="Difference of Gaussian" @click="toggleLines('dog_tab')"/>
-        <q-tab name="keypoints_tab" icon="bubble_chart" label="Keypoints (original image)" @click="toggleLines('keypoints_tab')"/>
+        <q-tab name="keypoints_tab" icon="bubble_chart" label="Keypoints" @click="toggleLines('keypoints_tab')"/>
         <!-- <q-tab name="result_tab" icon="compare" label="IPOL/OpenCV" @click="toggleLines('comparison_tab')"/> -->
       </q-tabs>
     </div>

@@ -6,6 +6,7 @@
         class="text-teal keypoint_tabs"
         active-color="primary"
       >
+        <q-tab name="eachoctave" icon="" label="Keypoints per Octave"/>
         <q-tab name="step_0" icon="filter_1" label=""/>
         <q-tab name="step_1" icon="filter_2" label=""/>
         <q-tab name="step_2" icon="filter_3" label=""/>
@@ -36,6 +37,16 @@
       >
         <div class="opencv-image">
           <img :src="'http://localhost:5000/static/keypoints/keypoints_openCV.jpg?' + keypoints_randomUuid" @click="zoomImg" width="25%">
+        </div>
+      </q-tab-panel>
+
+      <q-tab-panel :class="'keypointsPerOctave'">
+        <div :name="'eachoctave'"
+          v-show="currentKeypointTab === 'eachoctave'"
+          v-for="(step, step_number) in keypoints.original"
+          :key="'step_' + step_number"
+        >
+          <img :src="'http://localhost:5000/static/keypoints/step_' + step_number + '/keypoints.jpg?' + keypoints_randomUuid" @click="zoomImg" width="400px">
         </div>
       </q-tab-panel>
     </div>
@@ -73,10 +84,10 @@ export default {
   },
   methods: {
     zoomImg (img) {
+      console.log(img.srcElement.src)
       try {
         var caption = 'All keypoints that are found with OpenCV.'
-        this.$eventBus.$emit('showModalImage', 'http://localhost:5000/static/keypoints/keypoints_openCV.jpg?' +
-          this.keypoints_randomUuid, caption)
+        this.$eventBus.$emit('showModalImage', img.srcElement.src, caption)
       } catch (e) {
       }
     }
@@ -85,6 +96,12 @@ export default {
 </script>
 
 <style lang="css">
+  .keypointsPerOctave {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
   .animate_keypoints_image_container {
     position: relative;
   }

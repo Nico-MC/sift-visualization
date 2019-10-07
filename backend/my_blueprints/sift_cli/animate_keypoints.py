@@ -40,6 +40,7 @@ def get_keypoints(stepname, label, inputImageName, step, inputImagePath, grayIma
     keypoints_scaled = {}
     keypoints_cv = {}
     keypoints_cv_scaled = {}
+    allKeypointsInCurrentStep = []
     for line in keypointsFromFile:
         y = line.split(' ')[0]
         x = line.split(' ')[1]
@@ -73,6 +74,8 @@ def get_keypoints(stepname, label, inputImageName, step, inputImagePath, grayIma
                                 _class_id = -1
                                 )
 
+        allKeypointsInCurrentStep.append(keypoint)
+
         # Sort the keypoint after each octave and each scale
         if octa in keypoints.keys():
             if sca in keypoints[octa].keys():
@@ -96,15 +99,18 @@ def get_keypoints(stepname, label, inputImageName, step, inputImagePath, grayIma
             os.makedirs(currentDirectoryPath + "/Octave_" + octa + "/DoG")
             os.makedirs(currentDirectoryPath + "/Octave_" + octa + "/Original")
 
+
+
     if(drawType == "true"):
-        drawKeypoints(keypoints, keypoints_scaled, currentDirectoryPath, inputImagePath, grayImagePath, step)
+        drawKeypoints(keypoints, keypoints_scaled, currentDirectoryPath, inputImagePath, grayImagePath, step, allKeypointsInCurrentStep)
     else:
-        drawKeypointsWithCv(keypoints_cv, keypoints_cv_scaled, currentDirectoryPath, inputImagePath, grayImagePath, step, img, gray)
+        drawKeypointsWithCv(keypoints_cv, keypoints_cv_scaled, currentDirectoryPath, inputImagePath, grayImagePath, step, img, gray, allKeypointsInCurrentStep)
 
     return keypoints
 
 # IPOL
-def drawKeypoints(keypoints, keypoints_scaled, currentDirectoryPath, inputImagePath, grayImagePath, step):
+def drawKeypoints(keypoints, keypoints_scaled, currentDirectoryPath, inputImagePath, grayImagePath, step, allKeypointsInCurrentStep):
+    draw_keys(allKeypointsInCurrentStep, grayImagePath, currentDirectoryPath + "/keypoints.jpg")
     for octave_number, octave in keypoints.items():
         for scale_number, kp in octave.items():
             path_scaleImageKeypoints = currentDirectoryPath + "/Octave_" + octave_number + "/Original/scale_" + scale_number + ".jpg"
@@ -128,7 +134,7 @@ def drawKeypoints(keypoints, keypoints_scaled, currentDirectoryPath, inputImageP
                 draw_keys(kp, path_scalespaceImage, path_scalespaceImageKeypoints)
 
 # OpenCV
-def drawKeypointsWithCv(keypoints_cv, keypoints_cv_scaled, currentDirectoryPath, inputImagePath, grayImagePath, step, img, gray):
+def drawKeypointsWithCv(keypoints_cv, keypoints_cv_scaled, currentDirectoryPath, inputImagePath, grayImagePath, step, img, gray, allKeypointsInCurrentStep):
     for octave_number, octave in keypoints_cv.items():
         for scale_number, kp in octave.items():
             path_scaleImageKeypoints = currentDirectoryPath + "/Octave_" + octave_number + "/Original/scale_" + scale_number + ".jpg"
