@@ -30,12 +30,16 @@
         ></scaleWrapper>
       </q-tab-panel>
 
-      <q-tab-panel :class="'keypointsPerStep'" v-show="currentKeypointTab === 'eachoctave'">
+      <q-tab-panel
+        :name="'eachoctave'"
+        :class="'keypointsPerStep'"
+        v-show="currentKeypointTab === 'eachoctave'"
+      >
         <div class="opencv-image">
           <p>{{ 'OpenCV with 8 Octaves' }}</p>
           <img :src="'http://localhost:5000/static/keypoints/keypoints_openCV.jpg?' + keypoints_randomUuid" @click="zoomImg" width="400px">
         </div>
-        <div :name="'eachoctave'"
+        <div
           v-for="(step, step_number) in keypoints.original"
           :key="'step_' + step_number"
         >

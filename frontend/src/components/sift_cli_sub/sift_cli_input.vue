@@ -55,7 +55,7 @@
                 <q-input class="input-child-field" v-model="siftCliParams.ori_thresh" filled type="text" hint="Threshold for considering local maxima in the orientation histogram"/>
               </div>
             </div>
-            <div class="flex-box-column">
+            <div class="flex-box-column orientation-input">
               <div class="flex-child">
                 <h4>Orientation</h4>
                 <div class="input-child-headline">Locality of gradient</div>
@@ -64,7 +64,7 @@
                 <q-input class="input-child-field" v-model="siftCliParams.ori_nbins" filled type="text" hint="Number of bins in the orientation histogram" />
               </div>
             </div>
-            <div class="flex-box-column">
+            <div class="flex-box-column orientation-input">
               <div class="flex-child">
                 <h4>Descriptor</h4>
                 <div class="input-child-headline">Number of histograms</div>
@@ -79,7 +79,7 @@
         </div>
 
         <div class="sift_cli_buttons q-gutter-md row items-start">
-          <q-toggle v-model="drawType" />
+          <q-toggle v-model="drawType"/>
           <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
           <q-btn id="sift_cli_button_execute" label="Run Sift Algorithm" type="submit" color="primary" />
         </div>
@@ -120,7 +120,7 @@ export default {
   data () {
     return {
       siftCliParams: Object.assign({}, siftCliParamsDefault),
-      drawType: true
+      drawType: false
     }
   },
   methods: {
@@ -151,7 +151,7 @@ export default {
       })
         .then(() => {
           console.log('SIFT finished.')
-          this.$eventBus.$emit('buildGallery', this.drawType)
+          this.$eventBus.$emit('buildGallery', true)
         })
         .catch((error) => {
           console.error(error)
@@ -188,7 +188,6 @@ export default {
     },
     reset () {
       Object.assign(this.siftCliParams, siftCliParamsDefault) // Resets the parameter values
-      this.drawType = true
       this.image = ''
       this.$refs.pictureInput.removeImage()
     },
@@ -197,6 +196,18 @@ export default {
         this.image = this.$refs.pictureInput.file
       } else {
         console.log('FileReader API not supported: use the <form>, Luke!')
+      }
+    }
+  },
+  watch: {
+    drawType (show) {
+      var boxes = document.getElementsByClassName('orientation-input')
+      for (var i = 0; i < boxes.length; i++) {
+        if (!show) {
+          boxes[i].style.display = 'none'
+        } else {
+          boxes[i].style.display = 'flex'
+        }
       }
     }
   }
@@ -291,5 +302,9 @@ export default {
   .input-child-field {
     margin-top: 15px;
     margin-bottom: 75px;
+  }
+
+  .orientation-input {
+    display: none;
   }
 </style>

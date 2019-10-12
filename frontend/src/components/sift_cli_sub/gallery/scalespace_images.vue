@@ -138,7 +138,7 @@ export default {
 
   .scalespace_octave_container {
     flex: 1 0 auto;
-    margin-bottom: 50px;
+    margin-bottom: 0px;
   }
 
   .scalespace_container {
