@@ -27,5 +27,7 @@
   - Disable firewall or/and antivirus
 - Segmentation fault
   - Use 'sudo apt install python3-opencv'
+- Wrong lib png version (or other modules)
+  - Version update of the module
 
 *For questions don't hesitate to contact me: niconoster@t-online.de*
