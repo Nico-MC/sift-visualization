@@ -51,8 +51,8 @@
                 <q-input class="input-child-field" v-model="siftCliParams.thresh_dog" filled type="text" hint="Threshold over the DoG response" />
                 <div class="input-child-headline">Principle curvature ratio</div>
                 <q-input class="input-child-field" v-model="siftCliParams.thresh_edge" filled type="text" hint="Threshold over the ratio of principal curvature"/>
-                <div class="input-child-headline">Threshold for orientation histogram</div>
-                <q-input class="input-child-field" v-model="siftCliParams.ori_thresh" filled type="text" hint="Threshold for considering local maxima in the orientation histogram"/>
+                <div class="input-child-headline orientation-input">Threshold for orientation histogram</div>
+                <q-input class="input-child-field orientation-input" style="display: none !important" v-model="siftCliParams.ori_thresh" filled type="text" hint="Threshold for considering local maxima in the orientation histogram"/>
               </div>
             </div>
             <div class="flex-box-column orientation-input">
@@ -79,7 +79,7 @@
         </div>
 
         <div class="sift_cli_buttons q-gutter-md row items-start">
-          <q-toggle v-model="drawType"/>
+          <q-toggle label="Advanced parameters" left-label v-model="drawType"/>
           <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
           <q-btn id="sift_cli_button_execute" label="Run Sift Algorithm" type="submit" color="primary" />
         </div>
@@ -204,9 +204,9 @@ export default {
       var boxes = document.getElementsByClassName('orientation-input')
       for (var i = 0; i < boxes.length; i++) {
         if (!show) {
-          boxes[i].style.display = 'none'
+          boxes[i].setAttribute('style', 'display:none !important')
         } else {
-          boxes[i].style.display = 'flex'
+          boxes[i].setAttribute('style', 'display:flex !important')
         }
       }
     }

@@ -127,6 +127,7 @@ export default {
 
   .keypointsPerStep div {
     margin-bottom: 50px;
+    margin-right: 15px;
   }
 
   .keypointsPerStep p {
