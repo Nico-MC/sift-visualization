@@ -1,6 +1,6 @@
 <template>
   <div class="octave_container" v-show="Object.keys(scalespace).length > 0">
-    <div class="output_tab_navigation q-gutter-md" style="max-width: 720px">
+    <div class="output_tab_navigation q-gutter-md" style="max-width: 720px justify-content: left;">
       <q-tabs
         v-model="click"
         class="text-teal"

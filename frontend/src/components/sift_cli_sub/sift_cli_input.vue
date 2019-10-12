@@ -206,7 +206,7 @@ export default {
         if (!show) {
           boxes[i].setAttribute('style', 'display:none !important')
         } else {
-          boxes[i].setAttribute('style', 'display:flex !important')
+          boxes[i].setAttribute('style', 'display:-webkit-inline-flex !important')
         }
       }
     }
@@ -258,6 +258,7 @@ export default {
   .input-category-header {
     margin-bottom: 50px;
     margin-top: 0;
+    justify-content: center;
   }
 
   .flex-box {
@@ -270,7 +271,8 @@ export default {
   .flex-box-column {
     display: flex;
     flex-direction: column;
-    flex: 1;
+    flex-basis: 0%;
+    flex-grow: 0.2;
     flex-wrap: wrap;
     margin-right: 15px;
     margin-left: 15px;
